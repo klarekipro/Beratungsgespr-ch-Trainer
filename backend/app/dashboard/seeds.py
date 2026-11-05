@@ -53,7 +53,7 @@ SEED_COMPANY = {
 }
 
 
-def _fact(fact_id, stage, label, value, keywords, status="known", required=True):
+def _fact(fact_id, stage, label, value, keywords, status="known", required=True, material=True):
     return {
         "id": fact_id,
         "stage": stage,
@@ -62,13 +62,14 @@ def _fact(fact_id, stage, label, value, keywords, status="known", required=True)
         "status": status,
         "keywords": keywords,
         "required": required,
+        "material": material,
     }
 
 
 SEED_SCENARIOS = [
     {
         "id": "oven_uncertain",
-        "revision": 2,
+        "revision": 3,
         "company_id": "training_company",
         "title": "Печь снова сломалась",
         "customer_name": "Алексей Бергер",
@@ -97,6 +98,15 @@ SEED_SCENARIOS = [
             _fact("authority", "capabilities", "Кто принимает решение",
                   "Решение принимаю самостоятельно.",
                   ["кто", "самостоятельно", "согласов", "решение принима", "принимает решение", "entscheidet", "allein"]),
+            _fact("symptoms", "needs", "Наблюдаемые симптомы: что произошло с печью",
+                  "Печь перестала включаться. После этого я ей не пользуюсь.",
+                  ["что произошло", "что случилось", "что именно с ней", "симптом", "включа"], required=False, material=False),
+            _fact("identification", "needs", "Модель, заводской номер и мощность оборудования",
+                  "Точную модель, заводской номер и мощность я сейчас не помню. Эти данные нужно сверить с табличкой на печи.",
+                  ["модель", "номер", "мощност", "табличк"], "does_not_know", required=False, material=False),
+            _fact("cause", "needs", "Известна ли клиенту причина текущей неисправности",
+                  "Причину неисправности я не знаю. Специалист её ещё не определил.",
+                  ["причину поломки", "причина поломки", "причин неисправ", "диагноз", "сломалось"], "does_not_know", required=False, material=False),
         ],
         "allowed_outcomes": ["diagnosis"],
         "question_hints": [
@@ -150,7 +160,7 @@ SEED_SCENARIOS = [
     },
     {
         "id": "oven_no_fit",
-        "revision": 1,
+        "revision": 2,
         "company_id": "training_company",
         "title": "Поиск нового сервисного мастера",
         "customer_name": "Денис Браун",
@@ -173,6 +183,15 @@ SEED_SCENARIOS = [
             _fact("timing", "capabilities", "Допустимый срок и принятие решения",
                   "Могу ждать до двух недель и самостоятельно согласовать обращение к специалисту.",
                   ["срок", "когда", "врем", "ждать", "кто", "решение", "termin", "wann"]),
+            _fact("symptoms", "needs", "Наблюдаемые симптомы: что произошло с печью",
+                  "Печь перестала включаться. После этого я ей не пользуюсь.",
+                  ["что произошло", "что случилось", "что именно с ней", "симптом", "включа"], required=False, material=False),
+            _fact("identification", "needs", "Модель, заводской номер и мощность оборудования",
+                  "Точную модель, заводской номер и мощность я сейчас не помню. Эти данные нужно сверить с табличкой на печи.",
+                  ["модель", "номер", "мощност", "табличк"], "does_not_know", required=False, material=False),
+            _fact("cause", "needs", "Известна ли клиенту причина текущей неисправности",
+                  "Причину неисправности я не знаю. Специалист её ещё не определил.",
+                  ["причину поломки", "причина поломки", "причин неисправ", "диагноз", "сломалось"], "does_not_know", required=False, material=False),
         ],
         "allowed_outcomes": ["no_fit"],
         "question_hints": [
@@ -184,6 +203,14 @@ SEED_SCENARIOS = [
         ],
     },
 ]
+
+
+# Exact fingerprints of the shipped A02 built-ins. Upgrade only untouched cards;
+# mentor edits, deleted cards and snapshots of existing sessions are preserved.
+PREVIOUS_BUILTIN_SHA256 = {
+    "oven_uncertain": "b19bb01d2a97feb90550778225b719364176fdf31b4a73bb4aec6d5f6632471f",
+    "oven_no_fit": "6fe2668277eb1782adbdebb49c143498432258dd8deba4c3cf5da4b283fa0dbf",
+}
 
 
 def _summary(scenario, phase):

@@ -2,7 +2,8 @@
 
 DemoProvider is a deliberately narrow, transparent engineering mode. Its exact
 fact-summary matching must not be described as semantic or pedagogical proof.
-OpenAIProvider uses a single Responses request, without retries or demo fallback.
+OpenAIProvider separates interpretation, natural customer wording and independent
+reply review. None of these calls retry or silently fall back to engineering mode.
 """
 
 from __future__ import annotations
@@ -14,6 +15,11 @@ from copy import deepcopy
 from typing import Any
 
 import httpx
+
+from .customer_actor import (
+    ACTOR_SYSTEM, VERIFIER_SYSTEM, ActorContractError, actor_context, actor_schema,
+    review_input, validate_actor, validate_review, verifier_schema,
+)
 
 
 class ProviderError(RuntimeError):
@@ -209,8 +215,20 @@ and makes an offer, use proposal; the future answer cannot justify this offer.
 
 Use fact_ids ONLY for a genuine question whose meaning asks about those supplied
 question_topics. Read visible conversation for references such as 'why'/'that'.
-Do not classify assertions or guesses as questions. A broad greeting or 'tell me
-everything' must not open all facts. Topic labels are not the hidden answers.
+Questions need not contain a question mark or grammatical interrogative: polite
+requests ('скажите, пожалуйста, номер и мощность'), informal wording, typos and
+elliptical follow-ups ('Причину поломки') can ask for information. Resolve them
+using the preceding exchange. 'Что вы имеете в виду?' after a customer's opening
+usually asks to explain that stated need, not to repeat the same clarification.
+Select the relevant topic or topics, including each part of a compound question.
+Do not map an equipment fault/cause question to the reason for changing companies.
+Do not classify assertions or unsupported guesses as discovery questions. A broad
+greeting or 'tell me everything' must not open all facts; select only the relevant
+central need for a broad explanation of the opening. If the requested detail has
+no corresponding question topic, use question with fact_ids=[] rather than invent
+a topic or misclassify the learner's valid question as an error. Topic labels are
+not hidden answers. Never infer a diagnosis or customer ignorance from an absent
+topic; the customer reply layer can report an authoring gap.
 
 For summary, compare EVERY substantive claim with disclosed_facts and visible
 customer replies. Do not accept information that is not yet disclosed. A missing
@@ -286,7 +304,12 @@ def _interpretation_input(session: dict, text: str, kind: str) -> dict:
 
 
 class OpenAIProvider:
-    """Server-only Responses integration; no external request until interpret()."""
+    """Server-only Responses integration with separately reviewed customer replies.
+
+    request_count counts initiated HTTP calls, including failed attempts. It is
+    not a billing measurement. A normal turn is interpret() plus respond() (3
+    calls); the engine/server remains responsible for persistence and turn limits.
+    """
 
     def __init__(self, api_key: str, model: str, timeout: float = 30, *, client: httpx.AsyncClient | None = None):
         if not api_key or not model:
@@ -295,24 +318,50 @@ class OpenAIProvider:
         self.model = model
         self.timeout = min(max(float(timeout), 1), 60)
         self._client = client
+        self.request_count = 0
 
     async def interpret(self, session: dict, text: str, kind: str) -> dict:
-        payload_text = json.dumps(_interpretation_input(session, text, kind), ensure_ascii=False)
+        return await self._request_json(
+            _SYSTEM_INSTRUCTIONS, _interpretation_input(session, text, kind),
+            _decision_schema(session), "consultation_decision", max_output_tokens=2400,
+        )
+
+    async def respond(self, context: dict) -> dict:
+        """Return a reply only after a separate review, without mutating context."""
+        try:
+            clean = actor_context(context)
+            candidate = await self._request_json(
+                ACTOR_SYSTEM, clean, actor_schema(clean), "customer_reply", max_output_tokens=1400,
+            )
+            reply = validate_actor(candidate, clean)
+            review = await self._request_json(
+                VERIFIER_SYSTEM, review_input(clean, reply), verifier_schema(clean),
+                "customer_reply_review", max_output_tokens=1800,
+            )
+            verified_ids = validate_review(review, clean, reply)
+        except ActorContractError as error:
+            raise ProviderError(error.code, error.message) from None
+        return {"reply": reply, "verified_fact_ids": verified_ids}
+
+    async def _request_json(self, instructions: str, data: dict, schema: dict, name: str,
+                            max_output_tokens: int = 2400) -> dict:
+        payload_text = json.dumps(data, ensure_ascii=False)
         if len(payload_text) > 65000:
             raise ProviderError("ai_context_limit", "Объём диалога превышает предел этой версии. Завершите попытку и начните новую.")
         payload = {
             "model": self.model,
             "store": False,
-            "max_output_tokens": 2400,
+            "max_output_tokens": max_output_tokens,
             "input": [
-                {"role": "system", "content": _SYSTEM_INSTRUCTIONS},
+                {"role": "system", "content": instructions},
                 {"role": "user", "content": payload_text},
             ],
-            "text": {"format": {"type": "json_schema", "name": "consultation_decision",
-                                 "strict": True, "schema": _decision_schema(session)}},
+            "text": {"format": {"type": "json_schema", "name": name,
+                                 "strict": True, "schema": schema}},
         }
         try:
             if self._client is not None:
+                self.request_count += 1
                 response = await self._client.post(
                     "https://api.openai.com/v1/responses", json=payload,
                     headers={"Authorization": "Bearer " + self._api_key}, timeout=self.timeout,
@@ -320,6 +369,7 @@ class OpenAIProvider:
                 )
             else:
                 async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=False, trust_env=False) as client:
+                    self.request_count += 1
                     response = await client.post(
                         "https://api.openai.com/v1/responses", json=payload,
                         headers={"Authorization": "Bearer " + self._api_key},
@@ -358,7 +408,7 @@ class OpenAIProvider:
                 if not isinstance(block, dict):
                     raise ProviderError("ai_invalid_response", "Структура ответа OpenAI не прошла проверку.")
                 if block.get("type") == "refusal":
-                    raise ProviderError("ai_refusal", "OpenAI не выполнил интерпретацию этой реплики. Ход не засчитан.")
+                    raise ProviderError("ai_refusal", "OpenAI не выполнил обработку этой реплики. Ход не засчитан.")
                 if block.get("type") == "output_text" and isinstance(block.get("text"), str):
                     chunks.append(block["text"])
         try:

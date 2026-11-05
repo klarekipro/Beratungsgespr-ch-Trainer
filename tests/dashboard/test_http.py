@@ -336,7 +336,7 @@ class DashboardHTTPTests(unittest.TestCase):
                 if extension == "txt":
                     self.assertIn(utterance, response.text)
                     self.assertIn(finished["customer_name"], response.text)
-                    self.assertIn("Сценарный режим" if finished["mode"] == "demo"
+                    self.assertIn("Техническая проверка" if finished["mode"] == "demo"
                                   else "OpenAI", response.text)
                 elif extension == "json":
                     values = set(string_values(response.json()))

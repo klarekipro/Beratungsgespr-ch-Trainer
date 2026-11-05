@@ -20,11 +20,11 @@ from .engine import build_report, process_turn
 from .exports import export_pdf, export_text
 from .models import Company, MessageInput, ReviewInput, Scenario, SessionStart
 from .providers import DemoProvider, OpenAIProvider, ProviderError
-from .seeds import SEED_COMPANY, SEED_SCENARIOS
+from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.1.0-dashboard"
+VERSION = "0.2.0-customer-dialogue"
 
 
 def now():
@@ -55,7 +55,10 @@ def summary(session):
 def learner_view(session):
     result = summary(session)
     result.update({"version": session["version"], "messages": session["messages"],
-                   "company": session["company_snapshot"], "review_note": session.get("review_note", "")})
+                   "company": session["company_snapshot"], "review_note": session.get("review_note", ""),
+                   "api_requests": session.get("live_requests"),
+                   "api_count_complete": session.get("api_count_complete", False),
+                   "natural_customer_turns": sum(m.get("source") == "openai_actor_verified" for m in session["messages"])})
     if session["status"] == "finished":
         result["report"] = session.get("report") or build_report(session)
     return result
@@ -69,6 +72,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     seed_company = Company.model_validate(SEED_COMPANY).model_dump()
     seed_scenarios = [Scenario.model_validate(s).model_dump() for s in SEED_SCENARIOS]
     store.seed(seed_company, seed_scenarios)
+    store.upgrade_builtin_scenarios(PREVIOUS_BUILTIN_SHA256, seed_scenarios)
     app.state.store = store
     app.state.locks = {}
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
@@ -149,7 +153,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     @app.get("/api/status")
     async def status():
         return {"version": VERSION, "storage": "sqlite", "access_mode": "local_workspaces",
-                "ai": {"configured": live_configured, "live_enabled": live_configured, "model": model},
+                "ai": {"configured": live_configured, "live_enabled": live_configured, "model": model,
+                       "customer_mode": "generated_and_checked", "max_requests_per_turn": 3},
                 "limits": {"max_turns": max_turns, "max_live_attempts": max_live_attempts}, "roles": ["mentor", "learner"]}
 
     @app.get("/api/company")
@@ -219,7 +224,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                    "version": 1, "state": {"phase": "needs", "discovered": [], "needs_confirmed": False,
                    "capabilities_confirmed": False, "events": [], "outcome": None},
                    "messages": [{"role": "customer", "text": scenario["opening"], "at": ts, "turn": 0}],
-                   "receipts": {}, "live_attempts": 0}
+                   "receipts": {}, "live_attempts": 0, "live_requests": 0, "api_count_complete": True, "system_issues": []}
         store.save_session(session)
         return {"session": learner_view(session)}
 
@@ -248,17 +253,42 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 if not live_configured:
                     fail("AI_NOT_CONFIGURED", "Подключение OpenAI отсутствует. Текущая беседа не переключается в сценарный режим.", 409)
                 if session.get("live_attempts", 0) >= max_live_attempts:
-                    fail("AI_ATTEMPT_LIMIT", "Достигнут предел AI-запросов этой беседы. Завершите её и сохраните разбор.", 429)
+                    fail("AI_ATTEMPT_LIMIT", "Достигнут предел AI-попыток этой беседы. Завершите её и сохраните разбор.", 429)
                 session["live_attempts"] = session.get("live_attempts", 0) + 1
                 store.save_session(session, expected_version=session["version"])
+            current_provider = None
+            requests_before = 0
             try:
-                updated = await process_turn(session, value.text, value.kind, provider(session["mode"]), turn)
+                current_provider = provider(session["mode"])
+                requests_before = getattr(current_provider, "request_count", 0)
+                if type(requests_before) is not int:
+                    requests_before = 0
+                updated = await process_turn(session, value.text, value.kind, current_provider, turn)
             except ProviderError as exc:
                 # Fixed safe message; no provider payload / user content / secrets.
                 code = getattr(exc, "code", "AI_UNAVAILABLE")
+                if code == "scenario_missing_context":
+                    issue = {"type": "scenario_missing_context", "turn": turn,
+                             "detail": "В карточке не хватило сведений для ответа. Ход не засчитан; это ограничение сценария, не ошибка ученика."}
+                    session.setdefault("system_issues", []).append(issue)
+                    session["system_issues"] = session["system_issues"][-30:]
+                    fail(code, "В карточке нет данных для ответа на этот вопрос. Это ограничение сценария, а не ошибка ученика. Наставнику нужно дополнить карточку.", 422)
                 fail(code, "Не удалось получить проверенный ответ. Реплика не засчитана. Можно повторить отправку; сценарный режим не подставлялся.", 502)
             except (ValueError, TypeError, KeyError, RuntimeError):
                 fail("INVALID_AI_RESPONSE", "Ответ системы не прошёл проверку. Ход не засчитан; повторите отправку.", 502)
+            finally:
+                if session["mode"] == "openai":
+                    count = getattr(current_provider, "request_count", 0)
+                    if type(count) is int:
+                        count -= requests_before
+                    if type(count) is not int or not 0 <= count <= 3:
+                        count = 0
+                    session.setdefault("api_count_complete", False)
+                    session["live_requests"] = session.get("live_requests", 0) + count
+                    store.save_session(session, expected_version=session["version"])
+            updated["live_requests"] = session.get("live_requests", 0)
+            updated["api_count_complete"] = session.get("api_count_complete", False)
+            updated["system_issues"] = copy.deepcopy(session.get("system_issues", []))
             updated["version"] = session["version"] + 1
             updated["updated_at"] = now()
             updated.setdefault("receipts", {})[value.request_id] = {"fingerprint": fingerprint, "version": updated["version"]}

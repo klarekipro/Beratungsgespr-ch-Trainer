@@ -1,7 +1,7 @@
-"""Evidence-gated consultation state and controlled, authored customer replies.
+"""Evidence-gated state with authored demo replies and a grounded live customer.
 
 Deterministic transitions do not prove the semantic correctness of an LLM decision.
-The provider cannot write state or generate customer facts. Every session uses its
+The provider cannot write state. Live wording is checked against authored facts. Every session uses its
 immutable company/scenario snapshots, independently of subsequent mentor edits.
 """
 
@@ -44,6 +44,8 @@ def _scenario_facts(session: dict) -> dict:
                 or fact.get("stage") not in _STAGES or not isinstance(fact.get("status"), str)
                 or fact["status"] not in _STATUSES
                 or type(fact.get("required")) is not bool
+                or type(fact.get("material", True)) is not bool
+                or (fact.get("required") and not fact.get("material", True))
                 or not isinstance(fact.get("value"), str) or not fact["value"].strip()
                 or not isinstance(fact.get("label"), str) or not fact["label"].strip()
                 or not isinstance(fact.get("keywords"), list)
@@ -146,7 +148,7 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
     """
     if session.get("status") != "active" or session["state"]["phase"] == "completed":
         raise ValueError("consultation_not_active")
-    if not isinstance(text, str) or not text.strip() or len(text) > 4000:
+    if not isinstance(text, str) or not text.strip() or len(text) > 6000:
         raise ValueError("invalid_message")
     if kind not in {"message", "summary", "proposal"} or type(turn) is not int or turn < 1:
         raise ValueError("invalid_turn")
@@ -160,12 +162,16 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
     before_needs = bool(state["needs_confirmed"])
     before_capabilities = bool(state["capabilities_confirmed"])
     act = decision["act"]
+    response_intent = "clarify"
+    must_address = []
 
     if decision["uncertain"]:
+        response_intent = "uncertain"
         reply = replies["uncertain"]
         _event(state, "interpretation_uncertain", turn, "Смысл реплики неоднозначен. Этап не изменён; отрицательная оценка не начисляется.")
     elif act == "proposal":
         if not (before_needs and before_capabilities):
+            response_intent = "premature_offer"
             reply = replies["early"]
             _event(state, "early_proposal", turn,
                    "Предложение сделано до подтверждения потребностей и возможностей. "
@@ -177,29 +183,35 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
                 state["outcome"] = outcome
                 state["phase"] = "completed"
                 reply = replies["no_fit_accepted"] if outcome == "no_fit" else replies["offer_accepted"]
+                response_intent = "no_fit_accepted" if outcome == "no_fit" else "proposal_accepted"
                 title = "честное объяснение невозможности помочь" if outcome == "no_fit" else next(
                     service["title"] for service in session["company_snapshot"]["services"] if service["id"] == outcome)
                 _event(state, "grounded_outcome", turn, "После обоих этапов обоснован итог: " + title + ".")
             else:
+                response_intent = "proposal_not_grounded"
                 reply = replies["offer_not_fit"]
                 _event(state, "proposal_not_grounded", turn,
                        "Первые этапы подтверждены, но пригодность действия или его условия не подтверждены. Сделка не засчитана.")
     elif act == "summary":
         phase = state["phase"]
         if phase not in _STAGES:
+            response_intent = "summary_already_confirmed"
             reply = replies["summary_done"]
         else:
             required = {fact_id for fact_id, fact in facts.items()
                         if fact["stage"] == phase and fact["required"] and fact["status"] != "not_applicable"}
             discovered = set(state["discovered"])
             discussed = {fact_id for fact_id in discovered
-                         if facts[fact_id]["stage"] == phase and facts[fact_id]["status"] != "not_applicable"}
+                         if facts[fact_id]["stage"] == phase and facts[fact_id].get("material", True)
+                         and facts[fact_id]["status"] != "not_applicable"}
             evidence = {item["fact_id"] for item in decision["summary_evidence"]}
             if not required.issubset(discovered):
+                response_intent = "summary_missing"
                 reply = replies["missing"]
                 _event(state, "summary_before_discovery", turn,
                        "Резюме предложено до выяснения существенных сведений текущего этапа.")
             elif not decision["summary_ok"]:
+                response_intent = "correct_summary"
                 # Repeat only facts already disclosed. The correction alone never
                 # closes a phase; the learner must submit an accurate summary.
                 correction = " ".join(fact["value"] for fact in facts.values()
@@ -208,38 +220,44 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
                 _event(state, "summary_not_confirmed", turn,
                        "Резюме не подтверждено. Клиент уточнил уже сообщённые сведения; необходимо новое корректное резюме.")
             elif not discussed.issubset(evidence):
+                response_intent = "summary_incomplete"
                 reply = replies["summary_incomplete"]
                 _event(state, "summary_incomplete", turn,
                        "В резюме не подтверждены все существенные обсуждённые сведения текущего этапа.")
             elif phase == "needs":
+                response_intent = "confirm_needs_summary"
                 state["needs_confirmed"] = True
                 state["capabilities_confirmed"] = False
                 state["phase"] = "capabilities"
                 reply = replies["needs_confirmed"]
                 _event(state, "needs_confirmed", turn, "Потребности выяснены, резюмированы учеником и подтверждены клиентом.")
             elif before_needs:
+                response_intent = "confirm_capabilities_summary"
                 state["capabilities_confirmed"] = True
                 state["phase"] = "proposal"
                 reply = replies["capabilities_confirmed"]
                 _event(state, "capabilities_confirmed", turn,
                        "Возможности и ограничения резюмированы и подтверждены, включая явно установленные неизвестности.")
             else:
+                response_intent = "summary_missing"
                 reply = replies["missing"]
                 _event(state, "summary_before_discovery", turn, "Сначала необходимо подтвердить потребности.")
     elif act == "question" and decision["fact_ids"]:
+        response_intent = "answer_question"
         ids = decision["fact_ids"]
+        must_address = list(ids)
         new_ids = [fact_id for fact_id in ids if fact_id not in state["discovered"]]
         if not before_needs and any(facts[fact_id]["stage"] == "capabilities" for fact_id in new_ids):
             _event(state, "capabilities_before_needs", turn,
                    "Возможности обсуждались до подтверждения потребностей. Полезные сведения сохранены; порядок закрытия этапов не изменён.")
-        if before_needs and any(facts[fact_id]["stage"] == "needs" for fact_id in new_ids):
+        if before_needs and any(facts[fact_id]["stage"] == "needs" and facts[fact_id].get("material", True) for fact_id in new_ids):
             state["needs_confirmed"] = False
             state["capabilities_confirmed"] = False
             state["phase"] = "needs"
             state["outcome"] = None
             _event(state, "confirmation_reopened", turn,
                    "Появились новые сведения о потребностях. Прежнее резюме нужно актуализировать.")
-        elif before_capabilities and any(facts[fact_id]["stage"] == "capabilities" for fact_id in new_ids):
+        elif before_capabilities and any(facts[fact_id]["stage"] == "capabilities" and facts[fact_id].get("material", True) for fact_id in new_ids):
             state["capabilities_confirmed"] = False
             state["phase"] = "capabilities"
             state["outcome"] = None
@@ -252,12 +270,44 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
     else:
         reply = replies["clarify"]
         _event(state, "clarification_requested", turn,
-               "Реплика не дала проверяемого основания для новых сведений. Клиент попросил уточнить вопрос.")
+               "Распознаватель не сопоставил реплику со сведениями карточки. Это ограничение распознавания, не доказанная ошибка ученика.")
+
+    response_source = "authored_demo"
+    if session["mode"] == "openai":
+        responder = getattr(provider, "respond", None)
+        if not callable(responder):
+            raise ProviderError("ai_actor_unavailable", "Разговорная роль клиента недоступна. Технический ответ не подставлялся.")
+        # No hidden answers, outcome key, phase, counters or evaluator prose go
+        # to the customer. Newly disclosed facts remain provisional until the
+        # independently checked answer actually expresses every selected fact.
+        allowed_ids = set(state["discovered"])
+        context = {
+            "language": session["scenario_snapshot"].get("language", "ru"),
+            "customer_name": session["scenario_snapshot"]["customer_name"],
+            "opening": session["scenario_snapshot"]["opening"],
+            "learner_text": text,
+            "visible_history": [{"role": m["role"], "text": m["text"]} for m in session["messages"][-20:]],
+            "authorized_facts": [{key: f[key] for key in ("id", "label", "value", "status")}
+                                 for f in facts.values() if f["id"] in allowed_ids],
+            "must_address_fact_ids": must_address,
+            "response_intent": response_intent,
+            "company": {key: deepcopy(session["company_snapshot"][key]) for key in ("name", "services", "limitations")},
+        }
+        answer = await responder(deepcopy(context))
+        if (not isinstance(answer, dict) or set(answer) != {"reply", "verified_fact_ids"}
+                or not isinstance(answer["reply"], str) or not answer["reply"].strip()
+                or len(answer["reply"]) > 1800
+                or not isinstance(answer["verified_fact_ids"], list)
+                or any(not isinstance(i, str) or i not in allowed_ids for i in answer["verified_fact_ids"])
+                or not set(must_address).issubset(answer["verified_fact_ids"])):
+            raise ProviderError("ai_actor_invalid", "Ответ клиента не прошёл проверку. Ход не засчитан.")
+        reply = answer["reply"].strip()
+        response_source = "openai_actor_verified"
 
     now = _utc_now()
     updated["messages"].extend([
         {"role": "learner", "text": text, "at": now, "turn": turn},
-        {"role": "customer", "text": reply, "at": now, "turn": turn},
+        {"role": "customer", "text": reply, "at": now, "turn": turn, "source": response_source},
     ])
     updated["updated_at"] = now
     return updated
@@ -278,9 +328,22 @@ def build_report(session: dict) -> dict:
         "Учебное завершение не означает реальную сделку, согласие на оплату или заказ услуги.",
     ]
     if session["mode"] == "demo":
-        limitations.insert(0, "Сценарный режим: ограниченное сопоставление формулировок без вызова AI. Это техническая проверка интерфейса и этапов, не оценка свободной речи.")
+        summary = "Техническая проверка без AI. По этой попытке нельзя оценивать навык свободной консультации. " + summary
+        limitations.insert(0, "Технический сценарный режим: ограниченное сопоставление формулировок без вызова AI. Нераспознанный вопрос не является доказанной ошибкой ученика.")
     else:
-        limitations.insert(0, "OpenAI использовался для смысловой интерпретации. Она может ошибаться; фактическая надёжность нового ядра и педагогический эффект ещё не доказаны.")
+        natural_turns = sum(m.get("source") == "openai_actor_verified" for m in session["messages"])
+        legacy_turns = sum(m["role"] == "customer" and m.get("turn", 0) > 0 and not m.get("source") for m in session["messages"])
+        if natural_turns:
+            limitations.insert(0, f"Разговорных ответов OpenAI с отдельной смысловой проверкой: {natural_turns}. Проверка моделью тоже может ошибаться; надёжность и учебный эффект требуют живой оценки.")
+        else:
+            limitations.insert(0, "В этой попытке нет сохранённых ответов новой разговорной роли OpenAI. Наличие ключа само по себе не подтверждает использование модели.")
+        if legacy_turns:
+            limitations.append(f"Ответов прежней версии с готовыми фразами: {legacy_turns}. Они не переименованы в разговорные AI-ответы.")
+        if "live_requests" in session:
+            label = "Попыток обращения к API" if session.get("api_count_complete") else "Учтённых попыток API с обновления (ранние обращения неизвестны)"
+            limitations.append(f"{label}: {session['live_requests']}; сюда входят и обращения, завершившиеся ошибкой. Это не расчёт стоимости.")
+    if session.get("system_issues"):
+        limitations.append("В беседе были ограничения сценария или ошибки системы. Они перечислены отдельно и не считаются ошибками ученика.")
     if any(event["type"] == "interpretation_uncertain" for event in state["events"]):
         limitations.append("В разговоре были неопределённые интерпретации. Эти ходы не продвигали этапы и не трактуются как доказанная ошибка ученика.")
     discovered = set(state["discovered"])
@@ -292,7 +355,8 @@ def build_report(session: dict) -> dict:
             {"id": "capabilities", "label": "Возможности и ограничения", "confirmed": bool(state["capabilities_confirmed"])},
             {"id": "proposal", "label": "Обоснованное итоговое предложение", "confirmed": bool(complete)},
         ],
-        "findings": [deepcopy(event) for event in state["events"] if event["type"] != "fact_discovered"],
+        "findings": ([deepcopy(event) for event in state["events"] if event["type"] != "fact_discovered"]
+                     + [deepcopy(issue) for issue in session.get("system_issues", [])]),
         "facts": [{"label": fact["label"], "stage": fact["stage"], "status": fact["status"],
                    "discovered": fact["id"] in discovered, "value": fact["value"]}
                   for fact in session["scenario_snapshot"]["facts"]],

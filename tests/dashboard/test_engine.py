@@ -93,7 +93,8 @@ class ConsultationEngineTests(unittest.IsolatedAsyncioTestCase):
         questions = [turn for turn in DEMO_WALKTHROUGH[0]["turns"] if turn["kind"] == "message"]
         for number, turn in enumerate(questions, 1):
             session = await process_turn(session, turn["text"], turn["kind"], DemoProvider(), number)
-        self.assertEqual(len(session["state"]["discovered"]), len(SEED_SCENARIOS[0]["facts"]))
+        required = {f["id"] for f in SEED_SCENARIOS[0]["facts"] if f["required"]}
+        self.assertTrue(required.issubset(session["state"]["discovered"]))
         self.assertFalse(session["state"]["needs_confirmed"])
         self.assertFalse(session["state"]["capabilities_confirmed"])
         session = await process_turn(session, DEMO_WALKTHROUGH[0]["turns"][-1]["text"], "proposal", DemoProvider(), len(questions) + 1)
@@ -261,7 +262,7 @@ class ResponsesTransportTests(unittest.IsolatedAsyncioTestCase):
         async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
             provider = OpenAIProvider("test-not-a-real-secret", "gpt-4.1-mini-2025-04-14", client=client)
             original = new_session(mode="openai")
-            result = await process_turn(original, "Какой у вас бюджет?", "message", provider, 1)
+            result = await provider.interpret(original, "Какой у вас бюджет?", "message")
         self.assertEqual(len(requests), 1)
         request = requests[0]
         payload = json.loads(request.content)
@@ -274,7 +275,7 @@ class ResponsesTransportTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("allowed_outcomes", payload["input"][1]["content"])
         for fact in original["scenario_snapshot"]["facts"]:
             self.assertNotIn(fact["value"], request.content.decode())
-        self.assertIn("Бюджет пока не определён", result["messages"][-1]["text"])
+        self.assertEqual(result["fact_ids"], ["budget"])
         self.assertNotIn("test-not-a-real-secret", request.content.decode())
 
     async def test_rate_limit_does_not_retry_or_leak_upstream_body(self):

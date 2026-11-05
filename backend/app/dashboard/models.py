@@ -50,11 +50,14 @@ class Fact(InputModel):
     status: Literal["known", "undecided", "does_not_know", "refuses_to_disclose", "not_applicable"]
     keywords: list[Annotated[str, Field(min_length=1, max_length=100)]] = Field(default_factory=list, max_length=24)
     required: bool = True
+    material: bool = True
 
     @model_validator(mode="after")
     def applicable_requirement(self):
         if self.status == "not_applicable" and self.required:
             raise ValueError("Неприменимый вопрос не может быть обязательным")
+        if self.required and not self.material:
+            raise ValueError("Обязательное сведение должно влиять на итоговое решение")
         return self
 
 
@@ -86,7 +89,7 @@ class Scenario(InputModel):
 
 class SessionStart(InputModel):
     scenario_id: Identifier
-    mode: Literal["demo", "openai"] = "demo"
+    mode: Literal["demo", "openai"]
 
 
 class MessageInput(InputModel):

@@ -20,7 +20,22 @@ def local_date(value):
 
 
 def mode_label(session):
-    return "OpenAI · смысловое распознавание, утверждённые ответы клиента" if session["mode"] == "openai" else "Сценарный режим · без AI-вызовов"
+    if session["mode"] == "demo":
+        return "Техническая проверка · без AI-вызовов"
+    if any(m.get("source") == "openai_actor_verified" for m in session["messages"]):
+        return "OpenAI · разговорная роль клиента и отдельная проверка ответа"
+    if any(m["role"] == "customer" and m.get("turn", 0) > 0 for m in session["messages"]):
+        return "OpenAI · прежняя версия с готовыми ответами клиента"
+    return "OpenAI выбран · сохранённых ответов модели пока нет"
+
+
+def api_usage_label(session):
+    if session["mode"] == "demo":
+        return "Обращений к API: 0. Результат технической проверки не оценивает свободную речь."
+    count = session.get("live_requests")
+    label = "Попыток обращения к API" if session.get("api_count_complete") else "Учтённых попыток API с обновления; ранние обращения неизвестны"
+    return (f"{label}: {count}. Включает ошибки; это не расчёт стоимости."
+            if count is not None else "Точное число обращений к API в старой версии не записывалось.")
 
 
 def export_text(session):
@@ -30,7 +45,7 @@ def export_text(session):
     lines = ["KLARE KI | РАЗБОР КОНСУЛЬТАЦИИ", "", scenario["title"],
              f"Клиент: {scenario['customer_name']}", f"Компания: {company['name']}",
              f"Начало: {local_date(session['created_at'])}", f"Обновлено: {local_date(session['updated_at'])}",
-             f"Режим: {mode_label(session)}", f"Сценарий: {scenario['id']} · версия {scenario['revision']}",
+             f"Режим: {mode_label(session)}", api_usage_label(session), f"Сценарий: {scenario['id']} · версия {scenario['revision']}",
              f"Компания: версия {company['revision']}", f"Беседа: {session['id']}", "", "РЕЗУЛЬТАТ", report.get("summary", "")]
     for stage in report.get("stages", []):
         lines.append(f"- {stage['label']}: {'подтверждено' if stage['confirmed'] else 'не подтверждено'}")
@@ -99,6 +114,7 @@ def export_pdf(session):
         "meta": ParagraphStyle("meta", fontName="KlareRegular", fontSize=8.5, leading=13, textColor=muted, spaceAfter=6),
         "speaker": ParagraphStyle("speaker", fontName="KlareBold", fontSize=9, leading=14, textColor=ink, spaceBefore=10, spaceAfter=3, keepWithNext=True),
     }
+    styles["fact_meta"] = ParagraphStyle("fact_meta", parent=styles["meta"], keepWithNext=True)
     def p(text, kind="body"):
         return Paragraph(escape(str(text)).replace("\n", "<br/>"), styles[kind])
 
@@ -111,6 +127,7 @@ def export_pdf(session):
     story = [p("Разбор консультации", "title"), p(scenario["title"], "subtitle"),
              p(f"{scenario['customer_name']}  /  {company['name']}", "body"),
              p(f"Начало: {local_date(session['created_at'])}\nРежим: {mode_label(session)}", "meta"),
+             p(api_usage_label(session), "meta"),
              p(f"Сценарий {scenario['id']} · версия {scenario['revision']}. Компания · версия {company['revision']}.\nБеседа {session['id']}", "meta"),
              p("Результат", "heading"), p(report.get("summary", ""))]
     rows = [[p("Этап", "speaker"), p("Подтверждение", "speaker")]]
@@ -140,7 +157,7 @@ def export_pdf(session):
     status_names = {"known": "знает", "undecided": "не определился", "does_not_know": "не знает", "refuses_to_disclose": "не раскрывает", "not_applicable": "не относится к ситуации"}
     for fact in report.get("facts", []):
         found = "выяснено" if fact.get("discovered") else "не выяснено"
-        story.extend([p(fact["label"], "heading"), p(f"{found} · клиент {status_names.get(fact['status'], fact['status'])}", "meta"), p(fact["value"])])
+        story.extend([p(fact["label"], "heading"), p(f"{found} · клиент {status_names.get(fact['status'], fact['status'])}", "fact_meta"), p(fact["value"])])
     story.extend([p("Возможности компании", "heading"), p(company["description"])])
     for service in company["services"]:
         story.extend([p(service["title"], "speaker"), p(service["description"]), p(service["conditions"], "meta")])
@@ -159,7 +176,7 @@ def export_pdf(session):
         canvas.setStrokeColor(colors.HexColor("#DDE5E0"))
         canvas.line(46, A4[1] - 43, A4[0] - 46, A4[1] - 43)
         canvas.setFont("KlareRegular", 7.5)
-        canvas.drawString(46, 30, "Локальный прототип · " + ("Сценарный режим" if session["mode"] == "demo" else "OpenAI"))
+        canvas.drawString(46, 30, "Локальный прототип · " + ("Техническая проверка" if session["mode"] == "demo" else "OpenAI"))
         canvas.drawRightString(A4[0] - 46, 30, str(document.page))
         canvas.restoreState()
 

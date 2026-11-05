@@ -1,5 +1,6 @@
 """Small SQLite repository. The HTTP and engine layers do not depend on SQL syntax."""
 import json
+import hashlib
 import os
 import sqlite3
 from contextlib import contextmanager
@@ -58,6 +59,25 @@ class SQLiteStore:
             for item in scenarios:
                 con.execute("INSERT OR IGNORE INTO documents VALUES ('scenario',?,?)", (item["id"], json.dumps(item, ensure_ascii=False)))
             con.execute("INSERT INTO metadata VALUES ('seed_version','1')")
+
+    def upgrade_builtin_scenarios(self, previous_sha256: dict, scenarios: list[dict]):
+        """Upgrade only byte-equivalent canonical JSON; never overwrite user edits."""
+        updated = []
+        with self.connection() as con:
+            con.execute("BEGIN IMMEDIATE")
+            for scenario in scenarios:
+                previous = previous_sha256.get(scenario["id"])
+                if not previous:
+                    continue
+                row = con.execute("SELECT data FROM documents WHERE kind='scenario' AND id=?", (scenario["id"],)).fetchone()
+                if not row:
+                    continue
+                current = json.loads(row[0])
+                fingerprint = hashlib.sha256(json.dumps(current, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+                if fingerprint == previous and scenario["revision"] > current.get("revision", 0):
+                    con.execute("UPDATE documents SET data=? WHERE kind='scenario' AND id=?", (json.dumps(scenario, ensure_ascii=False), scenario["id"]))
+                    updated.append(scenario["id"])
+        return updated
 
     def _get(self, kind, identifier):
         with self.connection() as con:

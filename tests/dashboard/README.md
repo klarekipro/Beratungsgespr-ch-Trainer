@@ -16,6 +16,12 @@ The full guided examples use the deterministic scenario provider. The HTTP suite
 
 PDF checks in the HTTP suite cover delivery, media type and basic file structure. Visual layout and Cyrillic rendering require the separate rendered-PDF review; a `%PDF` header is not evidence of correct typography.
 
+## Natural-customer regression
+
+`test_customer_actor.py` uses httpx MockTransport with supplied interpreter, actor and verifier outputs. It checks separate evidence review, allowed context, authored uncertainty, scenario gaps, omitted facts, role violations and failures. These fixtures do not demonstrate how a real model will respond.
+
+`test_natural_conversation.py` checks engine/API integration: provisional disclosure, no canned live fallback, explicit mode, API-attempt counters/idempotency, scenario gaps outside the dialogue, technical details versus material constraints, and safe upgrades of untouched built-in cards while preserving edited cards, deletions and historical session snapshots.
+
 ## Boundaries
 
 Passing these checks does not establish OpenAI semantic reliability, unrestricted natural-language understanding, learning improvement or production security. The two workspaces belong to one local owner. `X-Workspace-Role` is a local interface boundary, not multi-user authentication. Real users and PostgreSQL are a later integration step with their own checks.
