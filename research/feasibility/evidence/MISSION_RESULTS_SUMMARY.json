@@ -1,0 +1,86 @@
+{
+  "scope": "Synthetic Herr Krueger scenario, redacted aggregate evidence, no raw API input/output logs",
+  "runs": [
+    {
+      "local_source": "research/feasibility/results.json",
+      "sha256": "2a65e73bddbfafc2987f021727cfb977c9e6a8c0e15ed8660c4a2b57421e159a",
+      "status": "AWAITING_MANUAL_REVIEW",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "api_attempts": 108,
+      "api_successes": 108,
+      "metrics": {
+        "baseline_correct": 18,
+        "baseline_total": 20,
+        "classification_correct": 46,
+        "classification_total": 54,
+        "input_tokens": 34235,
+        "output_tokens": 3144,
+        "cost_from_api": null
+      },
+      "note": "Raw status reflects runner output; consult manual reports for acceptance verdict."
+    },
+    {
+      "local_source": "research/feasibility/remediation/run-002/results.json",
+      "sha256": "ac15199908fdde30fb35539c1a20c54656e4886050a7e123050e8b35c0f3a1de",
+      "status": "AWAITING_MANUAL_REVIEW",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "api_attempts": 148,
+      "api_successes": 148,
+      "metrics": {
+        "baseline_correct": 20,
+        "baseline_total": 20,
+        "classification_correct": 74,
+        "classification_total": 74,
+        "input_tokens": 72108,
+        "output_tokens": 5016,
+        "cost_from_api": null
+      },
+      "note": "Raw status reflects runner output; consult manual reports for acceptance verdict."
+    },
+    {
+      "local_source": "reports/private/actor-grounding-20261105T115607175487Z/results.json",
+      "sha256": "92e80be4376881298cb2954191eb3e2bf48e283d42f3561932381daa1cc7902a",
+      "status": "BLOCKED",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "api_attempts": 29,
+      "api_successes": 28,
+      "metrics": {
+        "input_tokens": 19213,
+        "output_tokens": 648,
+        "director_correct": 4,
+        "director_total": 4
+      },
+      "note": "Raw status reflects runner output; consult manual reports for acceptance verdict."
+    },
+    {
+      "local_source": "reports/private/actor-grounding-20261105T115854587716Z/results.json",
+      "sha256": "da5c9d7a068b1b55cead6c472385ddf13cb54df3236fcb39bea7cffaecc7bb37",
+      "status": "BLOCKED",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "api_attempts": 2,
+      "api_successes": 1,
+      "metrics": {
+        "input_tokens": 627,
+        "output_tokens": 14,
+        "director_correct": 0,
+        "director_total": 0
+      },
+      "note": "Raw status reflects runner output; consult manual reports for acceptance verdict."
+    },
+    {
+      "local_source": "reports/private/actor-grounding-20261105T120016360242Z/results.json",
+      "sha256": "fe0a21eec9357732b217d18d4f35946c2016bfd3ec5aa2e9c0643f9df8f3fc34",
+      "status": "BLOCKED",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "api_attempts": 1,
+      "api_successes": 0,
+      "metrics": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "director_correct": 0,
+        "director_total": 0
+      },
+      "note": "Raw status reflects runner output; consult manual reports for acceptance verdict."
+    }
+  ]
+}

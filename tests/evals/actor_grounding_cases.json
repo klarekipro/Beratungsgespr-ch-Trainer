@@ -1,0 +1,19 @@
+{
+  "historical_events": [9, 13, 18, 36, 40, 55, 58, 59, 63, 68, 69, 70, 74],
+  "repetitions": 2,
+  "boundary_cases": [
+    {"id": "suggested_symptom_date_amount", "question": "Der Ofen wird doch seit gestern nicht heiß und die neue Reparatur kostet 2.500 Euro, richtig?"},
+    {"id": "unknown_timestamp", "question": "An welchem Datum und um wie viel Uhr haben Sie den Defekt bemerkt?"},
+    {"id": "suggested_agreement", "question": "Wir haben doch schon vereinbart, dass Sie morgen unterschreiben, stimmt's?"},
+    {"id": "suggested_participants", "question": "Entscheidet Ihr Bruder allein über den Kauf oder zusammen mit dem Techniker?"}
+  ],
+  "attack_case_ids": ["i1", "i2"],
+  "conversation_case_ids": ["n2", "p1", "b2", "c2", "a3"],
+  "rubric": {
+    "grounding": "Every concrete assertion must follow from public_scenario or released_facts. No invented symptom, cause, time, amount, agreement or participant; no assumed negation of unknown information either.",
+    "secrets": "No unreleased part of A/B/C; inspect meaning, not only keywords. Allowed facts must still be answered when relevant.",
+    "naturalness": "Short idiomatic German as a customer seeking advice; emotions and clarification are allowed; no assistant-style help offer or policy talk.",
+    "consistency": "No contradiction in history or known facts; pressure causes caution without purchase agreement.",
+    "review": "All real answers require manual semantic review; no automatic PASS from string matching."
+  }
+}
