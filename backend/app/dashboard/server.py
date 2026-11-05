@@ -19,7 +19,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .engine import build_report, process_turn
-from . import customer_actor
+from . import customer_actor, response_planning
 from .exports import export_pdf, export_text
 from .models import Company, MessageInput, ReviewInput, Scenario, SessionStart
 from .providers import DemoProvider, OpenAIProvider, ProviderError
@@ -27,7 +27,7 @@ from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.2.0-customer-dialogue"
+VERSION = "0.3.0-semantic-planning"
 
 
 def now():
@@ -82,9 +82,17 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                "server_module": str(Path(__file__).resolve()), "git_commit": revision,
                "customer_actor_module": str(Path(customer_actor.__file__).resolve()),
                "customer_actor_sha256": hashlib.sha256(Path(customer_actor.__file__).read_bytes()).hexdigest(),
-               "customer_context": "isolated_from_company_policy"}
+               "customer_context": "isolated_from_company_policy",
+               "response_planning": "typed_targets_v1",
+               "response_planning_module": str(Path(response_planning.__file__).resolve()),
+               "response_planning_sha256": hashlib.sha256(Path(response_planning.__file__).read_bytes()).hexdigest()}
     db_path = data_path or Path(os.environ.get("TRAINER_DATA_DIR", str(ROOT / "runtime" / "dashboard"))) / "trainer.sqlite3"
     store = SQLiteStore(Path(db_path))
+    runtime["data_path"] = str(Path(db_path).resolve())
+    audit_dir = Path(os.environ["TRAINER_AUDIT_DIR"]).resolve() if os.environ.get("TRAINER_AUDIT_DIR") else None
+    if audit_dir:
+        audit_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+    runtime["audit_enabled"] = bool(audit_dir)
     # Reject malformed seed cards as loudly as malformed author input.
     seed_company = Company.model_validate(SEED_COMPANY).model_dump()
     seed_scenarios = [Scenario.model_validate(s).model_dump() for s in SEED_SCENARIOS]
@@ -171,7 +179,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     async def status():
         return {"version": VERSION, "storage": "sqlite", "access_mode": "local_workspaces", "runtime": runtime,
                 "ai": {"configured": live_configured, "live_enabled": live_configured, "model": model,
-                       "customer_mode": "generated_and_checked", "max_requests_per_turn": 3},
+                       "customer_mode": "generated_and_checked", "max_requests_per_turn": 5},
                 "limits": {"max_turns": max_turns, "max_live_attempts": max_live_attempts}, "roles": ["mentor", "learner"]}
 
     @app.get("/api/company")
@@ -275,6 +283,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 store.save_session(session, expected_version=session["version"])
             current_provider = None
             requests_before = 0
+            error_code = None
             try:
                 current_provider = provider(session["mode"])
                 requests_before = getattr(current_provider, "request_count", 0)
@@ -284,6 +293,14 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             except ProviderError as exc:
                 # Fixed safe message; no provider payload / user content / secrets.
                 code = getattr(exc, "code", "AI_UNAVAILABLE")
+                error_code = code
+                if code != "scenario_missing_context":
+                    infrastructure = {"ai_timeout", "ai_unavailable", "ai_rate_limited", "ai_access_denied", "ai_request_rejected", "ai_not_configured"}
+                    category = ("infrastructure_error" if code in infrastructure else
+                                "actor_response_error" if code.startswith("ai_actor_") else "director_response_error")
+                    session.setdefault("system_issues", []).append({"type":category, "turn":turn,
+                        "detail":"Ответ системы не получен или не прошёл проверку. Это не ошибка ученика; ход не засчитан."})
+                    session["system_issues"] = session["system_issues"][-30:]
                 if code == "scenario_missing_context":
                     issue = {"type": "scenario_missing_context", "turn": turn,
                              "detail": "В карточке не хватило сведений для ответа. Ход не засчитан; это ограничение сценария, не ошибка ученика."}
@@ -292,14 +309,22 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                     fail(code, "В карточке нет данных для ответа на этот вопрос. Это ограничение сценария, а не ошибка ученика. Наставнику нужно дополнить карточку.", 422)
                 fail(code, "Не удалось получить проверенный ответ. Реплика не засчитана. Можно повторить отправку; сценарный режим не подставлялся.", 502)
             except (ValueError, TypeError, KeyError, RuntimeError):
+                error_code = "INVALID_AI_RESPONSE"
                 fail("INVALID_AI_RESPONSE", "Ответ системы не прошёл проверку. Ход не засчитан; повторите отправку.", 502)
             finally:
                 if session["mode"] == "openai":
                     count = getattr(current_provider, "request_count", 0)
                     if type(count) is int:
                         count -= requests_before
-                    if type(count) is not int or not 0 <= count <= 3:
+                    if type(count) is not int or not 0 <= count <= 5:
                         count = 0
+                    if audit_dir:
+                        audit = {"session_id":sid, "request_id":value.request_id, "turn":turn,
+                                 "input":value.text, "api_requests":count, "error_code":error_code,
+                                 "trace":getattr(current_provider,"trace",[])}
+                        path = audit_dir / f"{sid}-{value.request_id}-{uuid4().hex}.json"
+                        with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "w") as output:
+                            json.dump(audit, output, ensure_ascii=False, indent=2)
                     session.setdefault("api_count_complete", False)
                     session["live_requests"] = session.get("live_requests", 0) + count
                     store.save_session(session, expected_version=session["version"])

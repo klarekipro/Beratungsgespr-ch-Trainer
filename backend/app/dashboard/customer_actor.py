@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 from copy import deepcopy
+from .response_planning import validate_plan
 
 
 RESPONSE_INTENTS = {
@@ -233,6 +234,11 @@ def actor_context(value: dict) -> dict:
     # context. Even an accidental extra company field is discarded here.
     result["speaker_role"] = "customer"
     result["addressee_role"] = "company_employee"
+    if "response_plan" in value:
+        try:
+            result["response_plan"] = validate_plan(value["response_plan"], result)
+        except (ValueError, TypeError, KeyError):
+            _invalid_context()
     return result
 
 
@@ -247,7 +253,17 @@ def actor_schema(context: dict) -> dict:
     fields = {"reply": {"type": "string"},
               "used_fact_ids": {"type": "array", "items": _id_schema(context)},
               "scenario_gap": {"type": "boolean"}}
+    if "response_plan" in context:
+        plan = context["response_plan"]
+        fields.update({"speaker_role": {"type":"string", "enum":["customer"]},
+                       "customer_id": {"type":"string", "enum":[plan["customer_id"]]},
+                       "addressed_targets": _target_ids_schema(plan)})
     return {"type": "object", "additionalProperties": False, "properties": fields, "required": list(fields)}
+
+
+def _target_ids_schema(plan):
+    ids = [t["id"] for t in plan["question_targets"]]
+    return {"type":"array", "items":{"type":"string", **({"enum":ids} if ids else {})}}
 
 
 def verifier_schema(context: dict) -> dict:
@@ -255,6 +271,14 @@ def verifier_schema(context: dict) -> dict:
               "consistent_with_intent": {"type": "boolean"},
               "addressed_fact_ids": {"type": "array", "items": _id_schema(context)},
               "unsupported_quotes": {"type": "array", "items": {"type": "string"}}}
+    if "response_plan" in context:
+        fields.update({key:{"type":"boolean"} for key in
+                       ("role_ownership", "question_relevance", "conversation_consistency", "stage_consistency")})
+        fields["addressed_targets"] = _target_ids_schema(context["response_plan"])
+        owner={"type":"string", "enum":["customer","seller","both","not_mentioned"]}
+        fields["observed_ownership"]={"type":"object", "additionalProperties":False,
+            "properties":{key:deepcopy(owner) for key in ("equipment_owner","repair_need","company_services")},
+            "required":["equipment_owner","repair_need","company_services"]}
     return {"type": "object", "additionalProperties": False, "properties": fields, "required": list(fields)}
 
 
@@ -329,6 +353,14 @@ def _quoted_employee_claim(clause: str, match: re.Match) -> bool:
                if attribution.end() <= quote.start())
 
 
+_MISASSIGNED_NEED = re.compile(
+    r"\bвам\s+(?:нужна|нужен|нужно|требуется)\s+(?:помощь|ремонт|мастер)|"
+    r"\bвы\s+(?:ищете|хотите\s+найти)\s+(?:новую\s+)?(?:сервисную\s+(?:компанию|фирму)|мастера)|"
+    r"\bsie\s+(?:suchen\s+(?:eine[nr]?\s+)?(?:werkstatt|techniker)|benötigen\s+(?:hilfe|eine\s+reparatur))\b",
+    re.IGNORECASE,
+)
+
+
 def validate_customer_reply(reply: str, context: dict) -> None:
     """Reject concrete role/price violations independently of model approval.
 
@@ -338,6 +370,15 @@ def validate_customer_reply(reply: str, context: dict) -> None:
     """
     if _TEACHER_LANGUAGE.search(reply) or _REVERSED_APPLIANCE_USE.search(reply):
         raise ActorContractError("ai_actor_role_violation", "Ответ клиента вышел из роли. Он не показан, и ход не засчитан.")
+    for inversion in _MISASSIGNED_NEED.finditer(reply):
+        if not _quoted_employee_claim(reply, inversion):
+            raise ActorContractError("ai_actor_role_violation", "Ответ клиента вышел из роли. Ход не засчитан.")
+    plan=context.get("response_plan")
+    if plan:
+        topics={t["target"] for t in plan["question_targets"]}
+        if ("maintenance_history" in topics and "visit_availability" not in topics
+                and re.search(r"(?:могу|готов|можем)\s+ждать|bis\s+zu\s+.*warten",reply,re.I)):
+            raise ActorContractError("ai_actor_wrong_target", "Ответ не относится к времени осмотра. Ход не засчитан.")
     evidence = context["opening"] + " " + " ".join(f["value"] for f in context["authorized_facts"])
     for clause in re.split(r"(?<=[.!?])\s+|[\n;]", reply):
         for match in _SELLER_VOICE.finditer(clause):
@@ -355,10 +396,21 @@ def validate_customer_reply(reply: str, context: dict) -> None:
 
 
 def validate_actor(value: dict, context: dict) -> str:
-    if (not isinstance(value, dict) or set(value) != {"reply", "used_fact_ids", "scenario_gap"}
+    expected={"reply", "used_fact_ids", "scenario_gap"}
+    if "response_plan" in context:
+        expected |= {"speaker_role", "customer_id", "addressed_targets"}
+    if (not isinstance(value, dict) or set(value) != expected
             or type(value["scenario_gap"]) is not bool or not isinstance(value["reply"], str)
             or not _valid_ids(value["used_fact_ids"], context) or len(value["reply"]) > 1800):
         raise ActorContractError("ai_actor_invalid_response", "Ответ клиента не прошёл проверку структуры. Ход не засчитан.")
+    if "response_plan" in context:
+        plan=context["response_plan"]
+        targets=[t["id"] for t in plan["question_targets"]]
+        if value["speaker_role"]!="customer" or value["customer_id"]!=plan["customer_id"]:
+            raise ActorContractError("ai_actor_role_violation", "Ответ клиента вышел из роли. Ход не засчитан.")
+        if (not isinstance(value["addressed_targets"],list) or any(not isinstance(i,str) for i in value["addressed_targets"]) or set(value["addressed_targets"])!=set(targets)
+                or len(value["addressed_targets"])!=len(targets)):
+            raise ActorContractError("ai_actor_wrong_target", "Ответ не соответствует всем вопросам. Ход не засчитан.")
     if value["scenario_gap"]:
         raise ActorContractError("scenario_missing_context",
                                  "В карточке нет данных для ответа на этот вопрос. Это ограничение сценария, а не ошибка ученика. Наставнику нужно дополнить карточку.")
@@ -379,6 +431,25 @@ def validate_review(value: dict, context: dict, reply: str) -> list[str]:
     # Even a mistaken all-true model review cannot override local checks.
     validate_customer_reply(reply, context)
     fields = {"grounded", "in_role", "consistent_with_intent", "addressed_fact_ids", "unsupported_quotes"}
+    if "response_plan" in context:
+        extra_bools={"role_ownership", "question_relevance", "conversation_consistency", "stage_consistency"}
+        fields |= extra_bools | {"addressed_targets", "observed_ownership"}
+        if not isinstance(value,dict) or any(type(value.get(k)) is not bool for k in extra_bools):
+            raise ActorContractError("ai_actor_invalid_review", "Проверка ответа не завершена. Ход не засчитан.")
+        if not all(value[k] for k in extra_bools):
+            raise ActorContractError("ai_actor_semantic_rejection", "Ответ не прошёл смысловую проверку. Ход не засчитан.")
+        owners=value.get("observed_ownership")
+        if (not isinstance(owners,dict) or set(owners)!={"equipment_owner","repair_need","company_services"}
+                or owners["equipment_owner"] not in {"customer","not_mentioned"}
+                or owners["repair_need"] not in {"customer","not_mentioned"}
+                or owners["company_services"] not in {"seller","not_mentioned"}):
+            raise ActorContractError("ai_actor_role_violation", "Ответ клиента вышел из роли. Ход не засчитан.")
+        target_ids=[t["id"] for t in context["response_plan"]["question_targets"]]
+        if (not isinstance(value.get("addressed_targets"),list)
+                or any(not isinstance(i,str) for i in value["addressed_targets"])
+                or set(value["addressed_targets"])!=set(target_ids)
+                or len(value["addressed_targets"])!=len(target_ids)):
+            raise ActorContractError("ai_actor_wrong_target", "Ответ не соответствует всем вопросам. Ход не засчитан.")
     if (not isinstance(value, dict) or set(value) != fields
             or any(type(value[key]) is not bool for key in ("grounded", "in_role", "consistent_with_intent"))
             or not _valid_ids(value["addressed_fact_ids"], context)

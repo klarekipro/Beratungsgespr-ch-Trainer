@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 
 from .providers import ProviderError
 from .customer_actor import ActorContractError, validate_customer_reply
+from .response_planning import normalize_targets, build_response_plan
 
 
 _STAGES = ("needs", "capabilities")
@@ -63,7 +64,7 @@ def _validate_decision(decision: dict, session: dict, text: str, facts: dict) ->
     def invalid(message="Результат распознавания не прошёл проверку. Ход не засчитан."):
         raise ProviderError("ai_invalid_evidence", message)
 
-    if not isinstance(decision, dict) or set(decision) != _DECISION_KEYS:
+    if not isinstance(decision, dict) or set(decision) not in (_DECISION_KEYS, _DECISION_KEYS | {"question_targets"}):
         invalid()
     if not isinstance(decision["act"], str) or decision["act"] not in {"question", "summary", "proposal", "other"}:
         invalid()
@@ -157,6 +158,13 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
     # Even a custom provider cannot mutate the caller's snapshots or journal.
     decision = await provider.interpret(deepcopy(session), text, kind)
     decision = _validate_decision(decision, session, text, facts)
+    if "question_targets" in decision:
+        try:
+            decision["question_targets"] = normalize_targets(decision, text, facts)
+        except ValueError:
+            raise ProviderError("ai_invalid_evidence", "Не удалось определить тему вопроса. Ход не засчитан.") from None
+        if decision["act"] == "question":
+            decision["fact_ids"] = list(dict.fromkeys(i for t in decision["question_targets"] for i in t["fact_ids"]))
     updated = deepcopy(session)
     state = updated["state"]
     replies = _REPLIES.get(session["scenario_snapshot"].get("language"), _REPLIES["ru"])
@@ -293,6 +301,7 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
             "must_address_fact_ids": must_address,
             "response_intent": response_intent,
         }
+        context["response_plan"] = build_response_plan(session, decision, text, response_intent, context["authorized_facts"])
         answer = await responder(deepcopy(context))
         if (not isinstance(answer, dict) or set(answer) != {"reply", "verified_fact_ids"}
                 or not isinstance(answer["reply"], str) or not answer["reply"].strip()
@@ -308,6 +317,7 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
         except ActorContractError as exc:
             raise ProviderError(exc.code, exc.message) from None
         response_source = "openai_actor_verified"
+        updated.setdefault("response_plans", []).append({"turn": turn, "plan": deepcopy(context["response_plan"])})
 
     now = _utc_now()
     updated["messages"].extend([
