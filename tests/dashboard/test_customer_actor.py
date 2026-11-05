@@ -65,6 +65,24 @@ def interpretation_session():
 
 
 class NaturalCustomerProviderTests(unittest.IsolatedAsyncioTestCase):
+    async def test_customer_cannot_interview_employee_about_using_own_appliance(self):
+        # Regression from the live A04 check: the separate model review had
+        # accepted this role reversal. Reject it before that review can approve it.
+        calls = []
+
+        async def handler(request):
+            calls.append(request)
+            return httpx.Response(200, json=response_body(candidate(
+                "Печь перестала включаться, правильно? Вы давно уже не пользуетесь ею после этого?"
+            )))
+
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            provider = OpenAIProvider("fake", "configured-model", client=client)
+            with self.assertRaises(ProviderError) as caught:
+                await provider.respond(context())
+        self.assertEqual(caught.exception.code, "ai_actor_role_violation")
+        self.assertEqual(len(calls), 1)
+
     async def test_interpret_actor_and_independent_review_use_three_bounded_requests(self):
         decision = {"act": "question", "fact_ids": ["goal"], "summary_ok": False,
                     "summary_evidence": [], "proposal_outcome": None, "proposal_ok": False,
