@@ -11,6 +11,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 
 from .providers import ProviderError
+from .customer_actor import ActorContractError, validate_customer_reply
 
 
 _STAGES = ("needs", "capabilities")
@@ -291,7 +292,6 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
                                  for f in facts.values() if f["id"] in allowed_ids],
             "must_address_fact_ids": must_address,
             "response_intent": response_intent,
-            "company": {key: deepcopy(session["company_snapshot"][key]) for key in ("name", "services", "limitations")},
         }
         answer = await responder(deepcopy(context))
         if (not isinstance(answer, dict) or set(answer) != {"reply", "verified_fact_ids"}
@@ -302,6 +302,11 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
                 or not set(must_address).issubset(answer["verified_fact_ids"])):
             raise ProviderError("ai_actor_invalid", "Ответ клиента не прошёл проверку. Ход не засчитан.")
         reply = answer["reply"].strip()
+        # Mandatory at the state boundary, including custom provider adapters.
+        try:
+            validate_customer_reply(reply, context)
+        except ActorContractError as exc:
+            raise ProviderError(exc.code, exc.message) from None
         response_source = "openai_actor_verified"
 
     now = _utc_now()

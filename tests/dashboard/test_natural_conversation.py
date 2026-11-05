@@ -54,7 +54,7 @@ class NaturalConversationStateTests(unittest.IsolatedAsyncioTestCase):
         context = provider.contexts[0]
         self.assertEqual(context["must_address_fact_ids"], ["goal"])
         self.assertEqual([f["id"] for f in context["authorized_facts"]], ["goal"])
-        for forbidden in ("state", "phase", "allowed_outcomes", "scenario_snapshot", "events"):
+        for forbidden in ("state", "phase", "allowed_outcomes", "scenario_snapshot", "events", "company"):
             self.assertNotIn(forbidden, context)
         encoded = json.dumps(context, ensure_ascii=False)
         for f in original["scenario_snapshot"]["facts"]:
@@ -205,3 +205,53 @@ class NaturalConversationHTTPTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MandatoryRoleStateTests(unittest.IsolatedAsyncioTestCase):
+    async def test_custom_provider_cannot_bypass_role_guard_or_advance_state(self):
+        class WrongRole(ConversationProvider):
+            async def respond(self, context):
+                return {'reply': 'Мы ремонтируем только бытовые электрические печи',
+                        'verified_fact_ids': ['goal']}
+        original = new_session(2, mode='openai')
+        before = copy.deepcopy(original)
+        with self.assertRaises(ProviderError) as error:
+            await process_turn(original, 'Что вам нужно?', 'message', WrongRole(), 1)
+        self.assertEqual(error.exception.code, 'ai_actor_role_violation')
+        self.assertEqual(original, before)
+
+
+class MandatoryRoleHTTPTests(unittest.TestCase):
+    setUp = NaturalConversationHTTPTests.setUp
+    tearDown = NaturalConversationHTTPTests.tearDown
+
+    def test_rejected_customer_never_reaches_storage_response_or_report(self):
+        rejected = 'К сожалению, ваша промышленная газовая печь не входит в наш перечень обслуживаемого оборудования.'
+        class WrongRole(ConversationProvider):
+            async def respond(self, context):
+                self.request_count += 2
+                return {'reply': rejected, 'verified_fact_ids': ['goal']}
+        provider = WrongRole()
+        app = create_app(self.path, provider_factory=lambda mode: provider)
+        with TestClient(app) as client:
+            start = client.post('/api/sessions', json={'scenario_id':'oven_no_fit','mode':'openai'}).json()['session']
+            before = app.state.store.get_session(start['id'])
+            result = client.post(f"/api/sessions/{start['id']}/messages", json={
+                'text':'Что вам нужно?', 'version':1, 'kind':'message', 'request_id':'blocked_role_a05'})
+            self.assertEqual(result.status_code, 502)
+            self.assertEqual(result.json()['error']['code'], 'ai_actor_role_violation')
+            self.assertNotIn(rejected, result.text)
+            after = app.state.store.get_session(start['id'])
+            for key in ['state','messages','version','receipts','updated_at']:
+                self.assertEqual(after[key], before[key])
+            self.assertEqual(after['live_requests'], 3)
+            self.assertNotIn(rejected, json.dumps(after, ensure_ascii=False))
+            self.assertNotIn(rejected, client.post(f"/api/sessions/{start['id']}/finish").text)
+
+    def test_runtime_status_records_loaded_revision_and_module(self):
+        with TestClient(create_app(self.path)) as client:
+            runtime = client.get('/api/status').json()['runtime']
+            self.assertEqual(runtime['pid'], os.getpid())
+            self.assertTrue(runtime['server_module'].endswith('backend/app/dashboard/server.py'))
+            self.assertEqual(runtime['customer_context'], 'isolated_from_company_policy')
+            self.assertRegex(runtime['git_commit'], '^[0-9a-f]{40}$')

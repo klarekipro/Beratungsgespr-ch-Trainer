@@ -128,6 +128,13 @@ class NaturalCustomerProviderTests(unittest.IsolatedAsyncioTestCase):
         verifier_data = json.loads(payloads[2]["input"][1]["content"])
         self.assertEqual(actor_data["must_address_fact_ids"], ["goal"])
         self.assertEqual(verifier_data["context"], actor_data)
+        self.assertNotIn("company", actor_data)
+        self.assertEqual(actor_data["speaker_role"], "customer")
+        self.assertEqual(actor_data["addressee_role"], "company_employee")
+        for private_value in (c["company"]["name"], c["company"]["limitations"],
+                              c["company"]["services"][0]["description"]):
+            self.assertNotIn(private_value, json.dumps(actor_data, ensure_ascii=False))
+        self.assertIn("company", json.loads(payloads[0]["input"][1]["content"]))
         self.assertEqual(verifier_data["reply"], result["reply"])
         self.assertNotIn("used_fact_ids", verifier_data)
         self.assertNotIn("scenario_gap", verifier_data)
@@ -352,3 +359,108 @@ class NaturalCustomerProviderTests(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MandatoryCustomerBoundaryTests(unittest.TestCase):
+    def test_obvious_seller_voice_cannot_be_approved_by_an_all_true_verifier(self):
+        from backend.app.dashboard.customer_actor import ActorContractError, validate_review
+        replies = [
+            'Мы ремонтируем только бытовые электрические печи',
+            'К сожалению, мы занимаемся ремонтом только бытовых электрических печей и не обслуживаем промышленные газовые печи.',
+            'Ваша промышленная газовая печь не входит в наш ассортимент',
+            'К сожалению, ваша промышленная газовая печь не входит в наш перечень обслуживаемого оборудования.',
+            'Мы отремонтируем вашу печь завтра.',
+            'Я могу её починить.',
+            'Мы готовы её починить.',
+            'Наши мастера выполнят ремонт.',
+            'Вы сказали: «Мы ремонтируем печи», а мы починим вашу печь.',
+        ]
+        for reply in replies:
+            with self.subTest(reply=reply), self.assertRaises(ActorContractError) as error:
+                validate_review(review(), context(), reply)
+            self.assertEqual(error.exception.code, 'ai_actor_role_violation')
+
+    def test_employee_price_assertion_is_not_customer_evidence(self):
+        from backend.app.dashboard.customer_actor import ActorContractError, validate_review
+        c = context()
+        c['learner_text'] = 'Я думаю, ремонт будет стоить 15 000 евро'
+        c['visible_history'].append({'role':'learner', 'text': c['learner_text']})
+        for reply in ['Да, ремонт будет стоить 15 000 евро.', 'Я согласен заплатить 15000 евро.']:
+            with self.subTest(reply=reply), self.assertRaises(ActorContractError) as error:
+                validate_review(review(), c, reply)
+            self.assertEqual(error.exception.code, 'ai_actor_not_grounded')
+        # The same amount is allowed when it really is authored customer data.
+        c['authorized_facts'].append(fact('price', 'Согласованная цена', 'Ремонт будет стоить 15 000 евро.'))
+        validate_review(review(), c, 'Ремонт будет стоить 15000 евро.')
+
+    def test_natural_customer_questions_and_pronouns_are_not_seller_voice(self):
+        from backend.app.dashboard.customer_actor import validate_review
+        replies = [
+            'Я ищу фирму, которая занимается ремонтом промышленных газовых печей',
+            'А вы действительно работаете с таким оборудованием?',
+            'Я пока не знаю причину поломки',
+            'Нет, это не моя цена. Я ещё не получал смету',
+            'Правильно ли я понял, что вы обслуживаете такие печи?',
+            'Мы пользуемся печью на нашей кухне.',
+            'Мы не ремонтируем её сами.',
+            'Мы ремонтируем свою печь сами.',
+            'Да, вы меня правильно поняли.',
+            'Не понял, что вы имеете в виду?',
+            'Почему ремонт будет стоить 15 000 евро?',
+            'Вы сказали: «Мы ремонтируем только бытовые электрические печи». Правильно?',
+        ]
+        c = context()
+        # These are local guard acceptance checks, not a claim that every phrase
+        # is factually authorized in this fixture. Semantic grounding stays with
+        # the independent review; no all-true review may override the local guard.
+        for reply in replies:
+            with self.subTest(reply=reply):
+                self.assertEqual(validate_review(review(), c, reply), ['goal'])
+
+    def test_extra_company_and_policy_fields_are_discarded_not_forwarded(self):
+        from backend.app.dashboard.customer_actor import actor_context, review_input
+        c = context()
+        c['company'] = {'services': 'PRIVATE_SERVICES', 'limitations': 'PRIVATE_LIMITS'}
+        c['allowed_outcomes'] = ['PRIVATE_OUTCOME']
+        c['rubric'] = 'PRIVATE_RUBRIC'
+        clean = actor_context(c)
+        self.assertNotIn('company', clean)
+        encoded = json.dumps(review_input(clean, 'Здравствуйте!'))
+        for private in ['PRIVATE_SERVICES','PRIVATE_LIMITS','PRIVATE_OUTCOME','PRIVATE_RUBRIC']:
+            self.assertNotIn(private, encoded)
+
+
+class CustomerContinuationContractTests(unittest.IsolatedAsyncioTestCase):
+    async def test_typos_fragments_and_compound_question_preserve_current_input(self):
+        cases = [
+            ('А пречину знаите?', 'Я пока не знаю причину поломки.', ['cause']),
+            ('А почему?', 'Причину неисправности я не знаю.', ['cause']),
+            ('Что с печью, номер и мощность?',
+             'Печь не включается. Номер и мощность я сейчас не помню.', ['symptoms', 'identification']),
+            ('А вы такая фирма?', 'А вы действительно работаете с таким оборудованием?', []),
+            ('Опиши мне твою роль', 'Я ищу фирму для ремонта моей промышленной газовой печи.', ['goal']),
+        ]
+        for text, reply, addressed in cases:
+            with self.subTest(text=text):
+                c = context()
+                c['learner_text'] = text
+                c['authorized_facts'] += [
+                    fact('cause', 'Причина поломки', 'Причину неисправности я не знаю.', 'does_not_know'),
+                    fact('symptoms', 'Что произошло', 'Печь не включается.'),
+                    fact('identification', 'Номер и мощность', 'Номер и мощность я не помню.', 'does_not_know'),
+                ]
+                c['must_address_fact_ids'] = addressed
+                outputs = [candidate(reply, addressed), review(addressed)]
+                seen = []
+                async def handler(request):
+                    seen.append(json.loads(request.content))
+                    return httpx.Response(200, json=response_body(outputs[len(seen)-1]))
+                async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+                    result = await OpenAIProvider('fake', 'configured-model', client=client).respond(c)
+                self.assertEqual(result['reply'], reply)
+                for payload in seen:
+                    data = json.loads(payload['input'][1]['content'])
+                    if 'context' in data:
+                        data = data['context']
+                    self.assertEqual(data['learner_text'], text)
+                    self.assertNotIn('company', data)

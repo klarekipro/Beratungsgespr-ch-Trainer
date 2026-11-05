@@ -327,7 +327,11 @@ class OpenAIProvider:
         )
 
     async def respond(self, context: dict) -> dict:
-        """Return a reply only after a separate review, without mutating context."""
+        """Isolate the customer context, then generate and independently review it.
+
+        Company policy is director-only. actor_context also discards accidental
+        extra fields before either customer call reaches the network.
+        """
         try:
             clean = actor_context(context)
             candidate = await self._request_json(

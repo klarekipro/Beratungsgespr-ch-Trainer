@@ -5,6 +5,8 @@ import hashlib
 import json
 import os
 import sqlite3
+import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -17,6 +19,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .engine import build_report, process_turn
+from . import customer_actor
 from .exports import export_pdf, export_text
 from .models import Company, MessageInput, ReviewInput, Scenario, SessionStart
 from .providers import DemoProvider, OpenAIProvider, ProviderError
@@ -66,6 +69,20 @@ def learner_view(session):
 
 def create_app(data_path: Path | None = None, provider_factory=None):
     app = FastAPI(title="Klare KI · Consultation Studio", version=VERSION, docs_url=None, redoc_url=None)
+    # Capture at import/startup, not on each request: a later checkout must not
+    # make an old process claim it loaded the new revision.
+    try:
+        revision = subprocess.check_output(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True,
+            stderr=subprocess.DEVNULL, timeout=2,
+        ).strip()
+    except (OSError, subprocess.SubprocessError):
+        revision = None
+    runtime = {"pid": os.getpid(), "python": sys.executable,
+               "server_module": str(Path(__file__).resolve()), "git_commit": revision,
+               "customer_actor_module": str(Path(customer_actor.__file__).resolve()),
+               "customer_actor_sha256": hashlib.sha256(Path(customer_actor.__file__).read_bytes()).hexdigest(),
+               "customer_context": "isolated_from_company_policy"}
     db_path = data_path or Path(os.environ.get("TRAINER_DATA_DIR", str(ROOT / "runtime" / "dashboard"))) / "trainer.sqlite3"
     store = SQLiteStore(Path(db_path))
     # Reject malformed seed cards as loudly as malformed author input.
@@ -152,7 +169,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.get("/api/status")
     async def status():
-        return {"version": VERSION, "storage": "sqlite", "access_mode": "local_workspaces",
+        return {"version": VERSION, "storage": "sqlite", "access_mode": "local_workspaces", "runtime": runtime,
                 "ai": {"configured": live_configured, "live_enabled": live_configured, "model": model,
                        "customer_mode": "generated_and_checked", "max_requests_per_turn": 3},
                 "limits": {"max_turns": max_turns, "max_live_attempts": max_live_attempts}, "roles": ["mentor", "learner"]}
