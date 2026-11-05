@@ -1,3 +1,7 @@
 # Backend
 
-`app/` содержит только контракты четырёх компонентов. FastAPI, зависимости, endpoints и сервер ещё не реализованы. Запуск uvicorn пока неприменим.
+`app/dashboard/` — функциональный локальный Python/FastAPI backend: API, SQLite repository, последовательность этапов, сценарный режим, адаптер OpenAI Responses и PDF/TXT экспорт. Запуск из корня: `python scripts/serve_dashboard.py` после установки `requirements-dashboard.txt`.
+
+`app/director.py`, `policy.py`, `actor.py`, `evaluation.py` и `actor_prompt.py` сохраняют исторические контракты/исследование. Новое приложение не выдаёт их прошлые результаты за приёмку нового движка.
+
+Сервер один процесс и localhost-only. PostgreSQL и настоящие аккаунты ещё не подключены. API-key — только серверное окружение/скрытый ввод launcher. Подробности: `docs/implementation/DASHBOARD_API.md`.
