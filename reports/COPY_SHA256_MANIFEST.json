@@ -1,0 +1,132 @@
+{
+  "source_root": "/Users/admin/Projects/train-today-codex",
+  "files": [
+    {
+      "path": "feasibility_spike.py",
+      "sha256_before": "9a76ab7bf17301e7454602e0ab8b71f77251031345590b44c5a940b96b8823a4",
+      "bytes": 21189,
+      "sha256_after": "9a76ab7bf17301e7454602e0ab8b71f77251031345590b44c5a940b96b8823a4",
+      "identical": true
+    },
+    {
+      "path": "remediation_regression.py",
+      "sha256_before": "253b7ab2b052cd53f2ed517f639bf9895d658f2243a75d0330903a9134919cef",
+      "bytes": 8986,
+      "sha256_after": "253b7ab2b052cd53f2ed517f639bf9895d658f2243a75d0330903a9134919cef",
+      "identical": true
+    },
+    {
+      "path": "test_cases.json",
+      "sha256_before": "a8cc7166175b646c82216f7a3e2c829ab2d25ba7fdfe352945d5c0c543b23b2a",
+      "bytes": 4115,
+      "sha256_after": "a8cc7166175b646c82216f7a3e2c829ab2d25ba7fdfe352945d5c0c543b23b2a",
+      "identical": true
+    },
+    {
+      "path": "results.json",
+      "sha256_before": "2a65e73bddbfafc2987f021727cfb977c9e6a8c0e15ed8660c4a2b57421e159a",
+      "bytes": 697337,
+      "sha256_after": "2a65e73bddbfafc2987f021727cfb977c9e6a8c0e15ed8660c4a2b57421e159a",
+      "identical": true
+    },
+    {
+      "path": "FEASIBILITY_REPORT.md",
+      "sha256_before": "819438cb9d90f24c275bdde13d0a3a31cc796a4c0425a4b0490c12ecf7c869dc",
+      "bytes": 5830,
+      "sha256_after": "819438cb9d90f24c275bdde13d0a3a31cc796a4c0425a4b0490c12ecf7c869dc",
+      "identical": true
+    },
+    {
+      "path": "FEASIBILITY_MANUAL_REVIEW.md",
+      "sha256_before": "7988454b727773abbdaa60d50e6d7767074c60b1e68ba6cd9017901e654b7ed1",
+      "bytes": 66688,
+      "sha256_after": "7988454b727773abbdaa60d50e6d7767074c60b1e68ba6cd9017901e654b7ed1",
+      "identical": true
+    },
+    {
+      "path": "FEASIBILITY_REMEDIATION_REPORT.md",
+      "sha256_before": "35f89b6c7c6f421c66d3ec647d1627cf5791aae7bcac25639969cce1346ffc49",
+      "bytes": 58496,
+      "sha256_after": "35f89b6c7c6f421c66d3ec647d1627cf5791aae7bcac25639969cce1346ffc49",
+      "identical": true
+    },
+    {
+      "path": "remediation/additional_cases.json",
+      "sha256_before": "c8caece8e839db22506c923722392321b72991a849e3251a1f5b282041752751",
+      "bytes": 1637,
+      "sha256_after": "c8caece8e839db22506c923722392321b72991a849e3251a1f5b282041752751",
+      "identical": true
+    },
+    {
+      "path": "remediation/before/feasibility_spike.py",
+      "sha256_before": "62ebb23ab248b6c3a627c145ff4096defedc3569a7c8d64193bd36e594de3637",
+      "bytes": 19487,
+      "sha256_after": "62ebb23ab248b6c3a627c145ff4096defedc3569a7c8d64193bd36e594de3637",
+      "identical": true
+    },
+    {
+      "path": "remediation/before/sha256.json",
+      "sha256_before": "61c641ec75c36a9a2c0587973a2a2d28b7443dd8ab2883f05701327d186e71df",
+      "bytes": 469,
+      "sha256_after": "61c641ec75c36a9a2c0587973a2a2d28b7443dd8ab2883f05701327d186e71df",
+      "identical": true
+    },
+    {
+      "path": "remediation/director.patch",
+      "sha256_before": "9b8c622e086bee4efeec4f9bf739dac9ee950d5e495a8bdded2b3d19ac4f410a",
+      "bytes": 4017,
+      "sha256_after": "9b8c622e086bee4efeec4f9bf739dac9ee950d5e495a8bdded2b3d19ac4f410a",
+      "identical": true
+    },
+    {
+      "path": "remediation/local_checks.json",
+      "sha256_before": "23af276777e525cbe3d9a721aba06f9e6628bcb0533c598f5dccf9fcb7f36521",
+      "bytes": 441,
+      "sha256_after": "23af276777e525cbe3d9a721aba06f9e6628bcb0533c598f5dccf9fcb7f36521",
+      "identical": true
+    },
+    {
+      "path": "remediation/run-001/plan.json",
+      "sha256_before": "575550378289fcf26d27632d936446e771b08335907af03cbf9d14e278e7fef8",
+      "bytes": 27671,
+      "sha256_after": "575550378289fcf26d27632d936446e771b08335907af03cbf9d14e278e7fef8",
+      "identical": true
+    },
+    {
+      "path": "remediation/run-001/results.json",
+      "sha256_before": "9bb9410a60d5e27f4625671bbf0633284e071eddad39af3ae8bccb62af7f256c",
+      "bytes": 4631,
+      "sha256_after": "9bb9410a60d5e27f4625671bbf0633284e071eddad39af3ae8bccb62af7f256c",
+      "identical": true
+    },
+    {
+      "path": "remediation/run-002/FEASIBILITY_REMEDIATION_REPORT.before-run.md",
+      "sha256_before": "b26ded15155470f9e0924b6200098625786f70f7ab518700e3d42edbc10611d0",
+      "bytes": 22283,
+      "sha256_after": "b26ded15155470f9e0924b6200098625786f70f7ab518700e3d42edbc10611d0",
+      "identical": true
+    },
+    {
+      "path": "remediation/run-002/manual_review.json",
+      "sha256_before": "2ce4217666a80ecda2f197c05bf3b9bf589d16e0f9123ae7726ab0f49de6b90d",
+      "bytes": 38005,
+      "sha256_after": "2ce4217666a80ecda2f197c05bf3b9bf589d16e0f9123ae7726ab0f49de6b90d",
+      "identical": true
+    },
+    {
+      "path": "remediation/run-002/plan.json",
+      "sha256_before": "575550378289fcf26d27632d936446e771b08335907af03cbf9d14e278e7fef8",
+      "bytes": 27671,
+      "sha256_after": "575550378289fcf26d27632d936446e771b08335907af03cbf9d14e278e7fef8",
+      "identical": true
+    },
+    {
+      "path": "remediation/run-002/results.json",
+      "sha256_before": "ac15199908fdde30fb35539c1a20c54656e4886050a7e123050e8b35c0f3a1de",
+      "bytes": 1107421,
+      "sha256_after": "ac15199908fdde30fb35539c1a20c54656e4886050a7e123050e8b35c0f3a1de",
+      "identical": true
+    }
+  ],
+  "destination_root": "/Users/admin/Projects/beratungsgespraech-trainer/research/feasibility"
+}

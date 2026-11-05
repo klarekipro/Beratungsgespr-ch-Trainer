@@ -1,0 +1,66 @@
+{
+  "purpose": "Frozen supplemental regression cases; original test_cases.json unchanged. Defined before new API calls.",
+  "repetitions": 2,
+  "cases": [
+    {
+      "id": "neg_current",
+      "question": "Was genau funktioniert an Ihrem Ofen im Moment nicht?",
+      "expected_categories": [
+        "NONE"
+      ],
+      "initial_allowed": [],
+      "baseline": false
+    },
+    {
+      "id": "neg_cause",
+      "question": "Wissen Sie, wodurch der aktuelle Defekt entstanden ist?",
+      "expected_categories": [
+        "NONE"
+      ],
+      "initial_allowed": [],
+      "baseline": false
+    },
+    {
+      "id": "neg_impact",
+      "question": "Welche Auswirkungen hat der kaputte Hauptofen auf Ihren Betrieb?",
+      "expected_categories": [
+        "NONE"
+      ],
+      "initial_allowed": [],
+      "baseline": false
+    },
+    {
+      "id": "neg_exclusion",
+      "question": "Bitte sprechen Sie nicht über frühere Reparaturen, sondern nur über den jetzigen Defekt.",
+      "expected_categories": [
+        "NONE"
+      ],
+      "initial_allowed": [],
+      "baseline": false
+    },
+    {
+      "id": "neg_context_budget",
+      "question": "Welchen Betrag können Sie für die Anschaffung maximal einplanen?",
+      "expected_categories": [
+        "B"
+      ],
+      "initial_allowed": [
+        "A"
+      ],
+      "baseline": false
+    },
+    {
+      "id": "neg_context_current",
+      "question": "Was genau funktioniert an Ihrem Ofen im Moment nicht?",
+      "expected_categories": [
+        "NONE"
+      ],
+      "initial_allowed": [
+        "A",
+        "B",
+        "C"
+      ],
+      "baseline": false
+    }
+  ]
+}

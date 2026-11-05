@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "checks": [
+    "original artifact hashes unchanged",
+    "only Director assignment changed in existing script",
+    "20 baseline checks / two runs",
+    "all eight original error contexts replayed exactly",
+    "two attacks / three five-turn conversations / two runs",
+    "six frozen additional cases / two runs",
+    "decision validation and isolated state"
+  ],
+  "planned_events": 74,
+  "planned_api_calls": 148
+}

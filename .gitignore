@@ -1,0 +1,52 @@
+# Credentials: the template is the only allowed dotenv file.
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.key
+*.pem
+credentials*.json
+secrets*.json
+
+# Python environments and caches
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local data, logs and temporary files
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+.DS_Store
+.cache/
+tmp/
+logs/
+
+# Raw API outputs and histories stay local, including the preserved PoC archive.
+results.json
+*.jsonl
+/research/feasibility/remediation/run-*/
+/reports/private/
+raw/
+transcripts/
+
+# Future frontend dependencies/build artifacts
+node_modules/
+dist/
+build/
