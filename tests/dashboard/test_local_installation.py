@@ -49,7 +49,7 @@ class LocalInstallationTests(unittest.TestCase):
         self.temp=tempfile.TemporaryDirectory(prefix='trainer-ops-test-');self.addCleanup(self.temp.cleanup)
         self.base=Path(self.temp.name);self.root=self.base/'project';self.root.mkdir()
         for folder in ['scripts','backend/app/dashboard','frontend','tests/dashboard']:(self.root/folder).mkdir(parents=True)
-        (self.root/'.gitignore').write_text('.venv/\nruntime/\n__pycache__/\n')
+        (self.root/'.gitignore').write_text('.venv/\nruntime/\n__pycache__/\nfuture-user-data.txt\n')
         (self.root/'scripts/serve_dashboard.py').write_text(SERVER)
         shutil.copy2(ROOT/'scripts/run_installed_dashboard.py',self.root/'scripts/run_installed_dashboard.py')
         (self.root/'scripts/local_installation.py').write_text('# fixture control-plane file\n')
@@ -135,3 +135,19 @@ class LocalInstallationTests(unittest.TestCase):
         second=self.app.ensure_environment()
         self.assertEqual(first,second);self.assertEqual(first.stat().st_mtime_ns,marker)
         self.assertFalse((self.root/'runtime/logs/dependencies.log').exists())
+
+
+    def test_ignored_user_file_collision_is_rejected_before_stop(self):
+        (self.root/'future-user-data.txt').write_text('release content')
+        self.shell(['git','add','-f','future-user-data.txt'])
+        self.shell(['git','commit','-m','candidate tracks previously ignored path'])
+        target=self.shell(['git','rev-parse','HEAD']);bundle=self.base/'collision.bundle'
+        self.shell(['git','bundle','create',str(bundle),'--all']);self.shell(['git','checkout','--detach',self.previous])
+        (self.root/'future-user-data.txt').write_text('unique user content')
+        import hashlib
+        spec={'source':'bundle','repository':ops.TRUSTED_URL,'commit':target,'path':str(bundle),'sha256':hashlib.sha256(bundle.read_bytes()).hexdigest()}
+        running=self.app.start(browser=False)
+        with self.assertRaisesRegex(ops.OperationError,'локальным файлом'):
+            self.app.update(spec,browser=False)
+        self.assertEqual((self.root/'future-user-data.txt').read_text(),'unique user content')
+        self.assertEqual(self.app.status()['runtime']['pid'],running['runtime']['pid'])

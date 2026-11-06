@@ -308,6 +308,12 @@ class Installation:
         if git(self.root, 'status', '--porcelain'):
             raise OperationError('Есть несохранённые изменения или уникальные untracked-файлы. Сохраните их; автоматический reset/clean запрещён.')
 
+    def check_collisions(self, target):
+        current = set(git(self.root, 'ls-files', '-z').split('\0'))
+        target_files = git(self.root, 'ls-tree', '-r', '--name-only', '-z', target).split('\0')
+        if any(name and name not in current and (self.root / name).exists() for name in target_files):
+            raise OperationError('Новая версия пересекается с локальным файлом, включая ignored. Сохраните его отдельно; файл не перезаписывался.')
+
     def prepare_release(self, target):
         self.support.mkdir(parents=True, exist_ok=True, mode=0o700)
         stage = self.support / 'staging' / uuid.uuid4().hex
@@ -360,7 +366,7 @@ class Installation:
 
     def restore(self, record, *, secret, browser=False, restore_data=True):
         self.stop()
-        git(self.root, 'checkout', '--detach', record['previous_sha'])
+        git(self.root, 'checkout', '--no-overwrite-ignore', '--detach', record['previous_sha'])
         backup = Path(record['backup'])
         if (backup / 'venv').exists():
             if (self.root / '.venv').exists():
@@ -385,14 +391,16 @@ class Installation:
         if target == self.head():
             print('Выбранная проверенная версия уже установлена: ' + target)
             return self.start(browser=browser)
+        self.check_collisions(target)
         self.prepare_release(target)
         # Obtain a usable key before stopping the previous working process.
         secret = self.keychain.get() or self.keychain.prompt()
         self.check_clean()
+        self.check_collisions(target)
         record = self.snapshot(target)
         self.stop()
         try:
-            git(self.root, 'checkout', '--detach', target)
+            git(self.root, 'checkout', '--no-overwrite-ignore', '--detach', target)
             self.ensure_environment()
             status = self.start(browser=browser, secret=secret, prompt=False)
         except Exception as error:
@@ -413,6 +421,7 @@ class Installation:
         record = json.loads(journal.read_text())
         if self.head() != record['target_sha']:
             raise OperationError('HEAD изменился после обновления. Автоматический откат отменён.')
+        self.check_collisions(record['previous_sha'])
         secret = self.keychain.get() or self.keychain.prompt()
         result = self.restore(record, secret=secret, browser=browser, restore_data=False)
         journal.write_text(json.dumps({**record,'outcome':'manual_rollback'},indent=2))
