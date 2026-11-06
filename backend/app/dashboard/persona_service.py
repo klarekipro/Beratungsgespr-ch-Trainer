@@ -82,4 +82,8 @@ class PersonaService:
             'disclosure_conditions':{i:old['disclosure_conditions'].get(i,'available') if same else 'available' for i in ids},
             'critical_contradictions':['equipment_is_customer_owned','no_confirmed_repair_price','no_confirmed_booking']}
         if not same:p['modifiers']=SessionModifiers().model_dump()
-        return ClientProfile.model_validate(p).model_dump()
+        assembled=ClientProfile.model_validate(p).model_dump()
+        # Validation fills optional schema defaults. Preserve the exact authored
+        # source record (including absent optional fields) in the snapshot.
+        assembled['scenario']['source_scenario']=sc
+        return assembled

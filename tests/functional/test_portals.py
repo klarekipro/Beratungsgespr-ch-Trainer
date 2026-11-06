@@ -40,6 +40,9 @@ class PortalSmoke(unittest.TestCase):
         r=c.post('/api/sessions',json={'scenario_id':'oven_no_fit','mode':'simple_actor','client_profile_id':'decisive_oven'});self.assertEqual(r.status_code,200,r.text);return r.json()['session']
     def test_independent_pairs_preserve_facts_and_frozen_versions(self):
         c,u=self.employee('pair-fixture')
+        legacy=self.app.state.store.get_scenario('oven_replacement')
+        for fact in legacy['facts']:fact.pop('material',None)
+        self.app.state.store.save_scenario(legacy)
         catalogue=c.get('/api/scenarios').json()['scenarios']
         self.assertEqual(len(catalogue),3)
         saved=[]
