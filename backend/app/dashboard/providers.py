@@ -359,6 +359,9 @@ class OpenAIProvider:
             actor_input = deepcopy(clean)
             if feedback:
                 actor_input["generation_feedback"] = {"error_type": feedback, "failed_checks":failed_checks,
+                    "valid_target_ids": [t["id"] for t in clean["response_plan"]["question_targets"]],
+                    "unknown_targets": clean["response_plan"]["unknown_targets"],
+                    "target_rule": "Only IDs of incoming questions. Unknown details may be answered with bounded unconfirmed status. Your own questions create no target IDs.",
                     "instruction": "Correct that error while preserving the customer identity, actual question targets and evidence."}
             review = None
             try:
@@ -377,13 +380,18 @@ class OpenAIProvider:
                 return {"reply": reply, "verified_fact_ids": verified_ids}
             except ActorContractError as error:
                 self.trace.append({"kind":"validation", "attempt":attempt+1,
-                                   "accepted":False, "error_type":error.code})
+                                   "accepted":False, "error_type":error.code,
+                                   "failed_check":error.check,
+                                   "rejection_stage":"independent_review" if review is not None else "local_actor",
+                                   "expected_targets":[t["id"] for t in clean.get("response_plan",{}).get("question_targets",[])],
+                                   "actor_targets":candidate.get("addressed_targets"),
+                                   "verifier_targets":review.get("addressed_targets") if review is not None else None})
                 if not planned:
                     raise ProviderError(error.code, error.message) from None
                 if attempt+1 == attempts:
                     raise ProviderError(error.code, "Ответ клиента не прошёл проверку после повторной генерации. Ход не засчитан; можно повторить отправку.", True) from None
                 feedback = error.code
-                failed_checks = [key for key,val in (review or {}).items() if val is False]
+                failed_checks = [key for key,val in (review or {}).items() if val is False] + [error.check]
         raise AssertionError("unreachable")
 
     async def _request_json(self, instructions: str, data: dict, schema: dict, name: str,
@@ -435,6 +443,13 @@ class OpenAIProvider:
             raise ProviderError("ai_invalid_response", "OpenAI вернул ответ, который не удалось проверить. Ход не засчитан.") from None
         if not isinstance(body, dict) or body.get("error"):
             raise ProviderError("ai_invalid_response", "OpenAI вернул непроверенный ответ. Ход не засчитан.")
+        usage=body.get("usage")
+        if isinstance(usage,dict) and all(type(usage.get(k)) is int and usage[k]>=0 for k in ("input_tokens","output_tokens")):
+            details=usage.get("input_tokens_details") or {}
+            cached=details.get("cached_tokens",0) if isinstance(details,dict) else 0
+            if type(cached) is not int or not 0<=cached<=usage["input_tokens"]:cached=0
+            self.trace.append({"kind":"usage", "schema":name, "model":self.model,
+                "input_tokens":usage["input_tokens"], "cached_input_tokens":cached,"output_tokens":usage["output_tokens"]})
         if body.get("status") != "completed":
             raise ProviderError("ai_incomplete", "Ответ OpenAI не завершён. Ход не засчитан; автоматической подмены ответа нет.", True)
         chunks = []

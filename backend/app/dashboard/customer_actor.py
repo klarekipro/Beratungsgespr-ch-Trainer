@@ -16,7 +16,7 @@ RESPONSE_INTENTS = {
     "answer_question", "clarify", "uncertain", "premature_offer",
     "confirm_needs_summary", "confirm_capabilities_summary", "summary_missing",
     "correct_summary", "summary_incomplete", "summary_already_confirmed",
-    "proposal_not_grounded", "proposal_accepted", "no_fit_accepted",
+    "proposal_not_grounded", "proposal_accepted", "no_fit_accepted", "discuss_price",
 }
 FACT_STATUSES = {
     "known", "undecided", "does_not_know", "refuses_to_disclose", "not_applicable",
@@ -26,10 +26,11 @@ FACT_STATUSES = {
 class ActorContractError(ValueError):
     """Local, fixed error text; never include the model's rejected reply."""
 
-    def __init__(self, code: str, message: str):
+    def __init__(self, code: str, message: str, *, check: str | None = None):
         super().__init__(message)
         self.code = code
         self.message = message
+        self.check = check or code
 
 
 ACTOR_SYSTEM = """Play the CUSTOMER in an ordinary consultation, in the supplied
@@ -263,7 +264,12 @@ def actor_schema(context: dict) -> dict:
 
 def _target_ids_schema(plan):
     ids = [t["id"] for t in plan["question_targets"]]
-    return {"type":"array", "items":{"type":"string", **({"enum":ids} if ids else {})}}
+    return {"type":"array", "maxItems":len(ids),
+            "description":("IDs of EMPLOYEE question_targets answered by this reply, NOT fact IDs and NOT "
+                           "new questions the customer asks. If no incoming targets, MUST be []. "
+                           "Bounded uncertainty for a not_provided target IS an answer: include its q-ID. "
+                           "Incoming targets: " + str([(t['id'],t['target']) for t in plan['question_targets']])),
+            "items":{"type":"string", **({"enum":ids} if ids else {})}}
 
 
 def verifier_schema(context: dict) -> dict:
@@ -356,6 +362,7 @@ def _quoted_employee_claim(clause: str, match: re.Match) -> bool:
 _MISASSIGNED_NEED = re.compile(
     r"\bвам\s+(?:нужна|нужен|нужно|требуется)\s+(?:помощь|ремонт|мастер)|"
     r"\bвы\s+(?:ищете|хотите\s+найти)\s+(?:новую\s+)?(?:сервисную\s+(?:компанию|фирму)|мастера)|"
+    r"\bвы\s+(?:обычно\s+)?(?:можете|сможете)\s+принять\s+мастера\b|"
     r"\bsie\s+(?:suchen\s+(?:eine[nr]?\s+)?(?:werkstatt|techniker)|benötigen\s+(?:hilfe|eine\s+reparatur))\b",
     re.IGNORECASE,
 )
@@ -375,6 +382,27 @@ def validate_customer_reply(reply: str, context: dict) -> None:
             raise ActorContractError("ai_actor_role_violation", "Ответ клиента вышел из роли. Ход не засчитан.")
     plan=context.get("response_plan")
     if plan:
+        policy=plan["stage_policy"]
+        for clause in re.split(r"(?<=[.!?])\s+|[;\n]",reply):
+            booking=re.search(r"\b(?:запишите|записывайте)\s+меня\b|\bзаписываюсь\s+на\s+визит",clause,re.I)
+            acceptance=re.search(r"\b(?:я\s+соглас(?:ен|на)\s+на\s+(?:ремонт|визит)|заказываю\s+ремонт)\b",clause,re.I)
+            price_agreement=re.search(r"\b(?:соглас(?:ен|на)\s+(?:с\s+этой\s+ценой|на\s+цену)|цена\s+меня\s+устраивает)\b",clause,re.I)
+            if ((booking and not policy["may_book_appointment"] and not _quoted_employee_claim(clause,booking) and not re.search(r"\bне\s+запис",clause,re.I))
+                    or (acceptance and not policy["may_accept_offer"])
+                    or (price_agreement and not policy["may_agree_price"])):
+                raise ActorContractError("ai_actor_premature_commitment", "Ответ содержит неподтверждённое согласие. Ход не засчитан.", check="premature_commitment")
+        unprovided_inspection=any(t['topic']=='maintenance_history' and t['reason']=='not_provided' for t in plan['unknown_targets'])
+        if unprovided_inspection:
+            for clause in re.split(r"(?<=[.!?])\s+|[;\n]",reply):
+                if (re.search(r"(?:дат[ау]|когда)[^,;.!?]{0,50}(?:осмотр|осматривал)[^,;.!?]{0,30}не\s+(?:знаю|помню)|не\s+(?:знаю|помню)[^,;.!?]{0,35}(?:дат[уы]|когда)[^,;.!?]{0,35}(?:осмотр|осматривал)",clause,re.I)):
+                    raise ActorContractError("ai_actor_not_grounded", "Неизвестное поле не подтверждает обстоятельства клиента. Ход не засчитан.", check="unprovided_inspection_is_not_personal_memory")
+    reason=next((f['value'] for f in context['authorized_facts'] if f['id']=='reason'), '')
+    if 'прекратила обслуживание' in reason.lower() and re.search(r"ушла\s+из\s+города|закрылась|больше\s+не\s+работает\s+в\s+нашем\s+городе",reply,re.I):
+        raise ActorContractError("ai_actor_not_grounded", "Ответ усилил исходное утверждение. Ход не засчитан.", check="service_withdrawal_is_not_company_closure")
+    if plan:
+        if (plan["response_intent"]=="discuss_price" and not re.search(
+                r"\b(?:стоимост|цен|сумм|смет|оценк|рассчит|расч[её]т|обосн|дорог|много|откуда|цифр|евро|kosten|preis|betrag|berechn|aufstellung)|€",reply,re.I)):
+            raise ActorContractError("ai_actor_wrong_target", "Ответ не относится к названной стоимости. Ход не засчитан.", check="price_reaction_missing")
         topics={t["target"] for t in plan["question_targets"]}
         if ("maintenance_history" in topics and "visit_availability" not in topics
                 and re.search(r"(?:могу|готов|можем)\s+ждать|bis\s+zu\s+.*warten",reply,re.I)):

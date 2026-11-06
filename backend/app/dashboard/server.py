@@ -27,7 +27,7 @@ from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.3.0-semantic-planning"
+VERSION = "0.3.1-ai-reliability"
 
 
 def now():

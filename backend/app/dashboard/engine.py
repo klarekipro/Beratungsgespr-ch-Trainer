@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 
 from .providers import ProviderError
 from .customer_actor import ActorContractError, validate_customer_reply
-from .response_planning import normalize_targets, build_response_plan
+from .response_planning import normalize_targets, build_response_plan, is_price_statement
 
 
 _STAGES = ("needs", "capabilities")
@@ -178,6 +178,10 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
         response_intent = "uncertain"
         reply = replies["uncertain"]
         _event(state, "interpretation_uncertain", turn, "Смысл реплики неоднозначен. Этап не изменён; отрицательная оценка не начисляется.")
+    elif session["mode"] == "openai" and act == "other" and is_price_statement(text):
+        response_intent = "discuss_price"
+        reply = ""  # Live wording is generated below; no fallback template.
+        _event(state, "price_claim", turn, "Продавец назвал стоимость; клиенту не приписаны бюджет или согласие на оплату.")
     elif act == "proposal":
         if not (before_needs and before_capabilities):
             response_intent = "premature_offer"
