@@ -431,6 +431,8 @@ class OpenAIProvider:
             raise ProviderError("ai_request_rejected", "OpenAI отклонил запрос. Проверьте настройки модели и API.")
         try:
             body = response.json()
+            usage = body.get("usage") if isinstance(body, dict) else None
+            self.last_usage = {k:v for k,v in usage.items() if k in {"input_tokens", "output_tokens", "total_tokens"} and type(v) is int} if isinstance(usage, dict) else {}
         except (ValueError, UnicodeError):
             raise ProviderError("ai_invalid_response", "OpenAI вернул ответ, который не удалось проверить. Ход не засчитан.") from None
         if not isinstance(body, dict) or body.get("error"):

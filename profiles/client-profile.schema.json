@@ -1,0 +1,490 @@
+{
+  "$defs": {
+    "BasePersona": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "name": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "approval": {
+          "default": "technical_draft",
+          "enum": [
+            "technical_draft",
+            "owner_approved"
+          ],
+          "title": "Approval",
+          "type": "string"
+        },
+        "character": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Character",
+          "type": "string"
+        },
+        "speech_style": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Speech Style",
+          "type": "string"
+        },
+        "stranger_attitude": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Stranger Attitude",
+          "type": "string"
+        },
+        "doubt_behavior": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Doubt Behavior",
+          "type": "string"
+        },
+        "question_style": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Question Style",
+          "type": "string"
+        },
+        "decision_style": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Decision Style",
+          "type": "string"
+        },
+        "pressure_reaction": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Pressure Reaction",
+          "type": "string"
+        },
+        "typical_expressions": {
+          "items": {
+            "maxLength": 240,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Typical Expressions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "name",
+        "character",
+        "speech_style",
+        "stranger_attitude",
+        "doubt_behavior",
+        "question_style",
+        "decision_style",
+        "pressure_reaction",
+        "typical_expressions"
+      ],
+      "title": "BasePersona",
+      "type": "object"
+    },
+    "Fact": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "stage": {
+          "enum": [
+            "needs",
+            "capabilities"
+          ],
+          "title": "Stage",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "known",
+            "undecided",
+            "does_not_know",
+            "refuses_to_disclose",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "keywords": {
+          "items": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 24,
+          "title": "Keywords",
+          "type": "array"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "material": {
+          "default": true,
+          "title": "Material",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "stage",
+        "label",
+        "value",
+        "status"
+      ],
+      "title": "Fact",
+      "type": "object"
+    },
+    "ProfileField": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "known",
+            "customer_unknown",
+            "author_missing",
+            "undecided",
+            "refuses_to_disclose",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "maxLength": 3000,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "ProfileField",
+      "type": "object"
+    },
+    "ProfileScenario": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "persona_ids": {
+          "items": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Persona Ids",
+          "type": "array"
+        },
+        "source_scenario": {
+          "$ref": "#/$defs/Scenario"
+        },
+        "initial_situation": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Initial Situation",
+          "type": "string"
+        },
+        "reason_fact_ids": {
+          "items": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+            "type": "string"
+          },
+          "title": "Reason Fact Ids",
+          "type": "array"
+        },
+        "observation_fact_ids": {
+          "items": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+            "type": "string"
+          },
+          "title": "Observation Fact Ids",
+          "type": "array"
+        },
+        "need_fact_ids": {
+          "items": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+            "type": "string"
+          },
+          "title": "Need Fact Ids",
+          "type": "array"
+        },
+        "financial_fact_ids": {
+          "items": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+            "type": "string"
+          },
+          "title": "Financial Fact Ids",
+          "type": "array"
+        },
+        "timing_fact_ids": {
+          "items": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+            "type": "string"
+          },
+          "title": "Timing Fact Ids",
+          "type": "array"
+        },
+        "open_questions": {
+          "maxProperties": 30,
+          "patternProperties": {
+            "^[a-z0-9][a-z0-9_-]{0,79}$": {
+              "$ref": "#/$defs/ProfileField"
+            }
+          },
+          "title": "Open Questions",
+          "type": "object"
+        },
+        "disclosure_conditions": {
+          "patternProperties": {
+            "^[a-z0-9][a-z0-9_-]{0,79}$": {
+              "enum": [
+                "available",
+                "after_needs",
+                "after_capabilities",
+                "owner_only"
+              ],
+              "type": "string"
+            }
+          },
+          "title": "Disclosure Conditions",
+          "type": "object"
+        },
+        "critical_contradictions": {
+          "items": {
+            "enum": [
+              "equipment_is_customer_owned",
+              "industrial_gas_not_domestic_electric",
+              "no_confirmed_repair_price",
+              "no_confirmed_booking"
+            ],
+            "type": "string"
+          },
+          "title": "Critical Contradictions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "persona_ids",
+        "source_scenario",
+        "initial_situation",
+        "reason_fact_ids",
+        "observation_fact_ids",
+        "need_fact_ids",
+        "financial_fact_ids",
+        "timing_fact_ids",
+        "disclosure_conditions",
+        "critical_contradictions"
+      ],
+      "title": "ProfileScenario",
+      "type": "object"
+    },
+    "Scenario": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "default": "",
+          "pattern": "^(?:[a-z0-9][a-z0-9_-]{0,79})?$",
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "company_id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+          "title": "Company Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "customer_name": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Customer Name",
+          "type": "string"
+        },
+        "public_brief": {
+          "maxLength": 3000,
+          "minLength": 1,
+          "title": "Public Brief",
+          "type": "string"
+        },
+        "opening": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Opening",
+          "type": "string"
+        },
+        "language": {
+          "default": "ru",
+          "enum": [
+            "ru",
+            "de"
+          ],
+          "title": "Language",
+          "type": "string"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/Fact"
+          },
+          "maxItems": 20,
+          "minItems": 2,
+          "title": "Facts",
+          "type": "array"
+        },
+        "allowed_outcomes": {
+          "items": {
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+            "type": "string"
+          },
+          "maxItems": 21,
+          "minItems": 1,
+          "title": "Allowed Outcomes",
+          "type": "array"
+        },
+        "question_hints": {
+          "items": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Question Hints",
+          "type": "array"
+        }
+      },
+      "required": [
+        "company_id",
+        "title",
+        "customer_name",
+        "public_brief",
+        "opening",
+        "facts",
+        "allowed_outcomes"
+      ],
+      "title": "Scenario",
+      "type": "object"
+    },
+    "SessionModifiers": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "mood": {
+          "$ref": "#/$defs/ProfileField"
+        },
+        "urgency": {
+          "$ref": "#/$defs/ProfileField"
+        },
+        "previous_conversation": {
+          "$ref": "#/$defs/ProfileField"
+        },
+        "compared_offers": {
+          "$ref": "#/$defs/ProfileField"
+        },
+        "trust_level": {
+          "$ref": "#/$defs/ProfileField"
+        },
+        "verified_experience": {
+          "$ref": "#/$defs/ProfileField"
+        }
+      },
+      "title": "SessionModifiers",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "id": {
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,79}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "persona": {
+      "$ref": "#/$defs/BasePersona"
+    },
+    "scenario": {
+      "$ref": "#/$defs/ProfileScenario"
+    },
+    "modifiers": {
+      "$ref": "#/$defs/SessionModifiers"
+    }
+  },
+  "required": [
+    "id",
+    "version",
+    "persona",
+    "scenario",
+    "modifiers"
+  ],
+  "title": "ClientProfile",
+  "type": "object"
+}

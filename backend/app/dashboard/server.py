@@ -19,7 +19,9 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .engine import build_report, process_turn
-from . import customer_actor, response_planning
+from .client_profiles import load_profiles, public_profile, ClientProfile
+from .simple_actor import SimpleActorProvider, process_simple_turn
+from . import customer_actor, response_planning, simple_actor
 from .exports import export_pdf, export_text
 from .models import Company, MessageInput, ReviewInput, Scenario, SessionStart
 from .providers import DemoProvider, OpenAIProvider, ProviderError
@@ -27,7 +29,7 @@ from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.3.0-semantic-planning"
+VERSION = "0.4.0-simple-actor"
 
 
 def now():
@@ -48,7 +50,7 @@ def summary(session):
     return {
         "id": session["id"], "scenario_id": session["scenario_id"],
         "title": scenario["title"], "customer_name": scenario["customer_name"],
-        "mode": session["mode"], "created_at": session["created_at"],
+        "mode": session["mode"], "client_profile": public_profile(session["client_profile_snapshot"]) if session.get("client_profile_snapshot") else None, "created_at": session["created_at"],
         "updated_at": session["updated_at"], "status": session["status"],
         "review_status": session["review_status"], "phase": session["state"]["phase"],
         "turn_count": sum(m["role"] == "learner" for m in session["messages"]),
@@ -61,7 +63,7 @@ def learner_view(session):
                    "company": session["company_snapshot"], "review_note": session.get("review_note", ""),
                    "api_requests": session.get("live_requests"),
                    "api_count_complete": session.get("api_count_complete", False),
-                   "natural_customer_turns": sum(m.get("source") == "openai_actor_verified" for m in session["messages"])})
+                   "natural_customer_turns": sum(m.get("source") in {"openai_actor_verified", "openai_simple_actor"} for m in session["messages"])})
     if session["status"] == "finished":
         result["report"] = session.get("report") or build_report(session)
     return result
@@ -85,7 +87,9 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                "customer_context": "isolated_from_company_policy",
                "response_planning": "typed_targets_v1",
                "response_planning_module": str(Path(response_planning.__file__).resolve()),
-               "response_planning_sha256": hashlib.sha256(Path(response_planning.__file__).read_bytes()).hexdigest()}
+               "response_planning_sha256": hashlib.sha256(Path(response_planning.__file__).read_bytes()).hexdigest(),
+               "simple_actor_module":str(Path(simple_actor.__file__).resolve()),
+               "simple_actor_sha256":hashlib.sha256(Path(simple_actor.__file__).read_bytes()).hexdigest()}
     db_path = data_path or Path(os.environ.get("TRAINER_DATA_DIR", str(ROOT / "runtime" / "dashboard"))) / "trainer.sqlite3"
     store = SQLiteStore(Path(db_path))
     runtime["data_path"] = str(Path(db_path).resolve())
@@ -100,6 +104,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     store.upgrade_builtin_scenarios(PREVIOUS_BUILTIN_SHA256, seed_scenarios)
     app.state.store = store
     app.state.locks = {}
+    client_profiles = {p["id"]:p for p in load_profiles(overrides=Path(db_path).parent.parent / "client_profiles")}
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     model = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini-2025-04-14").strip()
     live_configured = bool(api_key and model)
@@ -109,6 +114,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     def provider(mode):
         if provider_factory:
             return provider_factory(mode)
+        if mode == "simple_actor":
+            return SimpleActorProvider(api_key=api_key, model=model)
         return OpenAIProvider(api_key=api_key, model=model) if mode == "openai" else DemoProvider()
 
     allowed_hosts = ["localhost", "127.0.0.1", "[::1]", "testserver"]
@@ -179,8 +186,21 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     async def status():
         return {"version": VERSION, "storage": "sqlite", "access_mode": "local_workspaces", "runtime": runtime,
                 "ai": {"configured": live_configured, "live_enabled": live_configured, "model": model,
-                       "customer_mode": "generated_and_checked", "max_requests_per_turn": 5},
+                       "customer_mode": "selectable", "max_requests_per_turn": 5,
+                       "modes": {"simple_actor": {"max_requests_per_turn": 1, "llm_verifier": False}, "openai": {"legacy": True, "max_requests_per_turn": 5}}},
                 "limits": {"max_turns": max_turns, "max_live_attempts": max_live_attempts}, "roles": ["mentor", "learner"]}
+
+    @app.get("/api/client-profiles")
+    async def profiles():
+        return {"profiles":[public_profile(p) for p in client_profiles.values()]}
+
+    @app.get("/api/mentor/client-profiles/schema", dependencies=[Depends(mentor)])
+    async def profile_schema():
+        return ClientProfile.model_json_schema()
+
+    @app.get("/api/mentor/client-profiles", dependencies=[Depends(mentor)])
+    async def mentor_profiles():
+        return {"profiles": list(client_profiles.values())}
 
     @app.get("/api/company")
     async def company():
@@ -233,9 +253,18 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.post("/api/sessions")
     async def start(value: SessionStart):
-        if value.mode == "openai" and not live_configured:
+        if value.mode in {"openai", "simple_actor"} and not live_configured:
             fail("AI_NOT_CONFIGURED", "OpenAI ещё не подключён. Запустите сервер с API-ключом или выберите сценарный режим.", 409)
-        scenario = store.get_scenario(value.scenario_id)
+        selected_profile = None
+        if value.mode == "simple_actor":
+            selected_profile = client_profiles.get(value.client_profile_id)
+            if not selected_profile or selected_profile["scenario"]["source_scenario"]["id"] != value.scenario_id:
+                fail("CLIENT_PROFILE_REQUIRED", "Выберите подготовленный профиль клиента для simple_actor.", 422)
+            scenario = copy.deepcopy(selected_profile["scenario"]["source_scenario"])
+        else:
+            if value.client_profile_id is not None:
+                fail("PROFILE_MODE_MISMATCH", "Профили используются в simple_actor.", 422)
+            scenario = store.get_scenario(value.scenario_id)
         if not scenario:
             fail("SCENARIO_NOT_FOUND", "Сценарий не найден.", 404)
         comp = store.get_company()
@@ -250,6 +279,9 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                    "capabilities_confirmed": False, "events": [], "outcome": None},
                    "messages": [{"role": "customer", "text": scenario["opening"], "at": ts, "turn": 0}],
                    "receipts": {}, "live_attempts": 0, "live_requests": 0, "api_count_complete": True, "system_issues": []}
+        if selected_profile:
+            session["client_profile_snapshot"] = copy.deepcopy(selected_profile)
+            session["content_observations"] = []
         store.save_session(session)
         return {"session": learner_view(session)}
 
@@ -274,7 +306,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             turn = summary(session)["turn_count"] + 1
             if turn > max_turns:
                 fail("TURN_LIMIT", "Достигнут лимит беседы. Завершите её и откройте разбор.", 409)
-            if session["mode"] == "openai":
+            if session["mode"] in {"openai", "simple_actor"}:
                 if not live_configured:
                     fail("AI_NOT_CONFIGURED", "Подключение OpenAI отсутствует. Текущая беседа не переключается в сценарный режим.", 409)
                 if session.get("live_attempts", 0) >= max_live_attempts:
@@ -289,7 +321,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 requests_before = getattr(current_provider, "request_count", 0)
                 if type(requests_before) is not int:
                     requests_before = 0
-                updated = await process_turn(session, value.text, value.kind, current_provider, turn)
+                processor = process_simple_turn if session["mode"] == "simple_actor" else process_turn
+                updated = await processor(session, value.text, value.kind, current_provider, turn)
             except ProviderError as exc:
                 # Fixed safe message; no provider payload / user content / secrets.
                 code = getattr(exc, "code", "AI_UNAVAILABLE")
@@ -297,8 +330,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 if code != "scenario_missing_context":
                     infrastructure = {"ai_timeout", "ai_unavailable", "ai_rate_limited", "ai_access_denied", "ai_request_rejected", "ai_not_configured"}
                     category = ("infrastructure_error" if code in infrastructure else
-                                "actor_response_error" if code.startswith("ai_actor_") else "director_response_error")
-                    session.setdefault("system_issues", []).append({"type":category, "turn":turn,
+                                "actor_response_error" if code.startswith("ai_actor_") or session["mode"]=="simple_actor" else "director_response_error")
+                    session.setdefault("system_issues", []).append({"type":category, "code":code, "turn":turn,
                         "detail":"Ответ системы не получен или не прошёл проверку. Это не ошибка ученика; ход не засчитан."})
                     session["system_issues"] = session["system_issues"][-30:]
                 if code == "scenario_missing_context":
@@ -312,7 +345,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 error_code = "INVALID_AI_RESPONSE"
                 fail("INVALID_AI_RESPONSE", "Ответ системы не прошёл проверку. Ход не засчитан; повторите отправку.", 502)
             finally:
-                if session["mode"] == "openai":
+                if session["mode"] in {"openai", "simple_actor"}:
                     count = getattr(current_provider, "request_count", 0)
                     if type(count) is int:
                         count -= requests_before
@@ -412,6 +445,18 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         async with lock(sid):
             session = submitted(sid)
             previous = session["version"]
+            if session["mode"] == "simple_actor" and (value.needs_confirmed is not None or value.capabilities_confirmed is not None or value.outcome is not None):
+                needs = value.needs_confirmed is True
+                capabilities = value.capabilities_confirmed is True
+                if capabilities and not needs or value.outcome and not (needs and capabilities):
+                    fail("STAGE_ORDER", "Сначала подтвердите потребности, затем возможности, затем обоснованный итог.", 422)
+                if value.outcome and value.outcome not in session["scenario_snapshot"]["allowed_outcomes"]:
+                    fail("INVALID_OUTCOME", "Итог не разрешён сценарием.", 422)
+                state=session["state"]
+                state.update(needs_confirmed=needs, capabilities_confirmed=capabilities, outcome=value.outcome,
+                             phase="completed" if value.outcome else "proposal" if capabilities else "capabilities" if needs else "needs")
+                state["events"].append({"type":"owner_assessment","turn":0,"detail":"Этапы и итог отмечены наставником после содержательного разбора, не моделью."})
+                session["report"] = build_report(session)
             session.update(review_note=value.note, reviewed_at=now(), review_status="reviewed", updated_at=now(), version=previous + 1)
             store.save_session(session, expected_version=previous)
             return {"session": learner_view(session)}

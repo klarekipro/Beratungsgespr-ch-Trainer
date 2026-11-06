@@ -89,7 +89,8 @@ class Scenario(InputModel):
 
 class SessionStart(InputModel):
     scenario_id: Identifier
-    mode: Literal["demo", "openai"]
+    mode: Literal["demo", "openai", "simple_actor"]
+    client_profile_id: Identifier | None = None
 
 
 class MessageInput(InputModel):
@@ -101,3 +102,6 @@ class MessageInput(InputModel):
 
 class ReviewInput(InputModel):
     note: str = Field(min_length=1, max_length=6000)
+    needs_confirmed: bool | None = None
+    capabilities_confirmed: bool | None = None
+    outcome: Identifier | None = None

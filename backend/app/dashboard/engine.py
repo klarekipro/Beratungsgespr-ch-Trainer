@@ -342,7 +342,13 @@ def build_report(session: dict) -> dict:
         "Карточки компании и клиента закреплены в начале попытки. Последующие правки наставника эту попытку не меняют.",
         "Учебное завершение не означает реальную сделку, согласие на оплату или заказ услуги.",
     ]
-    if session["mode"] == "demo":
+    if session["mode"] == "simple_actor":
+        n=sum(m.get("source")=="openai_simple_actor" for m in session["messages"])
+        limitations.insert(0, f"simple_actor: {n} ответов одного OpenAI Actor; обязательного LLM-Verifier нет. Локальные проверки выявляют только отдельные явные нарушения. Качество оценивает владелец.")
+        limitations.append(f"Фактических API-запросов: {session.get('live_requests', 0)}; включая ошибки, не расчёт стоимости.")
+        limitations.append("Этапы подтверждаются наставником после беседы. Темы и полнота фактов автоматически не оцениваются; отметки ниже не являются результатом семантического анализа.")
+        limitations.append("Технические ошибки не засчитываются как ошибки ученика.")
+    elif session["mode"] == "demo":
         summary = "Техническая проверка без AI. По этой попытке нельзя оценивать навык свободной консультации. " + summary
         limitations.insert(0, "Технический сценарный режим: ограниченное сопоставление формулировок без вызова AI. Нераспознанный вопрос не является доказанной ошибкой ученика.")
     else:
@@ -371,7 +377,9 @@ def build_report(session: dict) -> dict:
             {"id": "proposal", "label": "Обоснованное итоговое предложение", "confirmed": bool(complete)},
         ],
         "findings": ([deepcopy(event) for event in state["events"] if event["type"] != "fact_discovered"]
-                     + [deepcopy(issue) for issue in session.get("system_issues", [])]),
+                     + [deepcopy(issue) for issue in session.get("system_issues", [])]
+                     + [deepcopy(item) for item in session.get("content_observations", [])]),
+        "assessment_outcomes": [{"id":i,"title":"Отсутствие подходящей услуги" if i=="no_fit" else next((s["title"] for s in session["company_snapshot"]["services"] if s["id"]==i),i)} for i in session["scenario_snapshot"]["allowed_outcomes"]] if session["mode"]=="simple_actor" else [],
         "facts": [{"label": fact["label"], "stage": fact["stage"], "status": fact["status"],
                    "discovered": fact["id"] in discovered, "value": fact["value"]}
                   for fact in session["scenario_snapshot"]["facts"]],

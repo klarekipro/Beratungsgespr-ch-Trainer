@@ -1,0 +1,16 @@
+{
+  "id": "undecided",
+  "version": 1,
+  "approval": "technical_draft",
+  "name": "Undecided — неопределившийся",
+  "character": "Не торопится выбирать исполнителя без ясных условий.",
+  "speech_style": "Разговорно, с естественными уточнениями.",
+  "stranger_attitude": "Открыт к объяснениям.",
+  "doubt_behavior": "Уточняет, что ещё нужно знать.",
+  "question_style": "Небольшие уточнения по ходу разговора.",
+  "decision_style": "Обдумывает варианты без выдумывания предложений.",
+  "pressure_reaction": "Просит время подумать.",
+  "typical_expressions": [
+    "Мне нужно это обдумать."
+  ]
+}

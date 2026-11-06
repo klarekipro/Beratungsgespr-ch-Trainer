@@ -20,6 +20,9 @@ def local_date(value):
 
 
 def mode_label(session):
+    if session["mode"] == "simple_actor":
+        p=session["client_profile_snapshot"]
+        return f"OpenAI · simple_actor · профиль {p['id']} v{p['version']} · персона v{p['persona']['version']} · сценарий v{p['scenario']['version']} · без LLM-Verifier"
     if session["mode"] == "demo":
         return "Техническая проверка · без AI-вызовов"
     if any(m.get("source") == "openai_actor_verified" for m in session["messages"]):
@@ -56,7 +59,7 @@ def export_text(session):
         lines.append(f"Ход {item.get('turn', '—')}: {item.get('detail', '')}")
     lines.extend(["", "СВЕДЕНИЯ СЦЕНАРИЯ (ОТКРЫТЫ ПОСЛЕ ЗАВЕРШЕНИЯ)"])
     for item in report.get("facts", []):
-        found = "выяснено" if item.get("discovered") else "не выяснено"
+        found = "не оценено автоматически" if session["mode"]=="simple_actor" else "выяснено" if item.get("discovered") else "не выяснено"
         lines.extend([f"{item['label']} — {found}; состояние клиента: {item['status']}", item["value"], ""])
     lines.append("ПОЛНАЯ РАСШИФРОВКА")
     for message in session["messages"]:
@@ -156,7 +159,7 @@ def export_pdf(session):
     story.extend([PageBreak(), p("Основания для разбора", "title"), p("Закрытые сведения этой версии сценария открыты после завершения попытки.", "subtitle")])
     status_names = {"known": "знает", "undecided": "не определился", "does_not_know": "не знает", "refuses_to_disclose": "не раскрывает", "not_applicable": "не относится к ситуации"}
     for fact in report.get("facts", []):
-        found = "выяснено" if fact.get("discovered") else "не выяснено"
+        found = "не оценено автоматически" if session["mode"]=="simple_actor" else "выяснено" if fact.get("discovered") else "не выяснено"
         story.extend([p(fact["label"], "heading"), p(f"{found} · клиент {status_names.get(fact['status'], fact['status'])}", "fact_meta"), p(fact["value"])])
     story.extend([p("Возможности компании", "heading"), p(company["description"])])
     for service in company["services"]:
