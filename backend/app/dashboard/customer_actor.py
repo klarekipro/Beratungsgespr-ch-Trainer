@@ -327,7 +327,7 @@ _SELLER_VOICE = re.compile(
     re.IGNORECASE,
 )
 _SELLER_ATTRIBUTION = re.compile(
-    r"\b(?:вы\s+(?:сказали|говорите|утверждаете|предлагаете)|по\s+вашим\s+словам|"
+    r"\b(?:вы\s+(?:сказали|говорите|утверждаете|предлагаете|упомянули)|по\s+вашим\s+словам|"
     r"you\s+(?:said|say)|sie\s+(?:sagen|sagten))\b", re.IGNORECASE,
 )
 _OWNER_SELF_REPAIR = re.compile(
@@ -382,6 +382,11 @@ def validate_customer_reply(reply: str, context: dict) -> None:
             raise ActorContractError("ai_actor_role_violation", "Ответ клиента вышел из роли. Ход не засчитан.")
     plan=context.get("response_plan")
     if plan:
+        if plan["fact_ownership"]["equipment_owner"]=="customer":
+            pattern=r"\b(?:ремонт|поломк[аиу]|неисправност[ьи])\s+вашей\s+(?:(?:промышленной|газовой|электрической|бытовой)\s+){0,3}печи\b"
+            for assertion in re.finditer(pattern,reply,re.I):
+                if not _quoted_employee_claim(reply,assertion):
+                    raise ActorContractError("ai_actor_role_violation", "Оборудование приписано собеседнику. Ход не засчитан.", check="indirect_speech_keeps_customer_equipment")
         policy=plan["stage_policy"]
         for clause in re.split(r"(?<=[.!?])\s+|[;\n]",reply):
             booking=re.search(r"\b(?:запишите|записывайте)\s+меня\b|\bзаписываюсь\s+на\s+визит",clause,re.I)

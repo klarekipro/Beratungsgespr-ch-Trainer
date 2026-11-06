@@ -40,3 +40,13 @@ analysis, without credentials or HTTP headers.
 The operational A07 installation and port 8100 are not changed by this branch's
 isolated acceptance run. Live small-set acceptance is distinct from commercial
 readiness and must be assessed from the saved actual replies.
+
+A first isolated 20-turn trial exposed two additional concrete cases. The follow-up
+patch discards only out-of-turn question metadata for a valid proposal/statement;
+it still rejects out-of-turn evidence for actual discovery questions. Discarded
+metadata cannot grant customer facts and is recorded as plan normalization. The
+second change preserves customer ownership in indirect price reports; only a
+clearly attributed direct quotation may retain seller-relative appliance pronouns.
+These are covered by dedicated regressions. The first trial's failed result and
+all raw diagnostics remain available privately; the follow-up is assessed as a
+separate, bounded acceptance run rather than overwriting the failed trial.

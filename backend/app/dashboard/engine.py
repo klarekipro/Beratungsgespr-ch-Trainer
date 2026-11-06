@@ -160,7 +160,12 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
     decision = _validate_decision(decision, session, text, facts)
     if "question_targets" in decision:
         try:
+            original_targets = deepcopy(decision["question_targets"])
             decision["question_targets"] = normalize_targets(decision, text, facts)
+            trace = getattr(provider, "trace", None)
+            if isinstance(trace,list) and original_targets != decision["question_targets"]:
+                trace.append({"kind":"plan_normalization", "original_targets":original_targets,
+                              "current_targets":deepcopy(decision["question_targets"])})
         except ValueError:
             raise ProviderError("ai_invalid_evidence", "Не удалось определить тему вопроса. Ход не засчитан.") from None
         if decision["act"] == "question":

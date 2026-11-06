@@ -161,3 +161,25 @@ class ReliabilityPipelineRegressions(unittest.IsolatedAsyncioTestCase):
         usage=next(t for t in p.trace if t['kind']=='usage')
         self.assertEqual((usage['input_tokens'],usage['cached_input_tokens'],usage['output_tokens']),(100,40,20))
         self.assertNotIn('never-output-this-synthetic-secret',json.dumps(p.trace))
+
+
+class FollowupObservedFailures(unittest.TestCase):
+    def test_indirect_price_report_keeps_customer_ownership(self):
+        c=statement_context('Ремонт стоит 15 000 евро','discuss_price')
+        with self.assertRaises(ActorContractError) as error:
+            validate_review(review(c),c,'Вы упомянули, что ремонт вашей печи стоит 15 000 евро. Откуда эта сумма?')
+        self.assertEqual(error.exception.check,'indirect_speech_keeps_customer_equipment')
+        for text in ['Вы сказали, что ремонт моей печи стоит 15 000 евро. Как это рассчитано?',
+                     'Вы сказали: «Ремонт вашей печи стоит 15 000 евро». Откуда эта сумма?']:
+            with self.subTest(reply=text):self.assertEqual(validate_review(review(c),c,text),[])
+
+    def test_stale_history_questions_cannot_authorize_facts_for_current_proposal(self):
+        text='Мы обслуживаем только электрические печи. Давайте починим вашу газовую печь?'
+        d={**decision(act='proposal',source_quote=text), 'question_targets':[
+            {'target':'fault_cause','quote':'Как вы определяете причину неисправности?','fact_ids':['cause']}]}
+        facts={f['id']:f for f in new_session(2)['scenario_snapshot']['facts']}
+        self.assertEqual(normalize_targets(d,text,facts),[])
+        self.assertEqual(d['fact_ids'],[])
+        # Do not silently forgive out-of-turn evidence on genuine questions.
+        d['act']='question'
+        with self.assertRaises(ValueError):normalize_targets(d,text,facts)
