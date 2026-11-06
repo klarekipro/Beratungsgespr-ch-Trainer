@@ -27,13 +27,13 @@ from .client_profiles import load_profiles, public_profile, ClientProfile
 from .simple_actor import SimpleActorProvider, process_simple_turn
 from . import customer_actor, response_planning, simple_actor
 from .exports import export_pdf, export_text
-from .models import Company, MessageInput, ReviewInput, Scenario, SessionStart
+from .models import Company, MessageInput, ReviewInput, Scenario, SessionStart, ScenarioPersonas
 from .providers import DemoProvider, OpenAIProvider, ProviderError
 from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.5.0-role-portals"
+VERSION = "0.5.1-manual-acceptance"
 
 
 def now():
@@ -59,7 +59,7 @@ def summary(session):
     return {
         "id": session["id"], "scenario_id": session["scenario_id"],
         "title": scenario["title"], "customer_name": scenario["customer_name"],
-        "employee_id":session.get("employee_id"), "archived":not bool(session.get("employee_id")), "mode": session["mode"], "client_profile": visible_profile(session["client_profile_snapshot"]) if session.get("client_profile_snapshot") else None, "created_at": session["created_at"],
+        "selection":session.get("selection_snapshot"), "employee_id":session.get("employee_id"), "archived":not bool(session.get("employee_id")), "mode": session["mode"], "client_profile": visible_profile(session["client_profile_snapshot"]) if session.get("client_profile_snapshot") else None, "created_at": session["created_at"],
         "updated_at": session["updated_at"], "status": session["status"],
         "review_status": session["review_status"], "phase": session["state"]["phase"],
         "turn_count": sum(m["role"] == "learner" for m in session["messages"]),
@@ -274,12 +274,18 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.get("/api/scenarios")
     async def scenarios():
-        result={}
-        for p in persona_service.all():
-            if p.get("available",True):
-                sc=p["scenario"]["source_scenario"]
-                result[sc["id"]]={**{k:sc[k] for k in ("id","title","customer_name","public_brief","language")},"company_name":store.get_company()["name"]}
-        return {"scenarios":list(result.values())}
+        return {'scenarios':[{**{k:sc[k] for k in ('id','title','customer_name','public_brief','language','revision')},
+            'company_name':store.get_company()['name'],'personas':persona_service.choices(sc['id'])}
+            for sc in store.list_scenarios() if persona_service.choices(sc['id'])]}
+
+    @app.get('/api/mentor/scenario-personas', dependencies=[Depends(mentor)])
+    async def scenario_personas():
+        return {'assignments':[persona_service.assignment(sc['id']) for sc in store.list_scenarios()],
+                'profiles':[{'id':p['id'],'name':p['persona']['name'],'version':p['version'],'available':p.get('available',True)} for p in persona_service.all()]}
+
+    @app.put('/api/mentor/scenarios/{sid}/personas', dependencies=[Depends(mentor)])
+    async def assign_personas(sid: str,value: ScenarioPersonas):
+        return {'assignment':persona_service.assign(sid,value)}
 
     @app.get("/api/mentor/scenarios", dependencies=[Depends(mentor)])
     async def mentor_scenarios():
@@ -315,10 +321,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             fail("AI_NOT_CONFIGURED", "OpenAI ещё не подключён. Запустите сервер с API-ключом или выберите сценарный режим.", 409)
         selected_profile = None
         if value.mode == "simple_actor":
-            selected_profile = persona_service.get(value.client_profile_id)
-            if not selected_profile or not selected_profile.get("available",True) or selected_profile["scenario"]["source_scenario"]["id"] != value.scenario_id:
-                fail("CLIENT_PROFILE_REQUIRED", "Выберите подготовленный профиль клиента для simple_actor.", 422)
-            scenario = copy.deepcopy(selected_profile["scenario"]["source_scenario"])
+            selected_profile = persona_service.compose_pair(value.scenario_id,value.client_profile_id)
+            scenario = copy.deepcopy(selected_profile['scenario']['source_scenario'])
         else:
             if value.client_profile_id is not None:
                 fail("PROFILE_MODE_MISMATCH", "Профили используются в simple_actor.", 422)
@@ -340,6 +344,9 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         if selected_profile:
             session["client_profile_snapshot"] = copy.deepcopy(selected_profile)
             session["content_observations"] = []
+            session['selection_snapshot']={'scenario_id':scenario['id'],'scenario_revision':scenario['revision'],
+                'profile_id':selected_profile['id'],'profile_version':selected_profile['version'],
+                'persona_version':selected_profile['persona']['version'],'persona_label':selected_profile['persona']['name']}
         store.save_session(session)
         return {"session": learner_view(session)}
 

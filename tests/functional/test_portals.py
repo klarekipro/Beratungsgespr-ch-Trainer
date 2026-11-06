@@ -38,6 +38,30 @@ class PortalSmoke(unittest.TestCase):
         c.headers['X-CSRF-Token']=r.json()['csrf'];return c,u
     def training(self,c):
         r=c.post('/api/sessions',json={'scenario_id':'oven_no_fit','mode':'simple_actor','client_profile_id':'decisive_oven'});self.assertEqual(r.status_code,200,r.text);return r.json()['session']
+    def test_independent_pairs_preserve_facts_and_frozen_versions(self):
+        c,u=self.employee('pair-fixture')
+        catalogue=c.get('/api/scenarios').json()['scenarios']
+        self.assertEqual(len(catalogue),3)
+        saved=[]
+        for case in catalogue:
+            self.assertEqual({p['id'] for p in case['personas']},{'decisive_oven','indecisive_oven'})
+            for persona in case['personas']:
+                r=c.post('/api/sessions',json={'scenario_id':case['id'],'mode':'simple_actor','client_profile_id':persona['id']})
+                self.assertEqual(r.status_code,200,r.text)
+                session=self.app.state.store.get_session(r.json()['session']['id'])
+                original=self.app.state.store.get_scenario(case['id'])
+                self.assertEqual(session['scenario_snapshot'],original)
+                self.assertEqual(session['client_profile_snapshot']['scenario']['source_scenario'],original)
+                self.assertEqual(session['client_profile_snapshot']['persona'],self.app.state.store._get('client_profile',persona['id'])['persona'])
+                self.assertEqual(self.auth.owner(session['id']),u['id'])
+                saved.append(copy.deepcopy(session))
+        sid=catalogue[0]['id'];path='/api/mentor/scenarios/'+sid+'/personas'
+        self.assertEqual(c.put(path,json={'revision':0,'profile_ids':[]}).status_code,403)
+        self.assertEqual(self.m.put(path,json={'revision':0,'profile_ids':[]}).status_code,200)
+        self.assertEqual(c.post('/api/sessions',json={'scenario_id':sid,'mode':'simple_actor','client_profile_id':'decisive_oven'}).status_code,422)
+        self.assertEqual(self.m.put(path,json={'revision':0,'profile_ids':[]}).status_code,409)
+        for old in saved:self.assertEqual(old,self.app.state.store.get_session(old['id']))
+
     def test_real_login_reset_deactivation_and_no_header_impersonation(self):
         c,u=self.employee('first-fixture')
         self.assertEqual(c.get('/api/mentor/employees',headers={'X-Workspace-Role':'mentor'}).status_code,403)

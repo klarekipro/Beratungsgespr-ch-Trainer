@@ -1,7 +1,7 @@
 """SQLite profile library and immutable revisions; sessions keep their own snapshots."""
 from copy import deepcopy
 import json
-from .client_profiles import ClientProfile, public_profile
+from .client_profiles import ClientProfile, public_profile, SessionModifiers
 from .auth import fail
 
 class PersonaService:
@@ -47,3 +47,39 @@ class PersonaService:
             c.execute("INSERT INTO documents VALUES ('client_profile',?,?) ON CONFLICT(kind,id) DO UPDATE SET data=excluded.data",(p['id'],text))
             c.execute("INSERT INTO documents VALUES ('client_profile_version',?,?)",(p['id']+':v'+str(p['version']),text))
         return p
+
+    def assignment(self, sid):
+        return self.store._get('scenario_personas',sid) or {'scenario_id':sid,'revision':0,'profile_ids':['decisive_oven','indecisive_oven']}
+
+    def assign(self, sid, value):
+        if not self.store.get_scenario(sid):fail('NOT_FOUND','Сценарий не найден.',404)
+        if any(not self.get(pid) for pid in value.profile_ids):fail('NOT_FOUND','Персонаж не найден.',404)
+        with self.store.connection() as c:
+            c.execute('BEGIN IMMEDIATE')
+            row=c.execute("SELECT data FROM documents WHERE kind='scenario_personas' AND id=?",(sid,)).fetchone()
+            old=json.loads(row[0]) if row else self.assignment(sid)
+            if old['revision']!=value.revision:fail('VERSION_CONFLICT','Назначения изменились. Обновите страницу.',409)
+            record={'scenario_id':sid,'revision':old['revision']+1,'profile_ids':list(dict.fromkeys(value.profile_ids))}
+            c.execute("INSERT INTO documents VALUES ('scenario_personas',?,?) ON CONFLICT(kind,id) DO UPDATE SET data=excluded.data",(sid,json.dumps(record)))
+        return record
+
+    def choices(self,sid):
+        ids=self.assignment(sid)['profile_ids']
+        return [{'id':p['id'],'version':p['version'],'persona_version':p['persona']['version'],'name':p['persona']['name']} for p in self.all() if p['id'] in ids and p.get('available',True)]
+
+    def compose_pair(self,sid,pid):
+        p=deepcopy(self.get(pid));sc=deepcopy(self.store.get_scenario(sid))
+        if not p or not sc or pid not in {x['id'] for x in self.choices(sid)}:
+            fail('CLIENT_PROFILE_REQUIRED','Выберите доступный характер для этого сценария.',422)
+        # Behavior is independent of scenario facts. Never borrow modifiers or
+        # fact references from a different embedded legacy case.
+        old=p['scenario'];same=old['source_scenario']['id']==sid
+        ids={f['id'] for f in sc['facts']}
+        p['scenario']={'id':sc['id'],'version':sc['revision'],'persona_ids':[p['persona']['id']],
+            'source_scenario':sc,'initial_situation':sc['opening'],
+            **{k:[i for i in old[k] if i in ids] if same else [] for k in ['reason_fact_ids','observation_fact_ids','need_fact_ids','financial_fact_ids','timing_fact_ids']},
+            'open_questions':old['open_questions'] if same else {},
+            'disclosure_conditions':{i:old['disclosure_conditions'].get(i,'available') if same else 'available' for i in ids},
+            'critical_contradictions':['equipment_is_customer_owned','no_confirmed_repair_price','no_confirmed_booking']}
+        if not same:p['modifiers']=SessionModifiers().model_dump()
+        return ClientProfile.model_validate(p).model_dump()

@@ -105,3 +105,8 @@ class ReviewInput(InputModel):
     needs_confirmed: bool | None = None
     capabilities_confirmed: bool | None = None
     outcome: Identifier | None = None
+
+
+class ScenarioPersonas(InputModel):
+    revision: int = Field(ge=0)
+    profile_ids: list[Identifier] = Field(max_length=20)
