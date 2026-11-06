@@ -7,6 +7,7 @@ import os
 import sqlite3
 import subprocess
 import sys
+import secrets
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -14,11 +15,14 @@ from uuid import uuid4
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .engine import build_report, process_turn
+from .auth import AuthStore, attach_auth, require_mentor, CURRENT_USER, COOKIE
+from .persona_service import PersonaService
+from .transcription import transcribe, MAX_BYTES, probe_path
 from .client_profiles import load_profiles, public_profile, ClientProfile
 from .simple_actor import SimpleActorProvider, process_simple_turn
 from . import customer_actor, response_planning, simple_actor
@@ -29,7 +33,7 @@ from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.4.0-simple-actor"
+VERSION = "0.5.0-role-portals"
 
 
 def now():
@@ -40,17 +44,14 @@ def fail(code, message, status=400):
     raise HTTPException(status_code=status, detail={"code": code, "message": message})
 
 
-def mentor(x_workspace_role: str = Header(default="")):
-    if x_workspace_role != "mentor":
-        fail("MENTOR_WORKSPACE_REQUIRED", "Откройте рабочее место наставника.", 403)
-
+mentor = require_mentor
 
 def summary(session):
     scenario = session["scenario_snapshot"]
     return {
         "id": session["id"], "scenario_id": session["scenario_id"],
         "title": scenario["title"], "customer_name": scenario["customer_name"],
-        "mode": session["mode"], "client_profile": public_profile(session["client_profile_snapshot"]) if session.get("client_profile_snapshot") else None, "created_at": session["created_at"],
+        "employee_id":session.get("employee_id"), "archived":not bool(session.get("employee_id")), "mode": session["mode"], "client_profile": public_profile(session["client_profile_snapshot"]) if session.get("client_profile_snapshot") else None, "created_at": session["created_at"],
         "updated_at": session["updated_at"], "status": session["status"],
         "review_status": session["review_status"], "phase": session["state"]["phase"],
         "turn_count": sum(m["role"] == "learner" for m in session["messages"]),
@@ -65,12 +66,16 @@ def learner_view(session):
                    "api_count_complete": session.get("api_count_complete", False),
                    "natural_customer_turns": sum(m.get("source") in {"openai_actor_verified", "openai_simple_actor"} for m in session["messages"])})
     if session["status"] == "finished":
-        result["report"] = session.get("report") or build_report(session)
+        report = copy.deepcopy(session.get("report") or build_report(session))
+        if not CURRENT_USER.get() or CURRENT_USER.get()["role"] != "mentor_admin":
+            report.pop("facts",None)
+            report.pop("assessment_outcomes",None)
+        result["report"] = report
     return result
 
 
 def create_app(data_path: Path | None = None, provider_factory=None):
-    app = FastAPI(title="Klare KI · Consultation Studio", version=VERSION, docs_url=None, redoc_url=None)
+    app = FastAPI(title="Klare KI · Consultation Studio", version=VERSION, docs_url=None, redoc_url=None, openapi_url=None)
     # Capture at import/startup, not on each request: a later checkout must not
     # make an old process claim it loaded the new revision.
     try:
@@ -90,6 +95,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                "response_planning_sha256": hashlib.sha256(Path(response_planning.__file__).read_bytes()).hexdigest(),
                "simple_actor_module":str(Path(simple_actor.__file__).resolve()),
                "simple_actor_sha256":hashlib.sha256(Path(simple_actor.__file__).read_bytes()).hexdigest()}
+    auth_source=Path(sys.modules[AuthStore.__module__].__file__).resolve()
+    runtime.update(auth_module=str(auth_source),auth_sha256=hashlib.sha256(auth_source.read_bytes()).hexdigest())
     db_path = data_path or Path(os.environ.get("TRAINER_DATA_DIR", str(ROOT / "runtime" / "dashboard"))) / "trainer.sqlite3"
     store = SQLiteStore(Path(db_path))
     runtime["data_path"] = str(Path(db_path).resolve())
@@ -102,9 +109,16 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     seed_scenarios = [Scenario.model_validate(s).model_dump() for s in SEED_SCENARIOS]
     store.seed(seed_company, seed_scenarios)
     store.upgrade_builtin_scenarios(PREVIOUS_BUILTIN_SHA256, seed_scenarios)
+    auth = AuthStore(store)
+    app.state.auth = auth
+    secure_cookies = os.environ.get("TRAINER_REMOTE_HTTPS") == "1"
+    attach_auth(app,auth,secure=secure_cookies)
+    local_token_path = Path(db_path).parent.parent / "installation-token"
+    local_token = local_token_path.read_text().strip() if local_token_path.is_file() else None
     app.state.store = store
     app.state.locks = {}
-    client_profiles = {p["id"]:p for p in load_profiles(overrides=Path(db_path).parent.parent / "client_profiles")}
+    persona_service = PersonaService(store,load_profiles(overrides=Path(db_path).parent.parent / "client_profiles"))
+    app.state.persona_service = persona_service
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     model = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini-2025-04-14").strip()
     live_configured = bool(api_key and model)
@@ -115,7 +129,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         if provider_factory:
             return provider_factory(mode)
         if mode == "simple_actor":
-            return SimpleActorProvider(api_key=api_key, model=model)
+            return SimpleActorProvider(api_key=api_key, model=model,timeout=45)
         return OpenAIProvider(api_key=api_key, model=model) if mode == "openai" else DemoProvider()
 
     allowed_hosts = ["localhost", "127.0.0.1", "[::1]", "testserver"]
@@ -124,28 +138,52 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.middleware("http")
     async def local_boundary(request: Request, call_next):
-        if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
-            origin = request.headers.get("origin")
-            if origin:
-                parsed = urlsplit(origin)
-                if parsed.scheme != request.url.scheme or parsed.netloc != request.url.netloc or parsed.path not in ("", "/"):
-                    return JSONResponse({"error": {"code": "FOREIGN_ORIGIN", "message": "Запрос должен исходить из этого приложения."}}, status_code=403)
-            try:
-                size = int(request.headers.get("content-length", "0"))
-            except ValueError:
-                size = 262145
-            if size > 262144:
-                return JSONResponse({"error": {"code": "BODY_TOO_LARGE", "message": "Слишком большой запрос."}}, status_code=413)
-            # Also bound chunked requests, not only their optional Content-Length.
-            body = await request.body()
-            if len(body) > 262144:
-                return JSONResponse({"error": {"code": "BODY_TOO_LARGE", "message": "Слишком большой запрос."}}, status_code=413)
-        response = await call_next(request)
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["Referrer-Policy"] = "no-referrer"
-        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
-        if request.url.path.startswith("/api/"):
-            response.headers["Cache-Control"] = "no-store"
+        path=request.url.path
+        user,csrf=auth.resolve(request.cookies.get(COOKIE))
+        request.state.user=user;request.state.csrf=csrf
+        public_api=path in {"/api/status","/api/auth/login","/api/auth/bootstrap-status"}
+        unsafe=request.method in {"POST","PUT","PATCH","DELETE"}
+        def deny(code,message,status):
+            response=JSONResponse({"error":{"code":code,"message":message}},status_code=status)
+            response.headers["Cache-Control"]="no-store"
+            return response
+        if secure_cookies and request.url.scheme!="https" and path!="/api/status":
+            return deny("HTTPS_REQUIRED","Для удалённого доступа обязателен HTTPS.",426)
+        if path.startswith("/api/") and not public_api:
+            if not user:return deny("AUTH_REQUIRED","Войдите в свой кабинет.",401)
+            if path.startswith("/api/mentor/") and user["role"]!="mentor_admin":
+                return deny("FORBIDDEN","Доступ запрещён.",403)
+            if user["must_change_password"] and path not in {"/api/auth/me","/api/auth/password","/api/auth/logout"}:
+                return deny("PASSWORD_CHANGE_REQUIRED","Сначала измените временный пароль.",423)
+            if unsafe and path.startswith("/api/sessions") and user["role"]!="employee":
+                return deny("EMPLOYEE_REQUIRED","Тренировки создаются в кабинете сотрудника.",403)
+            if path=="/api/transcriptions" and user["role"]!="employee":
+                return deny("EMPLOYEE_REQUIRED","Диктовка доступна сотруднику.",403)
+        if unsafe:
+            origin=request.headers.get("origin","")
+            parsed=urlsplit(origin)
+            if parsed.scheme!=request.url.scheme or parsed.netloc!=request.url.netloc or parsed.path not in ("","/"):
+                return deny("FOREIGN_ORIGIN","Запрос должен исходить из этого приложения.",403)
+            if path!="/api/auth/login" and path.startswith("/api/"):
+                if not csrf or not secrets.compare_digest(request.headers.get("x-csrf-token",""),csrf):
+                    return deny("CSRF_FAILED","Обновите страницу и повторите действие.",403)
+            limit=MAX_BYTES if path=="/api/transcriptions" else 262144
+            try:size=int(request.headers.get("content-length","0"))
+            except ValueError:size=limit+1
+            if size>limit:return deny("BODY_TOO_LARGE","Слишком большой запрос.",413)
+            body=bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body)>limit:return deny("BODY_TOO_LARGE","Слишком большой запрос.",413)
+            request._body=bytes(body)
+        token=CURRENT_USER.set(user)
+        try:response=await call_next(request)
+        finally:CURRENT_USER.reset(token)
+        response.headers["X-Content-Type-Options"]="nosniff"
+        response.headers["Referrer-Policy"]="no-referrer"
+        response.headers["Content-Security-Policy"]="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+        response.headers["Permissions-Policy"]="microphone=(self), camera=(), geolocation=()"
+        if path.startswith("/api/") or path in {"/","/login","/mentor","/learner"}:response.headers["Cache-Control"]="no-store"
         return response
 
     @app.exception_handler(HTTPException)
@@ -168,7 +206,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     def get_session(sid):
         session = store.get_session(sid)
-        if not session:
+        if not session or not auth.visible(sid,CURRENT_USER.get()):
             fail("SESSION_NOT_FOUND", "Беседа не найдена.", 404)
         return session
 
@@ -183,16 +221,20 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             fail("INVALID_OUTCOME", "В сценарии указана услуга, которой нет в карточке компании.", 422)
 
     @app.get("/api/status")
-    async def status():
-        return {"version": VERSION, "storage": "sqlite", "access_mode": "local_workspaces", "runtime": runtime,
+    async def status(request:Request):
+        result = {"version": VERSION, "storage": "sqlite", "access_mode": "role_portals", "runtime": runtime,
                 "ai": {"configured": live_configured, "live_enabled": live_configured, "model": model,
-                       "customer_mode": "selectable", "max_requests_per_turn": 5,
+                       "customer_mode": "simple_actor", "max_requests_per_turn": 1,
                        "modes": {"simple_actor": {"max_requests_per_turn": 1, "llm_verifier": False}, "openai": {"legacy": True, "max_requests_per_turn": 5}}},
-                "limits": {"max_turns": max_turns, "max_live_attempts": max_live_attempts}, "roles": ["mentor", "learner"]}
+                "limits": {"max_turns": max_turns, "max_live_attempts": max_live_attempts}, "roles": ["mentor_admin", "employee"]}
+        result["ai"]["transcription"]={"configured":bool(api_key and probe_path()),"model":os.environ.get("OPENAI_TRANSCRIPTION_MODEL","gpt-transcribe"),"max_seconds":60,"max_bytes":MAX_BYTES}
+        privileged=bool(request.state.user and request.state.user["role"]=="mentor_admin") or bool(local_token and secrets.compare_digest(request.headers.get("x-trainer-local-token",""),local_token))
+        if not privileged:result.pop("runtime",None)
+        return result
 
     @app.get("/api/client-profiles")
     async def profiles():
-        return {"profiles":[public_profile(p) for p in client_profiles.values()]}
+        return {"profiles":[public_profile(p) for p in persona_service.all() if p.get("available",True)]}
 
     @app.get("/api/mentor/client-profiles/schema", dependencies=[Depends(mentor)])
     async def profile_schema():
@@ -200,7 +242,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.get("/api/mentor/client-profiles", dependencies=[Depends(mentor)])
     async def mentor_profiles():
-        return {"profiles": list(client_profiles.values())}
+        return {"profiles": persona_service.all()}
 
     @app.get("/api/company")
     async def company():
@@ -216,14 +258,20 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         record = value.model_dump()
         for scenario in store.list_scenarios():
             valid_outcomes(scenario, record)
+        for profile in persona_service.all():
+            valid_outcomes(profile["scenario"]["source_scenario"],record)
         record["revision"] = previous["revision"] + 1
         store.save_company(record)
         return {"company": record}
 
     @app.get("/api/scenarios")
     async def scenarios():
-        comp = store.get_company()
-        return {"scenarios": [{**{k: s[k] for k in ("id", "title", "customer_name", "public_brief", "language")}, "company_name": comp["name"]} for s in store.list_scenarios()]}
+        result={}
+        for p in persona_service.all():
+            if p.get("available",True):
+                sc=p["scenario"]["source_scenario"]
+                result[sc["id"]]={**{k:sc[k] for k in ("id","title","customer_name","public_brief","language")},"company_name":store.get_company()["name"]}
+        return {"scenarios":list(result.values())}
 
     @app.get("/api/mentor/scenarios", dependencies=[Depends(mentor)])
     async def mentor_scenarios():
@@ -249,16 +297,18 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.get("/api/sessions")
     async def sessions():
-        return {"sessions": [summary(s) for s in store.list_sessions()]}
+        return {"sessions": [summary(s) for s in store.list_sessions() if auth.visible(s["id"],CURRENT_USER.get())]}
 
     @app.post("/api/sessions")
     async def start(value: SessionStart):
+        if value.mode!="simple_actor":
+            fail("MODE_UNAVAILABLE","Для новых тренировок используется simple_actor.",422)
         if value.mode in {"openai", "simple_actor"} and not live_configured:
             fail("AI_NOT_CONFIGURED", "OpenAI ещё не подключён. Запустите сервер с API-ключом или выберите сценарный режим.", 409)
         selected_profile = None
         if value.mode == "simple_actor":
-            selected_profile = client_profiles.get(value.client_profile_id)
-            if not selected_profile or selected_profile["scenario"]["source_scenario"]["id"] != value.scenario_id:
+            selected_profile = persona_service.get(value.client_profile_id)
+            if not selected_profile or not selected_profile.get("available",True) or selected_profile["scenario"]["source_scenario"]["id"] != value.scenario_id:
                 fail("CLIENT_PROFILE_REQUIRED", "Выберите подготовленный профиль клиента для simple_actor.", 422)
             scenario = copy.deepcopy(selected_profile["scenario"]["source_scenario"])
         else:
@@ -272,7 +322,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             fail("COMPANY_NOT_REVIEWED", "Наставнику нужно проверить и подтвердить карточку компании.", 409)
         valid_outcomes(scenario, comp)
         ts = now()
-        session = {"id": uuid4().hex, "scenario_id": scenario["id"], "scenario_snapshot": copy.deepcopy(scenario),
+        session = {"employee_id": CURRENT_USER.get()["id"], "id": uuid4().hex, "scenario_id": scenario["id"], "scenario_snapshot": copy.deepcopy(scenario),
                    "company_snapshot": copy.deepcopy(comp), "mode": value.mode, "created_at": ts, "updated_at": ts,
                    "status": "active", "review_status": "not_submitted", "review_note": "", "reviewed_at": None,
                    "version": 1, "state": {"phase": "needs", "discovered": [], "needs_confirmed": False,
@@ -322,7 +372,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 if type(requests_before) is not int:
                     requests_before = 0
                 processor = process_simple_turn if session["mode"] == "simple_actor" else process_turn
-                updated = await processor(session, value.text, value.kind, current_provider, turn)
+                updated = await processor(session, value.text, "message" if session["mode"]=="simple_actor" else value.kind, current_provider, turn)
             except ProviderError as exc:
                 # Fixed safe message; no provider payload / user content / secrets.
                 code = getattr(exc, "code", "AI_UNAVAILABLE")
@@ -340,7 +390,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                     session.setdefault("system_issues", []).append(issue)
                     session["system_issues"] = session["system_issues"][-30:]
                     fail(code, "В карточке нет данных для ответа на этот вопрос. Это ограничение сценария, а не ошибка ученика. Наставнику нужно дополнить карточку.", 422)
-                fail(code, "Не удалось получить проверенный ответ. Реплика не засчитана. Можно повторить отправку; сценарный режим не подставлялся.", 502)
+                message = ("Соединение с AI временно недоступно. Реплика не засчитана; текст сохранён. Повторите отправку позже." if code in {"ai_timeout","ai_unavailable","ai_rate_limited","ai_access_denied","ai_request_rejected"} else "Ответ клиента не прошёл локальную проверку и не показан. Это технический отказ, не оценка вашей реплики. Можно повторить отправку.")
+                fail(code, message, 502)
             except (ValueError, TypeError, KeyError, RuntimeError):
                 error_code = "INVALID_AI_RESPONSE"
                 fail("INVALID_AI_RESPONSE", "Ответ системы не прошёл проверку. Ход не засчитан; повторите отправку.", 502)
@@ -400,8 +451,13 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     def exportable(sid):
         session = get_session(sid)
-        if session["status"] != "finished":
+        if session["status"] != "finished" and CURRENT_USER.get()["role"]!="mentor_admin":
             fail("FINISH_REQUIRED", "Полная расшифровка с разбором доступна после завершения.", 409)
+        if CURRENT_USER.get()["role"]!="mentor_admin":
+            session=copy.deepcopy(session)
+            session["report"]=learner_view(session)["report"]
+            session["scenario_snapshot"]["facts"]=[]
+            session["restricted_export"]=True
         return session
 
     def download(data, kind, sid, content_type):
@@ -414,7 +470,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     @app.get("/api/sessions/{sid}/export.json")
     async def json_export(sid: str):
         session = exportable(sid)
-        clean = {k: v for k, v in session.items() if k not in {"receipts"}}
+        clean = (learner_view(session) if CURRENT_USER.get()["role"]!="mentor_admin" else {k:v for k,v in session.items() if k not in {"receipts"}})
         return download(json.dumps(clean, ensure_ascii=False, indent=2), "json", sid, "application/json; charset=utf-8")
 
     @app.get("/api/sessions/{sid}/export.pdf")
@@ -428,17 +484,21 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.get("/api/mentor/reviews", dependencies=[Depends(mentor)])
     async def reviews():
-        return {"sessions": [{**summary(s), "report": s.get("report"), "review_note": s.get("review_note", "")} for s in store.list_sessions() if s["review_status"] in {"submitted", "reviewed"}]}
+        result=[]
+        for record in store.list_sessions():
+            owner=auth.owner(record["id"]);u=auth.user(owner) if owner else None
+            result.append({**summary(record),"employee_name":u["display_name"] if u else "Архив A09 без владельца","employee_id":owner,"archived":owner is None})
+        return {"sessions":result}
 
     def submitted(sid):
         session = get_session(sid)
-        if session["status"] != "finished" or session["review_status"] not in {"submitted", "reviewed"}:
+        if session["status"] != "finished":
             fail("REVIEW_NOT_SUBMITTED", "Эта беседа ещё не передана наставнику.", 404)
         return session
 
     @app.get("/api/mentor/reviews/{sid}", dependencies=[Depends(mentor)])
     async def review_view(sid: str):
-        return {"session": learner_view(submitted(sid))}
+        return {"session": learner_view(get_session(sid))}
 
     @app.post("/api/mentor/reviews/{sid}", dependencies=[Depends(mentor)])
     async def review(sid: str, value: ReviewInput):
@@ -457,15 +517,97 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                              phase="completed" if value.outcome else "proposal" if capabilities else "capabilities" if needs else "needs")
                 state["events"].append({"type":"owner_assessment","turn":0,"detail":"Этапы и итог отмечены наставником после содержательного разбора, не моделью."})
                 session["report"] = build_report(session)
-            session.update(review_note=value.note, reviewed_at=now(), review_status="reviewed", updated_at=now(), version=previous + 1)
+            session.update(reviewed_by=CURRENT_USER.get()["id"], review_note=value.note, reviewed_at=now(), review_status="reviewed", updated_at=now(), version=previous + 1)
             store.save_session(session, expected_version=previous)
             return {"session": learner_view(session)}
+
+    @app.get("/api/mentor/employees/{uid}/sessions",dependencies=[Depends(mentor)])
+    async def employee_history(uid:str):
+        if not auth.user(uid):fail("NOT_FOUND","Сотрудник не найден.",404)
+        return {"sessions":[summary(s) for s in store.list_sessions() if auth.owner(s["id"])==uid]}
+
+    @app.get("/api/mentor/overview",dependencies=[Depends(mentor)])
+    async def overview():
+        all_sessions=store.list_sessions()
+        return {"employees":len(auth.users()),"trainings":len(all_sessions),"pending":sum(s["review_status"]=="submitted" for s in all_sessions),"recent":[summary(s) for s in all_sessions if s["status"]=="finished"][:6]}
+
+    @app.post("/api/mentor/client-profiles/validate",dependencies=[Depends(mentor)])
+    async def validate_profile(value:ClientProfile):
+        valid_outcomes(value.scenario.source_scenario.model_dump(),store.get_company())
+        return {"profile":value.model_dump()}
+
+    @app.post("/api/mentor/client-profiles",dependencies=[Depends(mentor)])
+    async def create_profile(value:ClientProfile):
+        valid_outcomes(value.scenario.source_scenario.model_dump(),store.get_company())
+        return {"profile":persona_service.save(value.model_dump(),create=True)}
+
+    @app.put("/api/mentor/client-profiles/{pid}",dependencies=[Depends(mentor)])
+    async def save_profile(pid:str,value:ClientProfile):
+        if value.id!=pid:fail("PROFILE_ID_IMMUTABLE","ID профиля менять нельзя.",422)
+        valid_outcomes(value.scenario.source_scenario.model_dump(),store.get_company())
+        return {"profile":persona_service.save(value.model_dump())}
+
+    @app.get("/api/mentor/client-profiles/{pid}/versions",dependencies=[Depends(mentor)])
+    async def profile_versions(pid:str):
+        return {"versions":[p for p in store._list("client_profile_version") if p["id"]==pid]}
+
+    @app.get("/api/mentor/reviews/{sid}/diagnostics",dependencies=[Depends(mentor)])
+    async def diagnostics(sid:str):
+        record=get_session(sid)
+        entries=[]
+        if audit_dir:
+            for path in sorted(audit_dir.glob(sid+"-*.json")):
+                try:a=json.loads(path.read_text())
+                except (ValueError,OSError):continue
+                if a.get("error_code"):
+                    entries.append({"turn":a.get("turn"),"code":a["error_code"],"api_requests":a.get("api_requests"),"upstream":[{k:v for k,v in t.items() if k in {"category","status","exception_type"}} for t in a.get("trace",[]) if t.get("kind")=="upstream_error"]})
+        return {"issues":record.get("system_issues",[]),"attempts":entries}
+
+    @app.get("/api/mentor/transcription-diagnostics",dependencies=[Depends(mentor)])
+    async def transcription_diagnostics():
+        return {"errors":store._list("transcription_diagnostic")[-100:]}
+
+    transcription_gate=asyncio.Semaphore(2)
+    transcription_attempts={}
+    @app.post("/api/transcriptions")
+    async def dictation(request:Request,language:str="ru",format:str="webm"):
+        import time
+        uid=request.state.user["id"];stamp=time.time()
+        recent=[t for t in transcription_attempts.get(uid,[]) if stamp-t<60]
+        if len(recent)>=6:fail("TRANSCRIPTION_LIMIT","Не более шести записей в минуту.",429)
+        transcription_attempts[uid]=recent+[stamp]
+        model=os.environ.get("OPENAI_TRANSCRIPTION_MODEL","gpt-transcribe")
+        def count_request():
+            with store.connection() as con:
+                con.execute("CREATE TABLE IF NOT EXISTS transcription_usage (user_id TEXT NOT NULL,created_at REAL NOT NULL,model TEXT NOT NULL,api_requests INTEGER NOT NULL)")
+                con.execute("INSERT INTO transcription_usage VALUES (?,?,?,?)",(uid,stamp,model,1))
+        def dictation_error(category,detail):
+            store._put("transcription_diagnostic",uuid4().hex,{"employee_id":uid,"at":stamp,"model":model,"category":category,"detail":detail})
+        async with transcription_gate:
+            result=await transcribe(await request.body(),format,language,api_key,model,count_request,dictation_error)
+        return result
 
     frontend = ROOT / "frontend"
 
     @app.get("/")
     async def index():
-        return FileResponse(frontend / "index.html", headers={"Cache-Control": "no-cache"})
+        u=CURRENT_USER.get()
+        return RedirectResponse("/mentor" if u and u["role"]=="mentor_admin" else "/learner" if u else "/login",status_code=303)
+
+    @app.get("/favicon.ico")
+    async def favicon():return Response(status_code=204)
+
+    @app.get("/login")
+    async def login_page():return FileResponse(frontend/"login.html")
+
+    @app.get("/mentor")
+    @app.get("/learner")
+    async def portal(request:Request):
+        u=CURRENT_USER.get()
+        if not u:return RedirectResponse("/login?portal="+("mentor" if request.url.path=="/mentor" else "learner"),status_code=303)
+        expected="/mentor" if u["role"]=="mentor_admin" else "/learner"
+        if request.url.path!=expected:fail("FORBIDDEN","Этот кабинет недоступен вашей роли.",403)
+        return FileResponse(frontend/"index.html")
 
     app.mount("/static", StaticFiles(directory=frontend), name="static")
     return app

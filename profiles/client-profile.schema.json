@@ -79,6 +79,26 @@
           "maxItems": 12,
           "title": "Typical Expressions",
           "type": "array"
+        },
+        "psychological_type": {
+          "default": "custom",
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Psychological Type",
+          "type": "string"
+        },
+        "repeat_question_reaction": {
+          "default": "Спокойно уточняет, что осталось непонятным.",
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Repeat Question Reaction",
+          "type": "string"
+        },
+        "additional_behavior": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Additional Behavior",
+          "type": "string"
         }
       },
       "required": [
@@ -170,6 +190,12 @@
     "ProfileField": {
       "additionalProperties": false,
       "properties": {
+        "label": {
+          "default": "",
+          "maxLength": 240,
+          "title": "Label",
+          "type": "string"
+        },
         "status": {
           "enum": [
             "known",
@@ -467,6 +493,11 @@
       "minimum": 1,
       "title": "Version",
       "type": "integer"
+    },
+    "available": {
+      "default": true,
+      "title": "Available",
+      "type": "boolean"
     },
     "persona": {
       "$ref": "#/$defs/BasePersona"

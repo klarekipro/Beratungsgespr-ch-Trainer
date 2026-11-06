@@ -8,6 +8,7 @@ from .models import InputModel, Identifier, ShortText, Scenario
 ROOT = Path(__file__).resolve().parents[3] / 'profiles'
 
 class ProfileField(InputModel):
+    label: str = Field(default="",max_length=240)
     status: Literal['known', 'customer_unknown', 'author_missing', 'undecided', 'refuses_to_disclose', 'not_applicable']
     value: str = Field(default='', max_length=3000)
 
@@ -32,6 +33,9 @@ class BasePersona(InputModel):
     decision_style: ShortText
     pressure_reaction: ShortText
     typical_expressions: list[ShortText] = Field(max_length=12)
+    psychological_type: ShortText = "custom"
+    repeat_question_reaction: ShortText = "Спокойно уточняет, что осталось непонятным."
+    additional_behavior: str = Field(default="",max_length=2000)
 
 class ProfileScenario(InputModel):
     id: Identifier
@@ -70,6 +74,7 @@ class ClientProfile(InputModel):
     schema_version: Literal[1] = 1
     id: Identifier
     version: int = Field(ge=1)
+    available: bool = True
     persona: BasePersona
     scenario: ProfileScenario
     modifiers: SessionModifiers

@@ -57,7 +57,8 @@ def export_text(session):
         lines.append("Отдельных событий не зафиксировано. Это не подтверждение качества обучения.")
     for item in report.get("findings", []):
         lines.append(f"Ход {item.get('turn', '—')}: {item.get('detail', '')}")
-    lines.extend(["", "СВЕДЕНИЯ СЦЕНАРИЯ (ОТКРЫТЫ ПОСЛЕ ЗАВЕРШЕНИЯ)"])
+    if not session.get("restricted_export"):
+        lines.extend(["", "СВЕДЕНИЯ СЦЕНАРИЯ (ОТКРЫТЫ ПОСЛЕ ЗАВЕРШЕНИЯ)"])
     for item in report.get("facts", []):
         found = "не оценено автоматически" if session["mode"]=="simple_actor" else "выяснено" if item.get("discovered") else "не выяснено"
         lines.extend([f"{item['label']} — {found}; состояние клиента: {item['status']}", item["value"], ""])
@@ -156,7 +157,8 @@ def export_pdf(session):
     for message in session["messages"]:
         speaker = "Ученик" if message["role"] == "learner" else scenario["customer_name"] + " · клиент"
         story.extend([p(f"{speaker}   /   ход {message.get('turn', 0)}", "speaker"), p(message["text"])])
-    story.extend([PageBreak(), p("Основания для разбора", "title"), p("Закрытые сведения этой версии сценария открыты после завершения попытки.", "subtitle")])
+    if not session.get("restricted_export"):
+        story.extend([PageBreak(), p("Основания для разбора", "title"), p("Закрытые сведения этой версии сценария открыты после завершения попытки.", "subtitle")])
     status_names = {"known": "знает", "undecided": "не определился", "does_not_know": "не знает", "refuses_to_disclose": "не раскрывает", "not_applicable": "не относится к ситуации"}
     for fact in report.get("facts", []):
         found = "не оценено автоматически" if session["mode"]=="simple_actor" else "выяснено" if fact.get("discovered") else "не выяснено"

@@ -42,6 +42,7 @@ class SQLiteStore:
         con = sqlite3.connect(self.path, timeout=10)
         try:
             con.execute("PRAGMA busy_timeout=10000")
+            con.execute("PRAGMA foreign_keys=ON")
             yield con
             con.commit()
         except Exception:
@@ -124,6 +125,8 @@ class SQLiteStore:
                 if not row or json.loads(row[0])["version"] != expected_version:
                     raise VersionConflict("Session changed")
             con.execute("INSERT INTO documents(kind,id,data) VALUES ('session',?,?) ON CONFLICT(kind,id) DO UPDATE SET data=excluded.data", (session["id"], json.dumps(session, ensure_ascii=False)))
+            if con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='training_owners'").fetchone():
+                con.execute("INSERT OR IGNORE INTO training_owners VALUES (?,?)",(session["id"],session.get("employee_id")))
 
     def list_sessions(self):
         return sorted(self._list("session"), key=lambda x: x["updated_at"], reverse=True)

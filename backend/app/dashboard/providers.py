@@ -417,10 +417,14 @@ class OpenAIProvider:
                         "https://api.openai.com/v1/responses", json=payload,
                         headers={"Authorization": "Bearer " + self._api_key},
                     )
-        except httpx.TimeoutException:
+        except httpx.TimeoutException as exc:
+            self.trace.append({"kind":"upstream_error","category":"timeout","exception_type":type(exc).__name__})
             raise ProviderError("ai_timeout", "OpenAI не ответил вовремя. Ход не засчитан; можно повторить отправку.", True) from None
-        except httpx.RequestError:
+        except httpx.RequestError as exc:
+            self.trace.append({"kind":"upstream_error","category":"transport","exception_type":type(exc).__name__})
             raise ProviderError("ai_unavailable", "Соединение с OpenAI недоступно. Ход не засчитан.", True) from None
+        if response.status_code != 200:
+            self.trace.append({"kind":"upstream_error","category":"http","status":response.status_code})
         if response.status_code == 429:
             raise ProviderError("ai_rate_limited", "OpenAI временно ограничил запросы или исчерпан лимит API. Ход не засчитан.", True)
         if response.status_code in (401, 403):

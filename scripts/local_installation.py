@@ -13,13 +13,14 @@ from pathlib import Path
 import re
 import shutil
 import signal
+import secrets
 import sqlite3
 import subprocess
 import sys
 import tempfile
 import time
 from urllib.error import URLError
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 import uuid
 
 TRUSTED_URL = 'https://github.com/klarekipro/Beratungsgespr-ch-Trainer.git'
@@ -125,6 +126,12 @@ class Installation:
         self.base_release = base_release
         self.runtime = self.root / 'runtime'
         self.runtime.mkdir(exist_ok=True, mode=0o700)
+        token_file=self.runtime/'installation-token'
+        if not token_file.exists():
+            try:
+                with os.fdopen(os.open(token_file,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600),'w') as f:f.write(secrets.token_urlsafe(32))
+            except FileExistsError:pass
+        self.local_token=token_file.read_text().strip()
         self.keychain = keychain or Keychain(self.root / 'scripts/mac_keychain.c', self.support)
         self.url = f'http://127.0.0.1:{port}'
 
@@ -133,7 +140,7 @@ class Installation:
 
     def status(self):
         try:
-            with urlopen(self.url + '/api/status', timeout=2) as response:
+            with urlopen(Request(self.url + '/api/status',headers={'X-Trainer-Local-Token':self.local_token}), timeout=2) as response:
                 return json.load(response)
         except (OSError, ValueError, URLError):
             return None
@@ -177,6 +184,8 @@ class Installation:
                 and rt.get('customer_actor_module') == str(expected.with_name('customer_actor.py'))
                 and rt.get('customer_actor_sha256') == hashlib.sha256(expected.with_name('customer_actor.py').read_bytes()).hexdigest()
                 and rt.get('response_planning_sha256') == hashlib.sha256(expected.with_name('response_planning.py').read_bytes()).hexdigest()
+                and (not expected.with_name('simple_actor.py').exists() or rt.get('simple_actor_sha256')==hashlib.sha256(expected.with_name('simple_actor.py').read_bytes()).hexdigest())
+                and (not expected.with_name('auth.py').exists() or rt.get('auth_sha256')==hashlib.sha256(expected.with_name('auth.py').read_bytes()).hexdigest())
                 and (expected_pid is None or rt.get('pid') == expected_pid)
                 and (not require_ai or status.get('ai', {}).get('configured') is True))
 
@@ -304,6 +313,15 @@ class Installation:
             raise OperationError('Commit не найден в проверенном источнике.')
         return target
 
+    def check_auth_compatibility(self,target):
+        database=self.runtime/'dashboard/trainer.sqlite3'
+        if not database.exists():return
+        with sqlite3.connect(database) as con:
+            has_users=con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='users'").fetchone()
+            populated=bool(has_users and con.execute('SELECT 1 FROM users LIMIT 1').fetchone())
+        if populated and run(['git','-C',self.root,'cat-file','-e',target+':backend/app/dashboard/auth.py']).returncode:
+            raise OperationError('Откат к версии без авторизации запрещён после создания учётных записей. Сохранены резервные копии; выберите совместимый защищённый commit.')
+
     def check_clean(self):
         if git(self.root, 'status', '--porcelain'):
             raise OperationError('Есть несохранённые изменения или уникальные untracked-файлы. Сохраните их; автоматический reset/clean запрещён.')
@@ -326,7 +344,7 @@ class Installation:
                     raise OperationError('В выбранной версии нет operational launcher A07. Основная установка не переключалась.')
             python = self.ensure_environment(stage)
             env = os.environ.copy(); env['OPENAI_API_KEY'] = ''; env.pop('TRAINER_AUDIT_DIR', None)
-            tests = subprocess.run([python, '-m', 'unittest', 'discover', '-s', 'tests/dashboard', '-q'],
+            tests = subprocess.run(([python, 'scripts/release_smoke.py'] if (stage/'scripts/release_smoke.py').is_file() else [python, '-m', 'unittest', 'discover', '-s', 'tests/dashboard', '-q']),
                                    cwd=stage, env=env, capture_output=True, timeout=300)
             node = shutil.which('node')
             if not node:
@@ -365,6 +383,7 @@ class Installation:
         return record
 
     def restore(self, record, *, secret, browser=False, restore_data=True):
+        if not restore_data:self.check_auth_compatibility(record['previous_sha'])
         self.stop()
         git(self.root, 'checkout', '--no-overwrite-ignore', '--detach', record['previous_sha'])
         backup = Path(record['backup'])
@@ -392,6 +411,7 @@ class Installation:
             print('Выбранная проверенная версия уже установлена: ' + target)
             return self.start(browser=browser)
         self.check_collisions(target)
+        self.check_auth_compatibility(target)
         self.prepare_release(target)
         # Obtain a usable key before stopping the previous working process.
         secret = self.keychain.get() or self.keychain.prompt()
