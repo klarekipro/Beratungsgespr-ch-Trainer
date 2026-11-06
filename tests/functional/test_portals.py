@@ -63,7 +63,7 @@ class PortalSmoke(unittest.TestCase):
         data=a.get('/api/sessions/'+sid).json()['session'];self.assertNotIn('facts',data['report']);self.assertNotIn('assessment_outcomes',data['report'])
         export=a.get('/api/sessions/'+sid+'/export.json');self.assertEqual(export.status_code,200)
         text=export.text
-        for forbidden in ['client_profile_snapshot','authorized_facts','disclosure_conditions','scenario_snapshot','password_hash']:self.assertNotIn(forbidden,text)
+        for forbidden in ['client_profile_snapshot','authorized_facts','disclosure_conditions','scenario_snapshot','password_hash','persona_name','approval','psychological_type']:self.assertNotIn(forbidden,text)
         self.assertNotIn('Прежняя сервисная фирма прекратила',a.get('/api/sessions/'+sid+'/export.txt').text)
         self.assertTrue(a.get('/api/sessions/'+sid+'/export.pdf').content.startswith(b'%PDF'))
         self.assertEqual(self.m.get('/api/mentor/employees/'+ua['id']+'/sessions').json()['sessions'][0]['id'],sid)
@@ -112,3 +112,13 @@ class PortalSmoke(unittest.TestCase):
         s=self.training(c);saved=self.app.state.store.get_session(s['id']);own=dossier(saved)
         for text in ['Площадь помещения около 50 квадратных метров.','Объём печи 0,5 кубических метра.','Обслуживание проводится раз в год.']:
             with self.assertRaises(ProviderError):validate_reply({'speaker_role':'customer','customer_id':own['customer_id'],'reply':text},own,saved)
+
+        # A different approved case must not inherit the gas-case type rejection.
+        from backend.app.dashboard.seeds import SEED_SCENARIOS
+        switched=copy.deepcopy(saved);sc=copy.deepcopy(next(x for x in SEED_SCENARIOS if x['id']=='oven_uncertain'))
+        switched['scenario_snapshot']=sc;switched['client_profile_snapshot']['scenario']['source_scenario']=sc
+        switched['client_profile_snapshot']['scenario']['disclosure_conditions']={f['id']:'available' for f in sc['facts']}
+        ctx=dossier(switched)
+        self.assertEqual(validate_reply({'speaker_role':'customer','customer_id':ctx['customer_id'],'reply':'Моя печь бытовая электрическая.'},ctx,switched),'Моя печь бытовая электрическая.')
+        with self.assertRaises(ProviderError):validate_reply({'speaker_role':'customer','customer_id':ctx['customer_id'],'reply':'У меня промышленная газовая печь.'},ctx,switched)
+        with self.assertRaises(ProviderError):validate_reply({'speaker_role':'customer','customer_id':own['customer_id'],'reply':'Моя печь электрическая.'},own,saved)

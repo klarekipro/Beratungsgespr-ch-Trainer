@@ -126,7 +126,14 @@ def validate_reply(result, own, session):
             if schedule and schedule.group().casefold() not in evidence.casefold() and not re.search(r'не знаю|неизвест|не могу|nicht',clause,re.I):
                 raise ProviderError('ai_actor_unsupported_schedule','Периодичность обслуживания не подтверждена досье.')
     flags=session['client_profile_snapshot']['scenario']['critical_contradictions']
-    if 'industrial_gas_not_domestic_electric' in flags and re.search(r'(?:моя|у\s+меня)\s+(?:печь\s+)?(?:бытовая|электрическая)',text,re.I):
+    # Bind the type contradiction to authored equipment evidence. A profile
+    # copied from the gas exercise may now use an approved electric scenario.
+    equipment=' '.join(f['value'] for f in own['authorized_facts'] if f.get('id') in {'goal','equipment'} and f.get('status')=='known')
+    industrial=bool(re.search(r'промышлен[^.!?]{0,45}газ|газ[^.!?]{0,45}промышлен',equipment,re.I))
+    domestic=bool(re.search(r'бытов[^.!?]{0,45}электр|электр[^.!?]{0,45}бытов',equipment,re.I))
+    if industrial and re.search(r'(?:моя|у\s+меня)\s+(?:печь\s+)?(?:бытовая|электрическая)',text,re.I):
+        raise ProviderError('ai_actor_fact_contradiction','Ответ противоречит утверждённому типу оборудования.')
+    if domestic and re.search(r'(?:моя\s+печь|у\s+меня)\s+промышленная\s+газовая',text,re.I):
         raise ProviderError('ai_actor_fact_contradiction','Ответ противоречит утверждённому типу оборудования.')
     if 'equipment_is_customer_owned' in flags and re.search(r'(?:ремонт|поломка|неисправность)\s+вашей\s+(?:\w+\s+){0,3}печи',text,re.I):
         raise ProviderError('ai_actor_role_violation','Перепутан владелец оборудования.')

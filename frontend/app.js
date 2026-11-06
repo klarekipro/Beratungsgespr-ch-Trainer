@@ -465,7 +465,11 @@
     const action=target.dataset.action;
     if(action==="menu") {state.menu=!state.menu;$("#sidebar").classList.toggle("open",state.menu);$(".mobile-shade").classList.toggle("open",state.menu);target.setAttribute("aria-expanded",String(state.menu));return;}
     if(action==="menu-close") {state.menu=false;$("#sidebar").classList.remove("open");$(".mobile-shade").classList.remove("open");$(".menu-btn")?.setAttribute("aria-expanded","false");return;}
-    if(action==="logout"){window.TrainerVoice.cancel();await api('/api/auth/logout',{method:'POST'});location.replace('/login');return;}
+    if(action==="logout"){
+      if((state.companyDirty||state.scenarioDirty||studio.dirty())&&!await confirmDialog("Выйти из кабинета?","Несохранённые изменения не будут применены.","Выйти"))return;
+      window.TrainerVoice.cancel();await api('/api/auth/logout',{method:'POST'});
+      state.companyDirty=false;state.scenarioDirty=false;studio.cancelDraft();document.getElementById('app').replaceChildren();location.replace('/login');return;
+    }
     if(action==="own-password"){window.TrainerVoice.cancel();passwordDialog();return;}
     if(action.startsWith('studio-')||action.startsWith('employee-')){if(await studio.handle(action,target))return;}
     if(action==='voice-start'){

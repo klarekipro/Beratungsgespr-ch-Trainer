@@ -46,12 +46,20 @@ def fail(code, message, status=400):
 
 mentor = require_mentor
 
+def visible_profile(p):
+    value=public_profile(p)
+    if not CURRENT_USER.get() or CURRENT_USER.get()['role']!='mentor_admin':
+        for key in ['persona_id','persona_name','approval']:
+            value.pop(key,None)
+    return value
+
+
 def summary(session):
     scenario = session["scenario_snapshot"]
     return {
         "id": session["id"], "scenario_id": session["scenario_id"],
         "title": scenario["title"], "customer_name": scenario["customer_name"],
-        "employee_id":session.get("employee_id"), "archived":not bool(session.get("employee_id")), "mode": session["mode"], "client_profile": public_profile(session["client_profile_snapshot"]) if session.get("client_profile_snapshot") else None, "created_at": session["created_at"],
+        "employee_id":session.get("employee_id"), "archived":not bool(session.get("employee_id")), "mode": session["mode"], "client_profile": visible_profile(session["client_profile_snapshot"]) if session.get("client_profile_snapshot") else None, "created_at": session["created_at"],
         "updated_at": session["updated_at"], "status": session["status"],
         "review_status": session["review_status"], "phase": session["state"]["phase"],
         "turn_count": sum(m["role"] == "learner" for m in session["messages"]),
@@ -234,7 +242,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.get("/api/client-profiles")
     async def profiles():
-        return {"profiles":[public_profile(p) for p in persona_service.all() if p.get("available",True)]}
+        return {"profiles":[visible_profile(p) for p in persona_service.all() if p.get("available",True)]}
 
     @app.get("/api/mentor/client-profiles/schema", dependencies=[Depends(mentor)])
     async def profile_schema():
