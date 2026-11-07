@@ -1,13 +1,19 @@
 "use strict";
-(() => {
- const $=s=>document.querySelector(s);const requested=new URLSearchParams(location.search).get("portal");if(["mentor","learner"].includes(requested))$("#portal").value=requested;
- fetch("/api/auth/bootstrap-status",{credentials:"same-origin"}).then(r=>r.json()).then(s=>{if(!s.configured)$("#setup-help").textContent="Первый наставник ещё не создан. Владелец Mac должен открыть SETUP_MENTOR.command в рабочей папке и задать собственные реквизиты. Открытой регистрации администратора нет.";}).catch(()=>{});
- $("#login-form").addEventListener("submit",async event=>{
-  event.preventDefault();const button=event.target.querySelector("button");button.disabled=true;$("#login-error").textContent="";
-  try {
-   const r=await fetch("/api/auth/login",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:$("#username").value,password:$("#password").value,portal:$("#portal").value})});
-   const data=await r.json();if(!r.ok)throw new Error(data.error?.message||"Не удалось войти.");
-   $("#password").value="";location.replace(data.user.role==="mentor_admin"?"/mentor":"/learner");
-  }catch(e){$("#login-error").textContent=e.message||"Не удалось подключиться.";button.disabled=false;}
+(async()=>{
+ const I=window.TrainerI18n;await I.ready;
+ const $=s=>document.querySelector(s);let configured=true,lastError=null;
+ const requested=new URLSearchParams(location.search).get('portal');if(['mentor','learner'].includes(requested))$('#portal').value=requested;
+ const render=()=>{I.apply();document.title=I.t('auth.login.title')+' · Klare KI';$('#password-toggle').textContent=I.t($('#password').type==='password'?'auth.login.show':'auth.login.hide');$('#setup-help').textContent=I.t(configured?'auth.login.recovery':'auth.login.setup');if(lastError)$('#login-error').textContent=I.error(lastError);};
+ $('#password-toggle').onclick=()=>{const p=$('#password'),show=p.type==='password';p.type=show?'text':'password';$('#password-toggle').setAttribute('aria-pressed',String(show));render();p.focus();};
+ document.addEventListener('trainer-language',render);
+ try{configured=(await (await fetch('/api/auth/bootstrap-status',{credentials:'same-origin'})).json()).configured;}catch(_){}render();
+ $('#login-form').addEventListener('submit',async event=>{
+  event.preventDefault();const button=$('#login-submit');button.disabled=true;lastError=null;$('#login-error').textContent='';
+  try{
+   const body={username:$('#username').value,password:$('#password').value,portal:$('#portal').value};if(I.explicit)body.locale=I.locale;
+   const r=await fetch('/api/auth/login',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-UI-Locale':I.locale},body:JSON.stringify(body)});const data=await r.json();
+   if(!r.ok){lastError=data.error||{code:'REQUEST_FAILED'};throw new Error();}
+   I.use(data.user.locale);$('#password').value='';location.replace(data.user.role==='mentor_admin'?'/mentor':'/learner');
+  }catch(_){lastError=lastError||{code:'NETWORK_ERROR'};render();button.disabled=false;}
  });
-})();
+})().catch(()=>{document.getElementById('login-error').textContent='Sprachdateien nicht verfügbar / Language files unavailable. Bitte neu laden / Reload.';});

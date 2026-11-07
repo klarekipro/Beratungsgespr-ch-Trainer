@@ -33,7 +33,7 @@ from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.5.1-manual-acceptance"
+VERSION = "0.6.0-multilingual-portals"
 
 
 def now():
@@ -144,6 +144,13 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     allowed_hosts += [v.strip() for v in os.environ.get("TRAINER_ALLOWED_HOSTS", "").split(",") if v.strip() and v.strip() != "*"]
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
 
+    ui_catalogues={lang:json.loads((ROOT/'frontend/locales'/f'{lang}.json').read_text()) for lang in ('de','en','ru')}
+    def ui_error(request,code):
+        u=getattr(request.state,'user',None)
+        locale=u.get('locale','de') if u else request.headers.get('x-ui-locale','de')
+        messages=ui_catalogues.get(locale,ui_catalogues['de'])
+        return messages.get('errors.'+code,ui_catalogues['de'].get('errors.'+code,messages['errors.REQUEST_FAILED']))
+
     @app.middleware("http")
     async def local_boundary(request: Request, call_next):
         path=request.url.path
@@ -152,7 +159,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         public_api=path in {"/api/status","/api/auth/login","/api/auth/bootstrap-status"}
         unsafe=request.method in {"POST","PUT","PATCH","DELETE"}
         def deny(code,message,status):
-            response=JSONResponse({"error":{"code":code,"message":message}},status_code=status)
+            response=JSONResponse({"error":{"code":code,"message":ui_error(request,code)}},status_code=status)
             response.headers["Cache-Control"]="no-store"
             return response
         if secure_cookies and request.url.scheme!="https" and path!="/api/status":
@@ -161,7 +168,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             if not user:return deny("AUTH_REQUIRED","Войдите в свой кабинет.",401)
             if path.startswith("/api/mentor/") and user["role"]!="mentor_admin":
                 return deny("FORBIDDEN","Доступ запрещён.",403)
-            if user["must_change_password"] and path not in {"/api/auth/me","/api/auth/password","/api/auth/logout"}:
+            if user["must_change_password"] and path not in {"/api/auth/me","/api/auth/password","/api/auth/logout","/api/auth/preferences"}:
                 return deny("PASSWORD_CHANGE_REQUIRED","Сначала измените временный пароль.",423)
             if unsafe and path.startswith("/api/sessions") and user["role"]!="employee":
                 return deny("EMPLOYEE_REQUIRED","Тренировки создаются в кабинете сотрудника.",403)
@@ -197,20 +204,19 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     @app.exception_handler(HTTPException)
     async def http_error(request, error):
         detail = error.detail if isinstance(error.detail, dict) else {"code": "REQUEST_FAILED", "message": str(error.detail)}
-        return JSONResponse({"error": detail}, status_code=error.status_code)
+        return JSONResponse({"error": {**detail,"message":ui_error(request,detail.get("code","REQUEST_FAILED"))}}, status_code=error.status_code)
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(request, error):
-        fields = ", ".join(".".join(str(x) for x in e["loc"][1:]) for e in error.errors()[:4])
-        return JSONResponse({"error": {"code": "INVALID_INPUT", "message": "Проверьте обязательные поля и допустимые значения: " + fields}}, status_code=422)
+        return JSONResponse({"error": {"code": "INVALID_INPUT", "message": ui_error(request,"INVALID_INPUT")}}, status_code=422)
 
     @app.exception_handler(VersionConflict)
     async def conflict_error(request, error):
-        return JSONResponse({"error": {"code": "VERSION_CONFLICT", "message": "Беседа обновилась. Загрузите её заново."}}, status_code=409)
+        return JSONResponse({"error": {"code": "VERSION_CONFLICT", "message": ui_error(request,"VERSION_CONFLICT")}}, status_code=409)
 
     @app.exception_handler(sqlite3.Error)
     async def storage_error(request, error):
-        return JSONResponse({"error": {"code": "STORAGE_UNAVAILABLE", "message": "Не удалось сохранить данные. Повторите действие."}}, status_code=503)
+        return JSONResponse({"error": {"code": "STORAGE_UNAVAILABLE", "message": ui_error(request,"STORAGE_UNAVAILABLE")}}, status_code=503)
 
     def get_session(sid):
         session = store.get_session(sid)

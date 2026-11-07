@@ -38,6 +38,34 @@ class PortalSmoke(unittest.TestCase):
         c.headers['X-CSRF-Token']=r.json()['csrf'];return c,u
     def training(self,c):
         r=c.post('/api/sessions',json={'scenario_id':'oven_no_fit','mode':'simple_actor','client_profile_id':'decisive_oven'});self.assertEqual(r.status_code,200,r.text);return r.json()['session']
+    def test_locale_preferences_do_not_modify_training_or_access(self):
+        c,u=self.employee('locale-fixture')
+        self.assertEqual(c.get('/api/auth/me').json()['user']['locale'],'de')
+        session=self.training(c);sid=session['id'];before=copy.deepcopy(self.app.state.store.get_session(sid))
+        for locale in ['de','en','ru']:
+            self.assertEqual(c.put('/api/auth/preferences',json={'locale':locale}).status_code,200)
+            self.assertEqual(c.get('/api/auth/me').json()['user']['locale'],locale)
+            self.assertEqual(before,self.app.state.store.get_session(sid))
+        self.assertEqual(c.put('/api/auth/preferences',json={'locale':'xx'}).status_code,422)
+        self.assertEqual(c.put('/api/auth/preferences',json={'locale':'en','user_id':self.mentor['id']}).status_code,422)
+        self.assertEqual(c.put('/api/auth/preferences',json={'locale':'en'},headers={'X-CSRF-Token':'wrong'}).status_code,403)
+        self.assertEqual(self.m.get('/api/auth/me').json()['user']['locale'],'de')
+        c.post('/api/auth/logout')
+        c,_=self.login('locale-fixture','Permanent fixture 43')
+        self.assertEqual(c.get('/api/auth/me').json()['user']['locale'],'ru')
+        self.assertEqual(c.post('/api/sessions/'+sid+'/messages',json={'text':'Что случилось?','kind':'message','version':1,'request_id':'locale-smoke-turn'}).status_code,200)
+        after=self.app.state.store.get_session(sid)
+        for key in ['scenario_snapshot','client_profile_snapshot','company_snapshot','state']:self.assertEqual(before[key],after[key])
+        c.post('/api/sessions/'+sid+'/finish')
+        self.assertTrue(c.get('/api/sessions/'+sid+'/export.pdf').content.startswith(b'%PDF'))
+        root=Path(__file__).resolve().parents[2]/'frontend/locales'
+        # Require complete dictionaries and every referenced source key, without testing AI psychology.
+        dictionaries={lang:json.loads((root/(lang+'.json')).read_text()) for lang in ['de','en','ru']}
+        self.assertEqual(set(dictionaries['de']),set(dictionaries['en']));self.assertEqual(set(dictionaries['de']),set(dictionaries['ru']))
+        import re
+        for source in (root.parent).glob('*.js'):
+            for key in re.findall(r"(?:\.t|data-i18n)=?\(?[\"']([a-z]+\.[a-z_0-9.]+)",source.read_text()):self.assertIn(key,dictionaries['de'])
+
     def test_independent_pairs_preserve_facts_and_frozen_versions(self):
         c,u=self.employee('pair-fixture')
         legacy=self.app.state.store.get_scenario('oven_replacement')

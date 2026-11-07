@@ -10,6 +10,7 @@ from argon2.exceptions import VerificationError, InvalidHashError
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import Field, ConfigDict
+from typing import Literal
 from .models import InputModel
 
 CURRENT_USER=ContextVar('trainer_user',default=None)
@@ -19,7 +20,7 @@ PH=PasswordHasher(time_cost=3,memory_cost=65536,parallelism=2)
 DUMMY_HASH=PH.hash(secrets.token_urlsafe(32))
 
 def fail(code,message,status=400):raise HTTPException(status_code=status,detail={'code':code,'message':message})
-def public_user(u):return {**{k:u[k] for k in ['id','username','display_name','role']},'active':bool(u['active']),'must_change_password':bool(u['must_change_password'])}
+def public_user(u):return {**{k:u[k] for k in ['id','username','display_name','role']},'active':bool(u['active']),'must_change_password':bool(u['must_change_password']),'locale':u.get('locale','de')}
 def password_ok(p):
     if not isinstance(p,str) or not 12<=len(p)<=128:fail('PASSWORD_POLICY','Пароль должен содержать от 12 до 128 символов.',422)
 def normalize_login(v):
@@ -36,6 +37,7 @@ class AuthInput(InputModel):
     model_config=ConfigDict(extra="forbid",str_strip_whitespace=False)
 
 class Login(AuthInput):
+    locale: Literal['de','en','ru'] | None = None
     username:str=Field(min_length=1,max_length=64)
     password:str=Field(min_length=1,max_length=128)
     portal:str=Field(pattern=r'^(mentor|learner)$')
@@ -47,6 +49,9 @@ class ResetPassword(AuthInput):
     temporary_password:str=Field(min_length=12,max_length=128)
 class AccountState(InputModel):
     active:bool
+class LocalePreference(InputModel):
+    locale: Literal['de','en','ru']
+
 class PasswordChange(AuthInput):
     current_password:str=Field(min_length=1,max_length=128)
     new_password:str=Field(min_length=12,max_length=128)
@@ -56,6 +61,7 @@ class AuthStore:
         self.store=store
         with store.connection() as c:
             c.execute('CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, display_name TEXT NOT NULL, password_hash TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN (\'mentor_admin\',\'employee\')), active INTEGER NOT NULL, must_change_password INTEGER NOT NULL, created_at REAL NOT NULL)')
+            c.execute("CREATE TABLE IF NOT EXISTS user_preferences (user_id TEXT PRIMARY KEY REFERENCES users(id),locale TEXT NOT NULL CHECK(locale IN ('de','en','ru')))")
             c.execute('CREATE TABLE IF NOT EXISTS auth_sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), csrf TEXT NOT NULL, created_at REAL NOT NULL, expires_at REAL NOT NULL)')
             c.execute('CREATE INDEX IF NOT EXISTS auth_user ON auth_sessions(user_id)')
             c.execute('CREATE TABLE IF NOT EXISTS login_limits (key TEXT PRIMARY KEY, failures INTEGER NOT NULL, window_start REAL NOT NULL)')
@@ -64,8 +70,12 @@ class AuthStore:
             c.execute("INSERT OR REPLACE INTO metadata VALUES ('auth_schema_version','1')")
     def user(self,uid):
         with self.store.connection() as c:
-            c.row_factory=__import__('sqlite3').Row;r=c.execute('SELECT * FROM users WHERE id=?',(uid,)).fetchone()
+            c.row_factory=__import__('sqlite3').Row;r=c.execute("SELECT u.*,COALESCE(p.locale,'de') AS locale FROM users u LEFT JOIN user_preferences p ON p.user_id=u.id WHERE u.id=?",(uid,)).fetchone()
             return dict(r) if r else None
+    def set_locale(self,uid,locale):
+        if locale not in {'de','en','ru'}:fail('INVALID_LOCALE','Неподдерживаемый язык.',422)
+        with self.store.connection() as c:
+            c.execute('INSERT INTO user_preferences VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET locale=excluded.locale',(uid,locale))
     def users(self):
         with self.store.connection() as c:
             c.row_factory=__import__('sqlite3').Row
@@ -109,7 +119,7 @@ class AuthStore:
         with self.store.connection() as c:
             c.execute('DELETE FROM login_limits WHERE key=?',(keys[0],))
             if PH.check_needs_rehash(u['password_hash']):c.execute('UPDATE users SET password_hash=? WHERE id=?',(PH.hash(password),u['id']))
-        return u
+        return self.user(u['id'])
     def issue(self,uid):
         token=secrets.token_urlsafe(32);csrf=secrets.token_urlsafe(32);stamp=time.time()
         with self.store.connection() as c:
@@ -135,11 +145,17 @@ def attach_auth(app,auth,secure=False):
     async def bootstrap_status():return {'configured':auth.has_mentor()}
     @router.post('/api/auth/login')
     def login(value:Login,request:Request):
-        return session_response(auth.authenticate(value.username,value.password,request.client.host if request.client else 'unknown',value.portal))
+        user=auth.authenticate(value.username,value.password,request.client.host if request.client else 'unknown',value.portal)
+        if value.locale is not None:auth.set_locale(user['id'],value.locale)
+        return session_response(auth.user(user['id']))
     @router.get('/api/auth/me')
     async def me(request:Request):
         if not request.state.user:fail('AUTH_REQUIRED','Войдите в свой кабинет.',401)
         return {'user':public_user(request.state.user),'csrf':request.state.csrf}
+    @router.put('/api/auth/preferences')
+    async def preferences(value:LocalePreference,request:Request):
+        auth.set_locale(request.state.user['id'],value.locale)
+        return {'locale':value.locale}
     @router.post('/api/auth/logout')
     async def logout(request:Request):
         auth.logout(request.cookies.get(COOKIE));r=JSONResponse({'ok':True});r.delete_cookie(COOKIE,path='/',secure=secure,httponly=True,samesite='strict');return r
