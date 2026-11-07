@@ -42,7 +42,7 @@ def api_usage_label(session):
 
 
 def export_text(session):
-    report = session.get("report") or build_report(session)
+    report = session["report"] if session.get("restricted_export") else build_report(session) if session["mode"] == "simple_actor" else session.get("report") or build_report(session)
     scenario = session["scenario_snapshot"]
     company = session["company_snapshot"]
     lines = ["KLARE KI | РАЗБОР КОНСУЛЬТАЦИИ", "", scenario["title"],
@@ -51,7 +51,9 @@ def export_text(session):
              f"Режим: {mode_label(session)}", api_usage_label(session), f"Сценарий: {scenario['id']} · версия {scenario['revision']}",
              f"Компания: версия {company['revision']}", f"Беседа: {session['id']}", "", "РЕЗУЛЬТАТ", report.get("summary", "")]
     for stage in report.get("stages", []):
-        lines.append(f"- {stage['label']}: {'подтверждено' if stage['confirmed'] else 'не подтверждено'}")
+        lines.append(f"- {stage['label']}: {stage.get('rating_label') or ('подтверждено' if stage['confirmed'] else 'не подтверждено')}")
+    if session["mode"] == "simple_actor":
+        lines.extend(["Результат разговора: " + report["commercial_label"], "Соответствие услугам компании: " + report["company_fit_label"]])
     lines.extend(["", "НАБЛЮДЕНИЯ"])
     if not report.get("findings"):
         lines.append("Отдельных событий не зафиксировано. Это не подтверждение качества обучения.")
@@ -125,7 +127,7 @@ def export_pdf(session):
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=46, leftMargin=46, topMargin=66, bottomMargin=52,
                             title="Klare KI — Разбор консультации", author="Klare KI", pageCompression=1)
-    report = session.get("report") or build_report(session)
+    report = session["report"] if session.get("restricted_export") else build_report(session) if session["mode"] == "simple_actor" else session.get("report") or build_report(session)
     scenario = session["scenario_snapshot"]
     company = session["company_snapshot"]
     story = [p("Разбор консультации", "title"), p(scenario["title"], "subtitle"),
@@ -136,13 +138,15 @@ def export_pdf(session):
              p("Результат", "heading"), p(report.get("summary", ""))]
     rows = [[p("Этап", "speaker"), p("Подтверждение", "speaker")]]
     for stage in report.get("stages", []):
-        rows.append([p(stage["label"]), p("Подтверждено" if stage["confirmed"] else "Не подтверждено")])
+        rows.append([p(stage["label"]), p(stage.get("rating_label") or ("Подтверждено" if stage["confirmed"] else "Не подтверждено"))])
     table = Table(rows, colWidths=[doc.width * .63, doc.width * .37], hAlign="LEFT")
     table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), light), ("VALIGN", (0, 0), (-1, -1), "TOP"),
                                ("LEFTPADDING", (0, 0), (-1, -1), 10), ("RIGHTPADDING", (0, 0), (-1, -1), 10),
                                ("TOPPADDING", (0, 0), (-1, -1), 5), ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
                                ("LINEBELOW", (0, 0), (-1, -1), .5, colors.HexColor("#DDE5E0"))]))
     story.append(table)
+    if session["mode"] == "simple_actor":
+        story.extend([p("Результат разговора: " + report["commercial_label"]), p("Соответствие услугам компании: " + report["company_fit_label"])])
     story.append(p("Наблюдения по беседе", "heading"))
     if not report.get("findings"):
         story.append(p("Отдельных событий не зафиксировано. Это не подтверждение качества обучения."))

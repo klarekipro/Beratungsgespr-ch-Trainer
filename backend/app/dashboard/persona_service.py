@@ -25,6 +25,31 @@ class PersonaService:
                     data=json.dumps(p,ensure_ascii=False)
                     c.execute("INSERT INTO documents VALUES ('client_profile',?,?)",(p['id'],data))
                     c.execute("INSERT OR IGNORE INTO documents VALUES ('client_profile_version',?,?)",(p['id']+':v'+str(p['version']),data))
+        self.upgrade_decisive()
+
+    def upgrade_decisive(self):
+        from pathlib import Path
+        template=json.loads((Path(__file__).resolve().parents[3]/'profiles/personas/decisive.v2.json').read_text())
+        with self.store.connection() as c:
+            c.execute('BEGIN IMMEDIATE')
+            if c.execute("SELECT 1 FROM metadata WHERE key='a13_decisive_v2'").fetchone():return
+            row=c.execute("SELECT data FROM documents WHERE kind='client_profile' AND id='decisive_oven'").fetchone()
+            if row:
+                p=json.loads(row[0])
+                # An owner edit takes precedence. Never silently overwrite it.
+                expected={'character':'Ясно формулирует потребность, спокойно и прямо уточняет условия. Решительность не означает согласия на неподтверждённое предложение.',
+                          'decision_style':'Выбирает следующий шаг после выяснения фактов и условий.'}
+                safe=(p['version']==1 and p['persona']['version']==1 and all(p['persona'].get(k)==v for k,v in expected.items())
+                      and p['persona'].get('additional_behavior','')=='')
+                if safe:
+                    c.execute("INSERT OR IGNORE INTO documents VALUES ('client_profile_version','decisive_oven:v1',?)",(row[0],))
+                    p['version']=2;p['persona']=template
+                    p=ClientProfile.model_validate(p).model_dump()
+                    data=json.dumps(p,ensure_ascii=False)
+                    c.execute("UPDATE documents SET data=? WHERE kind='client_profile' AND id='decisive_oven'",(data,))
+                    c.execute("INSERT INTO documents VALUES ('client_profile_version','decisive_oven:v2',?)",(data,))
+            c.execute("INSERT INTO metadata VALUES ('a13_decisive_v2','1')")
+
     def all(self):return self.store._list('client_profile')
     def get(self,id):return self.store._get('client_profile',id)
     def save(self,value,create=False):

@@ -33,7 +33,7 @@ from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.6.0-multilingual-portals"
+VERSION = "0.6.1-customer-outcome-review"
 
 
 def now():
@@ -74,7 +74,7 @@ def learner_view(session):
                    "api_count_complete": session.get("api_count_complete", False),
                    "natural_customer_turns": sum(m.get("source") in {"openai_actor_verified", "openai_simple_actor"} for m in session["messages"])})
     if session["status"] == "finished":
-        report = copy.deepcopy(session.get("report") or build_report(session))
+        report = copy.deepcopy(build_report(session) if session["mode"] == "simple_actor" else session.get("report") or build_report(session))
         if not CURRENT_USER.get() or CURRENT_USER.get()["role"] != "mentor_admin":
             report.pop("facts",None)
             report.pop("assessment_outcomes",None)
@@ -479,6 +479,10 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             session["report"]=learner_view(session)["report"]
             session["scenario_snapshot"]["facts"]=[]
             session["restricted_export"]=True
+        if session["mode"] == "simple_actor":
+            session=copy.deepcopy(session)
+            # Use the same role-redacted report as the dashboard. Never rewrite the stored historical result.
+            session["report"]=learner_view(session)["report"]
         return session
 
     def download(data, kind, sid, content_type):
@@ -538,7 +542,15 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                              phase="completed" if value.outcome else "proposal" if capabilities else "capabilities" if needs else "needs")
                 state["events"].append({"type":"owner_assessment","turn":0,"detail":"Этапы и итог отмечены наставником после содержательного разбора, не моделью."})
                 session["report"] = build_report(session)
+            if value.assessment is not None:
+                if session["mode"] != "simple_actor":
+                    fail("INVALID_OUTCOME", "Эта оценка предназначена для Simple Actor.", 422)
+                session["mentor_assessment"] = value.assessment.model_dump()
+            elif value.needs_confirmed is not None or value.capabilities_confirmed is not None or value.outcome is not None:
+                # Explicit legacy reassessment replaces a previous independent one.
+                session.pop("mentor_assessment", None)
             session.update(reviewed_by=CURRENT_USER.get()["id"], review_note=value.note, reviewed_at=now(), review_status="reviewed", updated_at=now(), version=previous + 1)
+            session["report"] = build_report(session)
             store.save_session(session, expected_version=previous)
             return {"session": learner_view(session)}
 

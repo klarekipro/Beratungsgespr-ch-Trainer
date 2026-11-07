@@ -100,11 +100,34 @@ class MessageInput(InputModel):
     version: int = Field(ge=1)
 
 
+StageRating = Literal["not_reviewed", "completed", "partial", "not_completed"]
+
+
+class StageReview(InputModel):
+    needs: StageRating
+    capabilities: StageRating
+    proposal: StageRating
+
+
+class ConsultationReview(InputModel):
+    stages: StageReview
+    commercial_outcome: Literal["no_next_step", "interested", "diagnosis_tentative", "visit_confirmed", "repair_agreed", "service_unavailable", "customer_declined"] | None = None
+    company_fit: Literal["not_checked", "within_scope", "outside_scope", "uncertain"] = "not_checked"
+
+
 class ReviewInput(InputModel):
     note: str = Field(min_length=1, max_length=6000)
+    assessment: ConsultationReview | None = None
     needs_confirmed: bool | None = None
     capabilities_confirmed: bool | None = None
     outcome: Identifier | None = None
+
+
+    @model_validator(mode="after")
+    def one_review_contract(self):
+        if self.assessment is not None and any(x is not None for x in (self.needs_confirmed, self.capabilities_confirmed, self.outcome)):
+            raise ValueError("Use either an independent assessment or legacy review fields")
+        return self
 
 
 class ScenarioPersonas(InputModel):

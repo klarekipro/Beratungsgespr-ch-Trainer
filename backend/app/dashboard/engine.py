@@ -328,6 +328,36 @@ async def process_turn(session: dict, text: str, kind: str, provider, turn: int)
     return updated
 
 
+STAGE_RATINGS = {"not_reviewed": "Не проверено наставником", "completed": "Выполнено", "partial": "Частично выполнено", "not_completed": "Не выполнено"}
+COMMERCIAL_OUTCOMES = {
+    "no_next_step": "Нет согласованного следующего шага",
+    "interested": "Клиент заинтересован",
+    "diagnosis_tentative": "Диагностика предварительно согласована",
+    "visit_confirmed": "Визит подтверждён",
+    "repair_agreed": "Ремонт согласован после необходимых условий",
+    "service_unavailable": "Компания не может предоставить требуемую услугу",
+    "customer_declined": "Клиент отказался",
+}
+COMPANY_FIT = {"not_checked": "Не проверено наставником", "within_scope": "В рамках услуг компании", "outside_scope": "За пределами услуг компании", "uncertain": "Недостаточно сведений"}
+
+
+def consultation_assessment(session):
+    """Read historic manual confirmations conservatively; never infer consent.
+
+    Unchecked legacy booleans do not tell us whether the mentor assessed a stage.
+    Keep those unknown, rather than retroactively recording a failed assessment.
+    """
+    if session.get("mentor_assessment"):
+        return deepcopy(session["mentor_assessment"])
+    state = session["state"]
+    reviewed = session.get("review_status") == "reviewed"
+    return {"stages": {
+        "needs": "completed" if reviewed and state["needs_confirmed"] else "not_reviewed",
+        "capabilities": "completed" if reviewed and state["capabilities_confirmed"] else "not_reviewed",
+        "proposal": "completed" if reviewed and state["phase"] == "completed" and state["outcome"] else "not_reviewed",
+    }, "commercial_outcome": None, "company_fit": "not_checked"}
+
+
 def build_report(session: dict) -> dict:
     """Explain observed state with evidence references, never a fabricated score."""
     state = session["state"]
@@ -368,7 +398,7 @@ def build_report(session: dict) -> dict:
     if any(event["type"] == "interpretation_uncertain" for event in state["events"]):
         limitations.append("В разговоре были неопределённые интерпретации. Эти ходы не продвигали этапы и не трактуются как доказанная ошибка ученика.")
     discovered = set(state["discovered"])
-    return {
+    report = {
         "status": "complete" if complete else "incomplete",
         "summary": summary,
         "stages": [
@@ -386,3 +416,21 @@ def build_report(session: dict) -> dict:
         "outcome": state["outcome"],
         "limitations": limitations,
     }
+
+    if session["mode"] == "simple_actor":
+        assessment = consultation_assessment(session)
+        ratings = assessment["stages"]
+        pending = all(value == "not_reviewed" for value in ratings.values())
+        report.update(
+            status="pending_review" if pending else "reviewed",
+            summary="Беседа завершена. Ожидается оценка наставника" if pending else "Оценка наставника сохранена. Учебные этапы и результат разговора указаны отдельно.",
+            assessment=assessment,
+            commercial_outcome=assessment["commercial_outcome"],
+            commercial_label=COMMERCIAL_OUTCOMES.get(assessment["commercial_outcome"], "Не определён наставником"),
+            company_fit=assessment["company_fit"],
+            company_fit_label=COMPANY_FIT[assessment["company_fit"]],
+            outcome=None,  # legacy service choice is not a commercial agreement
+        )
+        for stage in report["stages"]:
+            stage.update(rating=ratings[stage["id"]], rating_label=STAGE_RATINGS[ratings[stage["id"]]], confirmed=ratings[stage["id"]] == "completed")
+    return report

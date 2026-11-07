@@ -148,14 +148,57 @@ class PortalSmoke(unittest.TestCase):
         c,u=self.employee('profile-fixture');s=self.training(c);sid=s['id']
         old=copy.deepcopy(self.app.state.store.get_session(sid)['client_profile_snapshot'])
         profile=next(p for p in self.m.get('/api/mentor/client-profiles').json()['profiles'] if p['id']=='decisive_oven');profile['persona']['character']='Решителен, но спокойно задаёт уточнения.'
-        r=self.m.put('/api/mentor/client-profiles/decisive_oven',json=profile);self.assertEqual(r.status_code,200,r.text);self.assertEqual(r.json()['profile']['version'],2)
+        r=self.m.put('/api/mentor/client-profiles/decisive_oven',json=profile);self.assertEqual(r.status_code,200,r.text);self.assertEqual(r.json()['profile']['version'],old['version']+1)
         self.assertEqual(old,self.app.state.store.get_session(sid)['client_profile_snapshot'])
-        self.assertEqual(self.training(c)['client_profile']['version'],2)
+        self.assertEqual(self.training(c)['client_profile']['version'],old['version']+1)
         c.post('/api/sessions/'+sid+'/finish')
         path='/api/mentor/reviews/'+sid
         self.assertEqual(self.m.post(path,json={'note':'Проверка','needs_confirmed':False,'capabilities_confirmed':True}).status_code,422)
         r=self.m.post(path,json={'note':'Проверено наставником','needs_confirmed':True,'capabilities_confirmed':True,'outcome':'no_fit'});self.assertEqual(r.status_code,200)
         self.assertEqual(c.get('/api/sessions/'+sid).json()['session']['review_note'],'Проверено наставником')
+    def test_pending_review_is_neutral_and_outcome_is_independent(self):
+        c,u=self.employee('review-outcome-fixture');s=self.training(c);sid=s['id']
+        self.assertEqual(s['client_profile']['persona_version'],2)
+        # A historic v1 session remains byte-for-byte intact during the upgrade.
+        old_profile=self.app.state.store._get('client_profile_version','decisive_oven:v1')
+        self.assertEqual(old_profile['persona']['version'],1)
+        historic=copy.deepcopy(self.app.state.store.get_session(sid));historic['client_profile_snapshot']=old_profile
+        self.app.state.store.save_session(historic,expected_version=historic['version'])
+        from backend.app.dashboard.persona_service import PersonaService
+        from backend.app.dashboard.client_profiles import load_profiles
+        PersonaService(self.app.state.store,load_profiles())
+        self.assertEqual(historic,self.app.state.store.get_session(sid))
+        c.post('/api/sessions/'+sid+'/finish')
+        saved=copy.deepcopy(self.app.state.store.get_session(sid))
+        pending=c.get('/api/sessions/'+sid).json()['session']['report']
+        self.assertEqual(pending['status'],'pending_review')
+        self.assertEqual([x['rating'] for x in pending['stages']],['not_reviewed']*3)
+        self.assertIsNone(pending['commercial_outcome'])
+        self.assertEqual(pending['summary'],'Беседа завершена. Ожидается оценка наставника')
+        path='/api/mentor/reviews/'+sid
+        assessment={'stages':{'needs':'completed','capabilities':'partial','proposal':'not_completed'},'commercial_outcome':'diagnosis_tentative','company_fit':'outside_scope'}
+        body={'note':'Ходы 2 и 4: предварительный интерес; обещание вне условий компании требует разбора.','assessment':assessment}
+        self.assertEqual(c.post(path,json=body).status_code,403)
+        self.assertEqual(self.m.post(path,json={**body,'outcome':'diagnosis'}).status_code,422)
+        invalid=copy.deepcopy(body);invalid['assessment']['stages']['needs']='unknown'
+        self.assertEqual(self.m.post(path,json=invalid).status_code,422)
+        r=self.m.post(path,json=body);self.assertEqual(r.status_code,200,r.text)
+        after=self.app.state.store.get_session(sid)
+        for key in ['state','messages','client_profile_snapshot','scenario_snapshot','company_snapshot']:self.assertEqual(saved[key],after[key])
+        result=c.get('/api/sessions/'+sid).json()['session']
+        self.assertEqual(result['report']['status'],'reviewed')
+        self.assertEqual(result['report']['assessment'],assessment)
+        self.assertEqual(result['review_note'],body['note'])
+        self.assertFalse(result['report']['stages'][2]['confirmed'])
+        self.assertIsNone(result['report']['outcome'])
+        self.assertNotIn('facts',result['report'])
+        text=c.get('/api/sessions/'+sid+'/export.txt').text
+        for value in ['Частично выполнено','Диагностика предварительно согласована','За пределами услуг компании',body['note']]:self.assertIn(value,text)
+        self.assertTrue(c.get('/api/sessions/'+sid+'/export.pdf').content.startswith(b'%PDF'))
+        # A new pair still uses v2. The original v1 archive remains accessible.
+        self.assertEqual(self.training(c)['client_profile']['persona_version'],2)
+        self.assertEqual(old_profile,self.app.state.store._get('client_profile_version','decisive_oven:v1'))
+
     def test_migration_archives_old_data_and_critical_quantities(self):
         legacy={'id':'legacy-archive','mode':'demo','version':1,'updated_at':'2026','employee_id':None}
         self.app.state.store._put('session',legacy['id'],legacy)
