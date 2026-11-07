@@ -120,6 +120,7 @@ def export_pdf(session):
         "meta": ParagraphStyle("meta", fontName="KlareRegular", fontSize=8.5, leading=13, textColor=muted, spaceAfter=6),
         "speaker": ParagraphStyle("speaker", fontName="KlareBold", fontSize=9, leading=14, textColor=ink, spaceBefore=10, spaceAfter=3, keepWithNext=True),
     }
+    styles["limitation"] = ParagraphStyle("limitation", parent=styles["meta"], fontSize=7.5, leading=11, spaceAfter=4)
     styles["fact_meta"] = ParagraphStyle("fact_meta", parent=styles["meta"], keepWithNext=True)
     def p(text, kind="body"):
         return Paragraph(escape(str(text)).replace("\n", "<br/>"), styles[kind])
@@ -156,7 +157,7 @@ def export_pdf(session):
         story.extend([p("Отзыв наставника", "heading"), p(session["review_note"])])
     story.append(p("Как читать этот результат", "heading"))
     for item in report.get("limitations", []):
-        story.append(p("• " + item, "meta"))
+        story.append(p("• " + item, "limitation"))
     story.extend([PageBreak(), p("Расшифровка беседы", "title"), p("Все сообщения в порядке их появления. Текст ученика сохранён без исправлений.", "subtitle")])
     for message in session["messages"]:
         speaker = "Ученик" if message["role"] == "learner" else scenario["customer_name"] + " · клиент"
