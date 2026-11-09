@@ -1,4 +1,4 @@
-"""Reviewed A14 display translations and German snapshots for NEW sessions only.
+"""Reviewed A14 display translations and training snapshots for NEW sessions only.
 
 Frozen source equality (including revision) is intentional: IDs or unchanged
 names alone never authorize substituting a mentor's edited material.
@@ -44,7 +44,7 @@ def public_materials(store, profiles, language):
         'company': localized_company(store.get_company(), language),
         'scenarios': {s['id']: {**{k: localized_scenario(s, language)[k]
                                   for k in ('title', 'customer_name', 'public_brief')},
-                              'training_languages': ['de', 'ru'] if builtin_scenario(s) else [s['language']]}
+                              'training_languages': ['de', 'en', 'ru'] if builtin_scenario(s) else [s['language']]}
                       for s in store.list_scenarios()},
         'persona_labels': {p['id']: persona_label(p, language) for p in profiles},
     }

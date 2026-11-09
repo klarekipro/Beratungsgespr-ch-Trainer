@@ -35,7 +35,7 @@ def check_audio(data,kind):
     finally:Path(path).unlink(missing_ok=True)
 
 async def transcribe(data,kind,language,key,model,on_request=None,on_error=None):
-    if language not in {'ru','de'}:fail('AUDIO_LANGUAGE','Выберите русский или немецкий язык.',422)
+    if language not in {'ru','de','en'}:fail('AUDIO_LANGUAGE','Выберите русский, немецкий или английский язык.',422)
     if not data or len(data)>MAX_BYTES:fail('AUDIO_SIZE','Максимальный размер записи — 4 МБ.',413)
     import asyncio
     duration=await asyncio.to_thread(check_audio,data,kind)

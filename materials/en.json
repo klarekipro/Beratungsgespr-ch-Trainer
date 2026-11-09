@@ -31,21 +31,420 @@
   "scenarios": [
     {
       "id": "oven_uncertain",
+      "revision": 3,
+      "company_id": "training_company",
       "title": "The oven has broken down again",
       "customer_name": "Alexey Berger",
-      "public_brief": "The customer has come in to report another oven breakdown. Clarify the appliance and find out what he expects from the enquiry."
+      "public_brief": "The customer has come in to report another oven breakdown. Clarify the appliance and find out what he expects from the enquiry.",
+      "opening": "Hello. My oven has broken down again.",
+      "language": "en",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Desired result and preference for repair or replacement",
+          "value": "I want the oven to work reliably. I have not decided whether to repair or replace it.",
+          "status": "known",
+          "keywords": [
+            "result",
+            "achieve",
+            "want",
+            "repair or",
+            "goal"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "equipment",
+          "stage": "needs",
+          "label": "Appliance type and use",
+          "value": "It is an electric household oven in my kitchen at home.",
+          "status": "known",
+          "keywords": [
+            "appliance",
+            "type",
+            "electric",
+            "gas"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "reason",
+          "stage": "needs",
+          "label": "Reason for contacting a different company",
+          "value": "My previous technician is unavailable for the next two weeks.",
+          "status": "known",
+          "keywords": [
+            "why",
+            "previous",
+            "different company"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "priority",
+          "stage": "needs",
+          "label": "Important criteria for choosing a solution",
+          "value": "I want to understand why it has broken down again and get a clear assessment of the options.",
+          "status": "known",
+          "keywords": [
+            "important",
+            "criteria",
+            "priority"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Budget and agreement on spending",
+          "value": "I have not set a budget yet. First I need an estimate of the costs.",
+          "status": "undecided",
+          "keywords": [
+            "budget",
+            "cost",
+            "spending"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Acceptable timeframe",
+          "value": "I would like to sort this out within a week.",
+          "status": "known",
+          "keywords": [
+            "when",
+            "time",
+            "week"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "authority",
+          "stage": "capabilities",
+          "label": "Who makes the decision?",
+          "value": "I make the decision myself.",
+          "status": "known",
+          "keywords": [
+            "who",
+            "decision",
+            "yourself"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "symptoms",
+          "stage": "needs",
+          "label": "Observed symptoms: what happened to the oven",
+          "value": "The oven stopped turning on. I have not used it since.",
+          "status": "known",
+          "keywords": [
+            "happened",
+            "symptoms",
+            "turn on"
+          ],
+          "required": false,
+          "material": false
+        },
+        {
+          "id": "identification",
+          "stage": "needs",
+          "label": "Appliance model, serial number and power rating",
+          "value": "I do not remember the exact model, serial number or power rating right now. These details need to be checked against the plate on the oven.",
+          "status": "does_not_know",
+          "keywords": [
+            "model",
+            "serial number",
+            "power",
+            "plate"
+          ],
+          "required": false,
+          "material": false
+        },
+        {
+          "id": "cause",
+          "stage": "needs",
+          "label": "Does the customer know the cause of the current fault?",
+          "value": "I do not know the cause of the fault. A specialist has not identified it yet.",
+          "status": "does_not_know",
+          "keywords": [
+            "cause",
+            "fault",
+            "diagnosis"
+          ],
+          "required": false,
+          "material": false
+        }
+      ],
+      "allowed_outcomes": [
+        "diagnosis"
+      ],
+      "question_hints": [
+        "What result would you like to achieve?",
+        "What type of oven is it: an electric household oven or another appliance?",
+        "Why did you contact us rather than your previous technician?",
+        "What matters most to you when choosing a solution?",
+        "Have you set a budget, or would you like to understand the costs of the options first?",
+        "Within what timeframe would you like to sort this out?",
+        "Who makes the final decision?"
+      ]
     },
     {
       "id": "oven_replacement",
+      "revision": 1,
+      "company_id": "training_company",
       "title": "A new oven for the home kitchen",
       "customer_name": "Marina Weber",
-      "public_brief": "The customer is discussing changes to her home kitchen. Do not assume the model and purchase terms have already been chosen."
+      "public_brief": "The customer is discussing changes to her home kitchen. Do not assume the model and purchase terms have already been chosen.",
+      "opening": "Hello. We are updating our kitchen and would like to work out what to do about the oven.",
+      "language": "en",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Need and desired result",
+          "value": "We need a new electric household oven for our kitchen at home.",
+          "status": "known",
+          "keywords": [
+            "result",
+            "achieve",
+            "want",
+            "goal"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "reason",
+          "stage": "needs",
+          "label": "Reason for the enquiry",
+          "value": "We need help choosing a compatible model and arranging installation.",
+          "status": "known",
+          "keywords": [
+            "why",
+            "reason",
+            "choose"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "priority",
+          "stage": "needs",
+          "label": "Important selection criteria",
+          "value": "The right dimensions and easy-to-understand controls are important.",
+          "status": "known",
+          "keywords": [
+            "important",
+            "criteria",
+            "dimensions",
+            "controls"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Total spending limit",
+          "value": "The total budget for the appliance and installation is no more than 2 000 €.",
+          "status": "known",
+          "keywords": [
+            "budget",
+            "cost",
+            "spending"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Timeframe for purchase and installation",
+          "value": "We would like to agree on installation within a month.",
+          "status": "known",
+          "keywords": [
+            "when",
+            "time",
+            "month",
+            "installation"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "authority",
+          "stage": "capabilities",
+          "label": "People involved in the final decision",
+          "value": "I make the final decision together with my husband.",
+          "status": "known",
+          "keywords": [
+            "who",
+            "decide",
+            "decision"
+          ],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "replacement"
+      ],
+      "question_hints": [
+        "What result would you like to achieve?",
+        "Why did you contact us?",
+        "Which selection criteria matter to you?",
+        "What total budget have you planned?",
+        "Within what timeframe do you need installation?",
+        "Who makes the final decision?"
+      ]
     },
     {
       "id": "oven_no_fit",
+      "revision": 2,
+      "company_id": "training_company",
       "title": "Looking for a new repair service",
       "customer_name": "Denis Braun",
-      "public_brief": "The customer is looking for someone to repair his oven. Clarify the appliance, the task and the conditions of the enquiry."
+      "public_brief": "The customer is looking for someone to repair his oven. Clarify the appliance, the task and the conditions of the enquiry.",
+      "opening": "Hello. I am looking for someone who can take care of my oven.",
+      "language": "en",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "What appliance and result are needed?",
+          "value": "I need repairs to an industrial gas oven.",
+          "status": "known",
+          "keywords": [
+            "appliance",
+            "type",
+            "result",
+            "repair",
+            "gas oven"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "reason",
+          "stage": "needs",
+          "label": "Reason for contacting this company",
+          "value": "The previous service company stopped servicing our city.",
+          "status": "known",
+          "keywords": [
+            "why",
+            "reason",
+            "previous"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "priority",
+          "stage": "needs",
+          "label": "Key criterion for the service provider",
+          "value": "I need a service provider who specialises in this type of equipment.",
+          "status": "known",
+          "keywords": [
+            "important",
+            "criteria",
+            "specialist"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "What is known about the cost?",
+          "value": "The repair cost is unknown. First I need an assessment by a specialist.",
+          "status": "does_not_know",
+          "keywords": [
+            "budget",
+            "cost",
+            "spending"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Acceptable wait and decision-making",
+          "value": "I can wait up to two weeks and can decide to contact a specialist myself.",
+          "status": "known",
+          "keywords": [
+            "when",
+            "time",
+            "wait",
+            "who",
+            "decision"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "symptoms",
+          "stage": "needs",
+          "label": "Observed symptoms: what happened to the oven",
+          "value": "The oven stopped turning on. I have not used it since.",
+          "status": "known",
+          "keywords": [
+            "happened",
+            "symptoms",
+            "turn on"
+          ],
+          "required": false,
+          "material": false
+        },
+        {
+          "id": "identification",
+          "stage": "needs",
+          "label": "Appliance model, serial number and power rating",
+          "value": "I do not remember the exact model, serial number or power rating right now. These details need to be checked against the plate on the oven.",
+          "status": "does_not_know",
+          "keywords": [
+            "model",
+            "serial number",
+            "power",
+            "plate"
+          ],
+          "required": false,
+          "material": false
+        },
+        {
+          "id": "cause",
+          "stage": "needs",
+          "label": "Does the customer know the cause of the current fault?",
+          "value": "I do not know the cause of the fault. A specialist has not identified it yet.",
+          "status": "does_not_know",
+          "keywords": [
+            "cause",
+            "fault",
+            "diagnosis"
+          ],
+          "required": false,
+          "material": false
+        }
+      ],
+      "allowed_outcomes": [
+        "no_fit"
+      ],
+      "question_hints": [
+        "What equipment needs to be repaired?",
+        "Why did you contact us?",
+        "What matters most when choosing a service provider?",
+        "Do you already know the expected repair cost?",
+        "How long can you wait, and who approves contacting a specialist?"
+      ]
     }
   ],
   "persona_labels": {

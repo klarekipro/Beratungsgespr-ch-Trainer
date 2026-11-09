@@ -397,7 +397,8 @@
           "default": "ru",
           "enum": [
             "ru",
-            "de"
+            "de",
+            "en"
           ],
           "title": "Language",
           "type": "string"

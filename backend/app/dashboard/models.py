@@ -69,7 +69,7 @@ class Scenario(InputModel):
     customer_name: ShortText
     public_brief: str = Field(min_length=1, max_length=3000)
     opening: str = Field(min_length=1, max_length=2000)
-    language: Literal["ru", "de"] = "ru"
+    language: Literal["ru", "de", "en"] = "ru"
     facts: list[Fact] = Field(min_length=2, max_length=20)
     allowed_outcomes: list[Identifier] = Field(min_length=1, max_length=21)
     question_hints: list[Annotated[str, Field(min_length=1, max_length=500)]] = Field(default_factory=list, max_length=30)
@@ -88,7 +88,7 @@ class Scenario(InputModel):
 
 
 class SessionStart(InputModel):
-    training_language: Literal["de", "ru"] | None = None
+    training_language: Literal["de", "ru", "en"] | None = None
     scenario_id: Identifier
     mode: Literal["demo", "openai", "simple_actor"]
     client_profile_id: Identifier | None = None
