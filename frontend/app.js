@@ -194,7 +194,6 @@
   let feedbackObserver;
   function observeFeedback(){feedbackObserver?.disconnect();const el=$('#learning-published-review .review-note');if(PORTAL_ROLE!=='learner'||!el)return;feedbackObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){learning.markRead().catch(e=>toast(e.message,true));feedbackObserver.disconnect();}},{threshold:0.01});feedbackObserver.observe(el);}
   function render() {
-    captureDrafts();
     const role = state.route.role;const mentor = role === "mentor";const view = state.route.view;
     const nav = mentor ? [["overview","grid",window.TrainerI18n.t("dashboard.text_018")],["employees","user",window.TrainerI18n.t("dashboard.text_019")],["personas","user",window.TrainerI18n.t("dashboard.text_020")],["company","building",window.TrainerI18n.t("dashboard.text_021")],["scenarios","book",window.TrainerI18n.t("dashboard.text_022")],["reviews","clipboard",window.TrainerI18n.t("dashboard.text_023")],["setup","settings",window.TrainerI18n.t("dashboard.text_024")]] : [["practice","chat",window.TrainerI18n.t("dashboard.text_025")],["history","history",window.TrainerI18n.t("dashboard.text_026")],["company","building",window.TrainerI18n.t("dashboard.text_027")]];
     let page;
@@ -511,6 +510,8 @@
   }
   async function clickHandler(event) {
     const target=event.target.closest("[data-action]");if(!target||target.disabled)return;
+    // Capture before actions mutate arrays; render must not restore the old DOM.
+    captureDrafts();
     const action=target.dataset.action;
     if(await learning.handle(action,target))return;
     if(action==="menu") {state.menu=!state.menu;$("#sidebar").classList.toggle("open",state.menu);$(".mobile-shade").classList.toggle("open",state.menu);target.setAttribute("aria-expanded",String(state.menu));return;}
