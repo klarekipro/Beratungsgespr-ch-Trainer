@@ -35,7 +35,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.7.0-learning-workflow"
+VERSION = "0.8.0-interface-organization"
 
 
 def now():
@@ -216,7 +216,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(request, error):
-        return JSONResponse({"error": {"code": "INVALID_INPUT", "message": ui_error(request,"INVALID_INPUT")}}, status_code=422)
+        return JSONResponse({"error": {"code": "INVALID_INPUT", "message": ui_error(request,"INVALID_INPUT"), "fields":[list(e["loc"]) for e in error.errors()]}}, status_code=422)
 
     @app.exception_handler(VersionConflict)
     async def conflict_error(request, error):
@@ -239,6 +239,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         return workflow.enrich(learner_view(session),session,auth)
 
     attach_workflow(app,workflow,auth,get_session,lock,api_key,model,summary)
+    from .ui_preferences import attach_ui_preferences
+    attach_ui_preferences(app,workflow,auth)
 
     def valid_outcomes(scenario, company):
         if scenario["company_id"] != company["id"]:
@@ -335,7 +337,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.get("/api/sessions")
     async def sessions():
-        return {"sessions": [summary(s) for s in store.list_sessions() if auth.visible(s["id"],CURRENT_USER.get())]}
+        return {"sessions": [{**summary(s),"analysis_status":(workflow.get("analysis",s["id"]+":learner") or {}).get("status","not_run")} for s in store.list_sessions() if auth.visible(s["id"],CURRENT_USER.get())]}
 
     @app.post("/api/sessions")
     async def start(value: SessionStart):
@@ -664,7 +666,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     # Fresh HTML changes URLs even when an older browser cache entry is still fresh.
     frontend_files = [frontend / name for name in (
         'index.html', 'login.html', 'app.js', 'boot.js', 'i18n.js', 'login.js',
-        'mentor_studio.js', 'voice.js', 'learning.js', 'styles.css', 'portals.css',
+        'mentor_studio.js', 'voice.js', 'ui_organization.js', 'learning.js', 'styles.css', 'portals.css',
         'locales/de.json', 'locales/en.json', 'locales/ru.json')]
     frontend_revision = hashlib.sha256(b''.join(
         p.relative_to(frontend).as_posix().encode() + b'\0' + p.read_bytes() + b'\0'
