@@ -15,7 +15,7 @@ from uuid import uuid4
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse, Response, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
@@ -201,6 +201,10 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         response.headers["Content-Security-Policy"]="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         response.headers["Permissions-Policy"]="microphone=(self), camera=(), geolocation=()"
         if path.startswith("/api/") or path in {"/","/login","/mentor","/learner"}:response.headers["Cache-Control"]="no-store"
+        if path.startswith('/static/'):
+            response.headers['Cache-Control'] = 'no-cache, max-age=0, must-revalidate'
+        if path.startswith('/static/') or path in {'/', '/login', '/mentor', '/learner'}:
+            response.headers['X-Trainer-Frontend-Revision'] = frontend_revision
         return response
 
     @app.exception_handler(HTTPException)
@@ -639,6 +643,26 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     frontend = ROOT / "frontend"
 
+    # One content fingerprint for the complete frontend, captured with this process.
+    # Fresh HTML changes URLs even when an older browser cache entry is still fresh.
+    frontend_files = [frontend / name for name in (
+        'index.html', 'login.html', 'app.js', 'boot.js', 'i18n.js', 'login.js',
+        'mentor_studio.js', 'voice.js', 'styles.css', 'portals.css',
+        'locales/de.json', 'locales/en.json', 'locales/ru.json')]
+    frontend_revision = hashlib.sha256(b''.join(
+        p.relative_to(frontend).as_posix().encode() + b'\0' + p.read_bytes() + b'\0'
+        for p in frontend_files)).hexdigest()[:16]
+    runtime['frontend_revision'] = frontend_revision
+
+    def frontend_page(name):
+        html = (frontend / name).read_text()
+        import re
+        html = re.sub(r'((?:src|href)="/static/[^"?]+)(")',
+                      lambda m: m[1] + '?v=' + frontend_revision + m[2], html)
+        html = html.replace('</head>', '<meta name="trainer-frontend-revision" content="'
+                            + frontend_revision + '"></head>')
+        return HTMLResponse(html)
+
     @app.get("/")
     async def index():
         u=CURRENT_USER.get()
@@ -648,7 +672,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     async def favicon():return Response(status_code=204)
 
     @app.get("/login")
-    async def login_page():return FileResponse(frontend/"login.html")
+    async def login_page():return frontend_page("login.html")
 
     @app.get("/mentor")
     @app.get("/learner")
@@ -657,7 +681,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         if not u:return RedirectResponse("/login?portal="+("mentor" if request.url.path=="/mentor" else "learner"),status_code=303)
         expected="/mentor" if u["role"]=="mentor_admin" else "/learner"
         if request.url.path!=expected:fail("FORBIDDEN","Этот кабинет недоступен вашей роли.",403)
-        return FileResponse(frontend/"index.html")
+        return frontend_page("index.html")
 
     app.mount("/static", StaticFiles(directory=frontend), name="static")
     return app
