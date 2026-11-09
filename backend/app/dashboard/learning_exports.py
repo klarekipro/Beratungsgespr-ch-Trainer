@@ -1,0 +1,71 @@
+"""Localized report framing; original conversation and author text remain verbatim."""
+import io
+from xml.sax.saxutils import escape
+from .exports import _fonts
+
+LABELS={
+'de': ['Gesprächsauswertung','Gespräch','Szenario','Trainingssprache','Prüfstatus','Eigener Versuch','Beim Mentor eingereicht','Vom Mentor geprüft','Vorläufige KI-Rückmeldung','Veröffentlichte Rückmeldung','Mentor','Datum','Ergebnis','Transkript','Mitarbeiter','Kunde','Unternehmensversion','Materialversion','Nicht erfasst','Klare KI - Zertifikat über den Abschluss eines Lernthemas','Teilnehmer','Thema / Kompetenz','Grundlage','Kommentar','Nummer','Status','Lernziel','Beobachtungen','Entwurf','Ausgestellt','Widerrufen','Ersetzt'],
+'en': ['Consultation review','Conversation','Scenario','Training language','Review status','Independent attempt','Submitted to mentor','Reviewed by mentor','Preliminary AI feedback','Published mentor feedback','Mentor','Date','Outcome','Transcript','Employee','Customer','Company revision','Material revision','Not recorded','Klare KI Certificate of Learning Topic Completion','Participant','Topic / skill','Basis','Comment','Number','Status','Learning goal','Observations','Draft','Issued','Revoked','Replaced'],
+'ru': ['Разбор консультации','Беседа','Сценарий','Язык тренировки','Статус проверки','Самостоятельная попытка','Отправлено наставнику','Проверено наставником','Предварительный ИИ-разбор','Опубликованная обратная связь','Наставник','Дата','Фактический исход','Транскрипт','Сотрудник','Клиент','Версия предприятия','Версия материалов','Не зафиксировано','Сертификат прохождения учебной темы Klare KI','Сотрудник','Тема / навык','Основания','Комментарий','Номер','Статус','Учебная цель','Наблюдения','Черновик','Выдан','Отозван','Заменён']}
+OUTCOMES={
+'de':['Kein vereinbarter nächster Schritt','Interesse / Angebot zur Prüfung','Diagnose vorläufig vereinbart','Termin bestätigt','Reparatur vereinbart','Leistung nicht verfügbar','Kunde lehnt ab','Auftrag bestätigt','Vorläufige Vereinbarung','Entscheidung mit weiterer Person vertagt'],
+'en':['No agreed next step','Interest / offer under consideration','Tentative diagnosis','Visit confirmed','Repair agreed','Service unavailable','Customer declined','Order confirmed','Tentative agreement','Decision deferred to another participant'],
+'ru':['Нет согласованного следующего шага','Интерес / предложение на рассмотрении','Предварительная диагностика','Выезд подтверждён','Ремонт согласован','Услуга недоступна','Клиент отказался','Заказ подтверждён','Предварительная договорённость','Решение отложено для обсуждения']}
+OUTCOME_KEYS=['no_next_step','interested','diagnosis_tentative','visit_confirmed','repair_agreed','service_unavailable','customer_declined','order_confirmed','tentative_agreement','deferred_decision']
+EXTRA={'de':['Unternehmenskarte','Katalog und Bedingungen','Geschlossene Kundenkarte','Phasenentscheidung','Erreicht','Teilweise erreicht','Noch nicht erreicht','Noch nicht beurteilt'], 'en':['Company card','Catalogue and terms','Private customer card','Stage assessment','Achieved','Partly achieved','Not yet achieved','Not assessed'], 'ru':['Карточка компании','Каталог и условия','Закрытая карточка клиента','Решение по этапам','Достигнуто','Частично достигнуто','Пока не достигнуто','Не оценено']}
+STAGES={'de':['Bedarf','Möglichkeiten und Grenzen','Begründetes Angebot'],'en':['Needs','Capabilities and limits','Justified proposal'],'ru':['Потребности','Возможности и ограничения','Обоснованное предложение']}
+RATINGS={'de':['Nicht geprüft','Erfüllt','Teilweise erfüllt','Nicht erfüllt'],'en':['Not reviewed','Completed','Partial','Not completed'],'ru':['Не проверено','Выполнено','Частично выполнено','Не выполнено']}
+GOALS=['achieved','partly','not_achieved','not_reviewed']
+def lang(value):return value if value in LABELS else 'de'
+def report_text(s,language='de'):
+    language=lang(language);t=LABELS[language];e=EXTRA[language];v=s.get('learning',{});ctx=v.get('learning_context',{});r=v.get('published_review');sc=s['scenario_snapshot']
+    lines=[t[0],f"{t[1]}: {s['id']}",f"{t[2]}: {sc['title']}",f"{t[3]}: {dict(de='Deutsch',en='English',ru='Русский').get(sc['language'],sc['language'])}",f"{t[4]}: {t[{'not_submitted':5,'submitted':6,'reviewed':7}.get(s['review_status'],5)]}",f"{t[16]}: {s['company_snapshot']['revision']}",f"{t[17]}: {(ctx.get('materials') or {}).get('id',t[18])}",f"{t[26]}: {ctx.get('guidance',{}).get('goal',t[18])}",f"{t[11]}: {s['created_at']}"]
+    if ctx.get('source')=='legacy_fallback_not_original':lines.append({'de':'Diese Orientierungen wurden nachträglich angewendet; kein ursprünglicher Aufgabenschnappschuss.','en':'This guidance was applied after the attempt; it is not an original assignment snapshot.','ru':'Эти ориентиры применены после попытки; это не исходный снимок задания.'}[language])
+    a=v.get('analysis',{})
+    if a.get('status')=='ready':
+        lines+=['',t[8]]
+        for item in a['result']['sections']:lines += [item['title'],item['text']]
+    if r:
+        outcome=(r.get('assessment') or {}).get('commercial_outcome');label=OUTCOMES[language][OUTCOME_KEYS.index(outcome)] if outcome in OUTCOME_KEYS else t[18]
+        lines+=['',t[9],f"{t[10]}: {r['mentor_name']}",f"{t[11]}: {r['published_at']}",f"{t[12]}: {label}",f"{t[26]}: {e[4+GOALS.index(r.get('goal'))] if r.get('goal') in GOALS else t[18]}",f"{t[27]}: {r.get('observations','')}",r['note']]
+        for index,stage in enumerate(['needs','capabilities','proposal']):
+            rating=(r.get('assessment') or {}).get('stages',{}).get(stage,'not_reviewed')
+            labels=['not_reviewed','completed','partial','not_completed']
+            lines.append(STAGES[language][index]+': '+(RATINGS[language][labels.index(rating)] if rating in labels else t[18]))
+    elif s.get('review_note'):
+        lines+=['',t[9],s['review_note']]
+    if not r:lines += [f'{t[12]}: {t[18]}']
+    lines+=['',t[13]]
+    for i,m in enumerate(s['messages']):lines += [f"[{i+1}] {t[14] if m['role']=='learner' else t[15]}:",m['text'],'']
+    lines+=['',e[0],s['company_snapshot']['name'],s['company_snapshot']['description']]
+    for service in s['company_snapshot']['services']:lines += [service['title'],service['description'],service['conditions']]
+    lines += [s['company_snapshot']['limitations']]
+    m=ctx.get('materials')
+    if m:
+        lines += ['',e[1],m['markdown']]
+        for product in m['products']:lines += [' | '.join(str(product.get(k,'')) for k in ['id','name','category','features','price_eur','price_includes','availability','promotion','valid_until'])]
+    if not s.get('restricted_export'):
+        lines+=['',e[2]]
+        for fact in sc['facts']:lines += [fact['label'],fact['value']]
+    return '\n'.join(lines)
+
+def pdf_lines(title, lines, headings=()):
+    from reportlab.platypus import SimpleDocTemplate,Paragraph,Spacer
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib import colors
+    _fonts();buf=io.BytesIO();doc=SimpleDocTemplate(buf,title=title,author='Klare KI',leftMargin=48,rightMargin=48,topMargin=50,bottomMargin=48)
+    body=ParagraphStyle('body',fontName='KlareRegular',fontSize=10,leading=15,textColor=colors.HexColor('#173B35'),spaceAfter=4)
+    heading=ParagraphStyle('heading',parent=body,fontName='KlareBold',fontSize=23,leading=29,spaceAfter=24)
+    section=ParagraphStyle('section',parent=body,fontName='KlareBold',spaceBefore=8,spaceAfter=6,keepWithNext=True)
+    story=[Paragraph('KLARE KI',body),Spacer(1,18),Paragraph(escape(title),heading)]
+    for line in lines:story.append(Paragraph(escape(str(line)).replace('\n','<br/>') or ' ',section if line in headings else body))
+    def footer(c,d):
+        c.setFont('KlareRegular',8);c.drawString(48,28,'Klare KI');c.drawRightString(547,28,str(d.page))
+    doc.build(story,onFirstPage=footer,onLaterPages=footer);return buf.getvalue()
+def report_pdf(s,language='de'):
+    language=lang(language);lines=report_text(s,language).splitlines()
+    headings=[LABELS[language][i] for i in [8,9,13]]+EXTRA[language][:3]+[f['label'] for f in s['scenario_snapshot']['facts']]+[x['title'] for x in s['company_snapshot']['services']]
+    return pdf_lines(lines[0],lines[1:],headings)
+def certificate_pdf(r,language='de'):
+    t=LABELS[lang(language)];status=t[{'draft':28,'issued':29,'revoked':30,'replaced':31}[r['status']]]
+    return pdf_lines(t[19],[f"{t[25]}: {status}",f"{t[20]}: {r['print_name']}",f"{t[21]}: {r['topic']}",f"{t[24]}: {r.get('number',t[28])}",f"{t[11]}: {r.get('issued_at',r['created_at'])[:10]}",f"{t[10]}: {r['mentor_name']}",f"{t[23]}: {r['comment']}",f"{t[22]}:",*r['basis']])

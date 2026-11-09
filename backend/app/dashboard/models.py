@@ -112,7 +112,7 @@ class StageReview(InputModel):
 
 class ConsultationReview(InputModel):
     stages: StageReview
-    commercial_outcome: Literal["no_next_step", "interested", "diagnosis_tentative", "visit_confirmed", "repair_agreed", "service_unavailable", "customer_declined"] | None = None
+    commercial_outcome: Literal["no_next_step", "interested", "diagnosis_tentative", "visit_confirmed", "repair_agreed", "service_unavailable", "customer_declined", "order_confirmed", "tentative_agreement", "deferred_decision"] | None = None
     company_fit: Literal["not_checked", "within_scope", "outside_scope", "uncertain"] = "not_checked"
 
 

@@ -337,6 +337,9 @@ COMMERCIAL_OUTCOMES = {
     "repair_agreed": "Ремонт согласован после необходимых условий",
     "service_unavailable": "Компания не может предоставить требуемую услугу",
     "customer_declined": "Клиент отказался",
+    "order_confirmed": "Подтверждённый заказ",
+    "tentative_agreement": "Предварительная договорённость",
+    "deferred_decision": "Решение отложено до обсуждения с другим участником",
 }
 COMPANY_FIT = {"not_checked": "Не проверено наставником", "within_scope": "В рамках услуг компании", "outside_scope": "За пределами услуг компании", "uncertain": "Недостаточно сведений"}
 

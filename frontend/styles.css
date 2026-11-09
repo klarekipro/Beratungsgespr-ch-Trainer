@@ -31,3 +31,20 @@
 .catalogue-toolbar{flex-wrap:wrap}.mode-notice{flex-wrap:wrap;gap:12px}.mode-notice>svg{flex-shrink:0}.mode-notice-copy{flex:1 1 260px;min-width:0}.mode-notice-copy>strong{display:block;margin-bottom:3px}.mode-notice-copy p+p{margin-top:4px}.session-mode-notice{margin-bottom:18px}.mode-notice>.btn{align-self:center;flex-shrink:0}.mode-option{text-align:center}
 @media(max-width:620px){.mode-notice-copy{flex-basis:calc(100% - 32px)}.mode-notice>.btn{width:calc(100% - 30px);margin-left:30px}.catalogue-toolbar .mode-control{max-width:100%}}
 .mode-notice-copy .mode-usage{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:7px;font-size:11px}.mode-usage span{display:inline-flex;gap:4px;align-items:baseline}.mode-usage span strong{display:inline;margin:0}
+/* A15: equal working columns and durable user view preferences. */
+.report-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.report-layout>.report-aside{position:static;min-width:0}
+.review-textarea{width:100%;min-height:250px;resize:vertical}
+body[data-learning-layout="stack"] .report-layout{grid-template-columns:minmax(0,1fr)}
+body[data-learning-density="compact"] .card-pad{padding:16px}
+body[data-learning-density="compact"] .report-section{margin-bottom:12px}
+.learning-view{justify-content:flex-end;margin:16px 0;flex-wrap:wrap}
+.learning-view label{min-width:150px}
+.learning-result,.learning-product{padding:14px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.learning-markdown{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.7;margin-top:18px}
+.learning-highlight{outline:3px solid #b2c88d;outline-offset:3px}
+#learning-certificate-form label{display:block;margin:12px 0}
+#learning-certificate-form input:not([type="checkbox"]){width:100%}
+.confirm-dialog{max-height:90vh;overflow:auto}
+.card details summary,details.card>summary{cursor:pointer;padding:10px 0}
+@media(max-width:1000px){.report-layout{grid-template-columns:minmax(0,1fr)}}

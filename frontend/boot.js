@@ -17,7 +17,7 @@
    };return;
   }
   const expected=auth.user.role==="mentor_admin"?"/mentor":"/learner";if(location.pathname!==expected){location.replace(expected);return;}
-  for(const src of ["/static/voice.js","/static/mentor_studio.js","/static/app.js"]){await new Promise((resolve,reject)=>{const script=document.createElement("script");script.src=src+assetVersion;script.onload=resolve;script.onerror=reject;document.head.appendChild(script);});}
+  for(const src of ["/static/voice.js","/static/mentor_studio.js","/static/learning.js","/static/app.js"]){await new Promise((resolve,reject)=>{const script=document.createElement("script");script.src=src+assetVersion;script.onload=resolve;script.onerror=reject;document.head.appendChild(script);});}
  }catch(_){app.textContent=window.TrainerI18n.t("auth.text_623");}
  window.addEventListener("pageshow",event=>{if(event.persisted)location.reload();});
 })();

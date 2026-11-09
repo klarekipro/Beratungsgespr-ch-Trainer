@@ -32,9 +32,10 @@ from .providers import DemoProvider, OpenAIProvider, ProviderError
 from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
 from .materials import builtin_scenario, localized_scenario, localized_company, persona_label, public_materials
 from .store import SQLiteStore, VersionConflict
+from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.6.1-customer-outcome-review"
+VERSION = "0.7.0-learning-workflow"
 
 
 def now():
@@ -119,6 +120,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     seed_scenarios = [Scenario.model_validate(s).model_dump() for s in SEED_SCENARIOS]
     store.seed(seed_company, seed_scenarios)
     store.upgrade_builtin_scenarios(PREVIOUS_BUILTIN_SHA256, seed_scenarios)
+    workflow = Workflow(store)
     auth = AuthStore(store)
     app.state.auth = auth
     secure_cookies = os.environ.get("TRAINER_REMOTE_HTTPS") == "1"
@@ -232,6 +234,11 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     def lock(sid):
         return app.state.locks.setdefault(sid, asyncio.Lock())
+
+    def session_view(session):
+        return workflow.enrich(learner_view(session),session,auth)
+
+    attach_workflow(app,workflow,auth,get_session,lock,api_key,model,summary)
 
     def valid_outcomes(scenario, company):
         if scenario["company_id"] != company["id"]:
@@ -374,12 +381,13 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 'profile_id':selected_profile['id'],'profile_version':selected_profile['version'],
                 'persona_version':selected_profile['persona']['version'],'persona_label':selected_profile['persona']['name'],
                 'training_language':language,'materials_version':1}
+        workflow.put("snapshot",session["id"],workflow.snapshot(session["scenario_id"]))
         store.save_session(session)
-        return {"session": learner_view(session)}
+        return {"session": session_view(session)}
 
     @app.get("/api/sessions/{sid}")
-    async def session_view(sid: str):
-        return {"session": learner_view(get_session(sid))}
+    async def show_session(sid: str):
+        return {"session": session_view(get_session(sid))}
 
     @app.post("/api/sessions/{sid}/messages")
     async def message(sid: str, value: MessageInput):
@@ -390,7 +398,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             if receipt:
                 if receipt["fingerprint"] != fingerprint:
                     fail("IDEMPOTENCY_CONFLICT", "Этот идентификатор уже использован для другой реплики.", 409)
-                return {"session": learner_view(session)}
+                return {"session": session_view(session)}
             if session["status"] != "active" or session["state"]["phase"] == "completed":
                 fail("SESSION_CLOSED", "Диалог завершён. Откройте разбор или начните новую попытку.", 409)
             if session["version"] != value.version:
@@ -461,7 +469,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             updated["updated_at"] = now()
             updated.setdefault("receipts", {})[value.request_id] = {"fingerprint": fingerprint, "version": updated["version"]}
             store.save_session(updated, expected_version=session["version"])
-            return {"session": learner_view(updated)}
+            return {"session": session_view(updated)}
 
     @app.post("/api/sessions/{sid}/finish")
     async def finish(sid: str):
@@ -474,7 +482,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 session["version"] += 1
                 session["report"] = build_report(session)
                 store.save_session(session, expected_version=previous)
-            return {"session": learner_view(session)}
+            return {"session": session_view(session)}
 
     @app.post("/api/sessions/{sid}/submit")
     async def submit(sid: str):
@@ -489,7 +497,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 session["updated_at"] = now()
                 session["version"] += 1
                 store.save_session(session, expected_version=previous)
-            return {"session": learner_view(session)}
+            return {"session": session_view(session)}
 
     def exportable(sid):
         session = get_session(sid)
@@ -497,33 +505,37 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             fail("FINISH_REQUIRED", "Полная расшифровка с разбором доступна после завершения.", 409)
         if CURRENT_USER.get()["role"]!="mentor_admin":
             session=copy.deepcopy(session)
-            session["report"]=learner_view(session)["report"]
+            session["report"]=session_view(session)["report"]
             session["scenario_snapshot"]["facts"]=[]
             session["restricted_export"]=True
         if session["mode"] == "simple_actor":
             session=copy.deepcopy(session)
             # Use the same role-redacted report as the dashboard. Never rewrite the stored historical result.
-            session["report"]=learner_view(session)["report"]
+            session["report"]=session_view(session)["report"]
+        session=copy.deepcopy(session)
+        session["learning"]=session_view(session)
         return session
 
     def download(data, kind, sid, content_type):
         return Response(data, media_type=content_type, headers={"Content-Disposition": f'attachment; filename="consultation-{sid[:12]}.{kind}"'})
 
     @app.get("/api/sessions/{sid}/export.txt")
-    async def text_export(sid: str):
-        return download(export_text(exportable(sid)), "txt", sid, "text/plain; charset=utf-8")
+    async def text_export(sid: str, language: str = "de"):
+        from .learning_exports import report_text
+        return download(report_text(exportable(sid), language), "txt", sid, "text/plain; charset=utf-8")
 
     @app.get("/api/sessions/{sid}/export.json")
     async def json_export(sid: str):
         session = exportable(sid)
-        clean = (learner_view(session) if CURRENT_USER.get()["role"]!="mentor_admin" else {k:v for k,v in session.items() if k not in {"receipts"}})
+        clean = (session_view(session) if CURRENT_USER.get()["role"]!="mentor_admin" else {k:v for k,v in session.items() if k not in {"receipts"}})
         return download(json.dumps(clean, ensure_ascii=False, indent=2), "json", sid, "application/json; charset=utf-8")
 
     @app.get("/api/sessions/{sid}/export.pdf")
-    async def pdf_export(sid: str):
+    async def pdf_export(sid: str, language: str = "de"):
         session = exportable(sid)
         try:
-            pdf = await asyncio.to_thread(export_pdf, session)
+            from .learning_exports import report_pdf
+            pdf = await asyncio.to_thread(report_pdf, session, language)
         except (RuntimeError, ImportError):
             fail("PDF_UNAVAILABLE", "Для PDF нужен шрифт с кириллицей. Сохраните TXT или установите шрифты по инструкции запуска.", 503)
         return download(pdf, "pdf", sid, "application/pdf")
@@ -538,13 +550,13 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     def submitted(sid):
         session = get_session(sid)
-        if session["status"] != "finished":
+        if session["status"] != "finished" or session["review_status"] == "not_submitted":
             fail("REVIEW_NOT_SUBMITTED", "Эта беседа ещё не передана наставнику.", 404)
         return session
 
     @app.get("/api/mentor/reviews/{sid}", dependencies=[Depends(mentor)])
     async def review_view(sid: str):
-        return {"session": learner_view(get_session(sid))}
+        return {"session": session_view(get_session(sid))}
 
     @app.post("/api/mentor/reviews/{sid}", dependencies=[Depends(mentor)])
     async def review(sid: str, value: ReviewInput):
@@ -572,8 +584,13 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 session.pop("mentor_assessment", None)
             session.update(reviewed_by=CURRENT_USER.get()["id"], review_note=value.note, reviewed_at=now(), review_status="reviewed", updated_at=now(), version=previous + 1)
             session["report"] = build_report(session)
-            store.save_session(session, expected_version=previous)
-            return {"session": learner_view(session)}
+            user=CURRENT_USER.get()
+            draft=workflow.get('decision_draft',sid) or {}
+            workflow.publish_review(session,previous,{'session_id':sid,'employee_id':auth.owner(sid),
+                'mentor_id':user['id'],'mentor_name':user['display_name'],'published_at':session['reviewed_at'],
+                'note':value.note,'assessment':session.get('mentor_assessment'),'goal':draft.get('goal','not_reviewed'),
+                'observations':draft.get('observations','')})
+            return {"session": session_view(session)}
 
     @app.get("/api/mentor/employees/{uid}/sessions",dependencies=[Depends(mentor)])
     async def employee_history(uid:str):
@@ -647,7 +664,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     # Fresh HTML changes URLs even when an older browser cache entry is still fresh.
     frontend_files = [frontend / name for name in (
         'index.html', 'login.html', 'app.js', 'boot.js', 'i18n.js', 'login.js',
-        'mentor_studio.js', 'voice.js', 'styles.css', 'portals.css',
+        'mentor_studio.js', 'voice.js', 'learning.js', 'styles.css', 'portals.css',
         'locales/de.json', 'locales/en.json', 'locales/ru.json')]
     frontend_revision = hashlib.sha256(b''.join(
         p.relative_to(frontend).as_posix().encode() + b'\0' + p.read_bytes() + b'\0'
