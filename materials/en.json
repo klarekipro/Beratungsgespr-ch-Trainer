@@ -1,0 +1,60 @@
+{
+  "company": {
+    "id": "training_company",
+    "revision": 1,
+    "name": "TeploService — training company",
+    "description": "A fictional service business for trying out the consultation trainer. It services electric household ovens. All prices and conditions below are invented for the exercise and are not an offer from a real company.",
+    "source_url": "",
+    "services": [
+      {
+        "id": "diagnosis",
+        "title": "Electric oven diagnosis",
+        "description": "Inspection of the appliance and identification of the fault.",
+        "conditions": "Diagnosis costs 90 €; the visit date is agreed separately; repairs are carried out only after a quotation and your consent."
+      },
+      {
+        "id": "repair",
+        "title": "Electric oven repair",
+        "description": "Repair of supported electric household ovens.",
+        "conditions": "Repair is possible after diagnosis, a quotation and your consent."
+      },
+      {
+        "id": "replacement",
+        "title": "Selection and installation of a new electric oven",
+        "description": "Selection of a compatible household model and agreement on installation.",
+        "conditions": "The model, compatibility, final price and installation date are agreed before an order is placed."
+      }
+    ],
+    "limitations": "The company services electric household ovens only. Gas and industrial ovens are not serviced. A same-day visit is not guaranteed.",
+    "reviewed": true
+  },
+  "scenarios": [
+    {
+      "id": "oven_uncertain",
+      "title": "The oven has broken down again",
+      "customer_name": "Alexey Berger",
+      "public_brief": "The customer has come in to report another oven breakdown. Clarify the appliance and find out what he expects from the enquiry."
+    },
+    {
+      "id": "oven_replacement",
+      "title": "A new oven for the home kitchen",
+      "customer_name": "Marina Weber",
+      "public_brief": "The customer is discussing changes to her home kitchen. Do not assume the model and purchase terms have already been chosen."
+    },
+    {
+      "id": "oven_no_fit",
+      "title": "Looking for a new repair service",
+      "customer_name": "Denis Braun",
+      "public_brief": "The customer is looking for someone to repair his oven. Clarify the appliance, the task and the conditions of the enquiry."
+    }
+  ],
+  "persona_labels": {
+    "decisive": "Decisive customer",
+    "indecisive": "Indecisive customer",
+    "cautious": "Cautious customer",
+    "urgent": "Customer in a hurry",
+    "skeptical": "Skeptical customer",
+    "analytical": "Analytical customer",
+    "undecided": "Undecided customer"
+  }
+}

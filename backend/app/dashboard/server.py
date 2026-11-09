@@ -30,6 +30,7 @@ from .exports import export_pdf, export_text
 from .models import Company, MessageInput, ReviewInput, Scenario, SessionStart, ScenarioPersonas
 from .providers import DemoProvider, OpenAIProvider, ProviderError
 from .seeds import PREVIOUS_BUILTIN_SHA256, SEED_COMPANY, SEED_SCENARIOS
+from .materials import builtin_scenario, localized_scenario, localized_company, persona_label, public_materials
 from .store import SQLiteStore, VersionConflict
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -59,6 +60,7 @@ def summary(session):
     return {
         "id": session["id"], "scenario_id": session["scenario_id"],
         "title": scenario["title"], "customer_name": scenario["customer_name"],
+        "training_language": scenario["language"],
         "selection":session.get("selection_snapshot"), "employee_id":session.get("employee_id"), "archived":not bool(session.get("employee_id")), "mode": session["mode"], "client_profile": visible_profile(session["client_profile_snapshot"]) if session.get("client_profile_snapshot") else None, "created_at": session["created_at"],
         "updated_at": session["updated_at"], "status": session["status"],
         "review_status": session["review_status"], "phase": session["state"]["phase"],
@@ -258,6 +260,11 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     async def mentor_profiles():
         return {"profiles": persona_service.all()}
 
+    @app.get("/api/materials")
+    async def materials():
+        language = (CURRENT_USER.get() or {}).get("locale", "de")
+        return public_materials(store, persona_service.all(), language)
+
     @app.get("/api/company")
     async def company():
         return {"company": store.get_company()}
@@ -339,6 +346,15 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         if not comp["reviewed"]:
             fail("COMPANY_NOT_REVIEWED", "Наставнику нужно проверить и подтвердить карточку компании.", 409)
         valid_outcomes(scenario, comp)
+        language = value.training_language or scenario['language']
+        if language != scenario['language'] and not builtin_scenario(scenario):
+            fail('TRAINING_LANGUAGE_UNAVAILABLE', 'Для изменённого задания используйте его авторский язык.', 422)
+        scenario = localized_scenario(scenario, language)
+        comp = localized_company(comp, language)
+        if selected_profile:
+            selected_profile['scenario']['source_scenario'] = copy.deepcopy(scenario)
+            selected_profile['scenario']['initial_situation'] = scenario['opening']
+            selected_profile['persona']['name'] = persona_label(selected_profile, language)
         ts = now()
         session = {"employee_id": CURRENT_USER.get()["id"], "id": uuid4().hex, "scenario_id": scenario["id"], "scenario_snapshot": copy.deepcopy(scenario),
                    "company_snapshot": copy.deepcopy(comp), "mode": value.mode, "created_at": ts, "updated_at": ts,
@@ -352,7 +368,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             session["content_observations"] = []
             session['selection_snapshot']={'scenario_id':scenario['id'],'scenario_revision':scenario['revision'],
                 'profile_id':selected_profile['id'],'profile_version':selected_profile['version'],
-                'persona_version':selected_profile['persona']['version'],'persona_label':selected_profile['persona']['name']}
+                'persona_version':selected_profile['persona']['version'],'persona_label':selected_profile['persona']['name'],
+                'training_language':language,'materials_version':1}
         store.save_session(session)
         return {"session": learner_view(session)}
 

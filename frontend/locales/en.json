@@ -343,7 +343,7 @@
   "dashboard.text_342": "Case title",
   "dashboard.text_343": "For example: the oven has broken down again",
   "dashboard.text_344": "Customer name",
-  "dashboard.text_345": "Customer language",
+  "dashboard.text_345": "Training language",
   "dashboard.text_346": "Short public case description",
   "dashboard.text_347": "Exclude hidden budget, motives and a ready-made correct answer.",
   "dashboard.text_348": "Customer opening message",
@@ -578,7 +578,7 @@
   "mentor.text_577": "Training scenario and dossier",
   "mentor.text_578": "Choose a library source case",
   "mentor.text_579": "Apply selected source case",
-  "mentor.text_580": "Language",
+  "mentor.text_580": "Training language",
   "mentor.text_581": "Facts, needs and constraints",
   "mentor.text_582": "Add fact",
   "mentor.text_583": "Unknown or missing information",
@@ -685,7 +685,7 @@
   "mentor.text_684": "New fact",
   "mentor.text_685": "Enter verified content",
   "mentor.text_686": "New unknown fact",
-  "settings.language": "Language",
+  "settings.language": "Interface language",
   "settings.unsaved": "Changing language reloads the interface. Unsaved input may be lost. Continue?",
   "settings.save_failed": "Language not saved. Check sign-in and connection.",
   "auth.login.title": "Sign in",
@@ -820,5 +820,7 @@
   "review.fit.not_checked": "Not reviewed by mentor",
   "review.fit.within_scope": "Within company service scope",
   "review.fit.outside_scope": "Outside company service scope",
-  "review.fit.uncertain": "Insufficient information"
+  "review.fit.uncertain": "Insufficient information",
+  "training.language": "Training language",
+  "errors.TRAINING_LANGUAGE_UNAVAILABLE": "This edited exercise is available only in its authored training language."
 }

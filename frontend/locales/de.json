@@ -343,7 +343,7 @@
   "dashboard.text_342": "Falltitel",
   "dashboard.text_343": "Beispiel: Der Ofen ist wieder ausgefallen",
   "dashboard.text_344": "Kundenname",
-  "dashboard.text_345": "Gesprächssprache",
+  "dashboard.text_345": "Trainingssprache",
   "dashboard.text_346": "Kurze öffentliche Situation",
   "dashboard.text_347": "Ohne verborgenes Budget, Motive oder vorgegebene Musterlösung.",
   "dashboard.text_348": "Erste Kundennachricht",
@@ -578,7 +578,7 @@
   "mentor.text_577": "Trainingssituation und Dossier",
   "mentor.text_578": "Vorlage aus der Bibliothek wählen",
   "mentor.text_579": "Ausgewählte Vorlage anwenden",
-  "mentor.text_580": "Sprache",
+  "mentor.text_580": "Trainingssprache",
   "mentor.text_581": "Fakten, Bedürfnisse und Grenzen",
   "mentor.text_582": "Fakt hinzufügen",
   "mentor.text_583": "Unbekannte oder fehlende Angaben",
@@ -685,7 +685,7 @@
   "mentor.text_684": "Neue Information",
   "mentor.text_685": "Verifizierten Inhalt eintragen",
   "mentor.text_686": "Neue unbekannte Information",
-  "settings.language": "Sprache",
+  "settings.language": "Sprache der Benutzeroberfläche",
   "settings.unsaved": "Beim Sprachwechsel wird die Oberfläche neu geladen. Ungespeicherte Eingaben können verloren gehen. Fortfahren?",
   "settings.save_failed": "Sprache nicht gespeichert. Anmeldung und Verbindung prüfen.",
   "auth.login.title": "Anmelden",
@@ -820,5 +820,7 @@
   "review.fit.not_checked": "Vom Mentor nicht geprüft",
   "review.fit.within_scope": "Im Leistungsumfang des Unternehmens",
   "review.fit.outside_scope": "Außerhalb des Leistungsumfangs",
-  "review.fit.uncertain": "Nicht genügend Angaben"
+  "review.fit.uncertain": "Nicht genügend Angaben",
+  "training.language": "Trainingssprache",
+  "errors.TRAINING_LANGUAGE_UNAVAILABLE": "Für diese bearbeitete Aufgabe ist nur die vom Autor festgelegte Trainingssprache verfügbar."
 }

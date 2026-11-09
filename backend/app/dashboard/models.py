@@ -88,6 +88,7 @@ class Scenario(InputModel):
 
 
 class SessionStart(InputModel):
+    training_language: Literal["de", "ru"] | None = None
     scenario_id: Identifier
     mode: Literal["demo", "openai", "simple_actor"]
     client_profile_id: Identifier | None = None
