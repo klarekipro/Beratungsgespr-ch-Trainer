@@ -1,0 +1,24 @@
+{
+  "source_commit": "54dba72d32613801270d98c100aa3df6c294bc7f",
+  "application_commit": "b4bc3b74dbb8ba002e1865c83e7619d1a56173d6",
+  "application_version": "0.9.0-a17-company-materials",
+  "files_sha256": {
+    "frontend/README.md": "1eec6b7db902fc19d20bfe97b4a9bf53886bc011079bfd2408b06bc05b89069d",
+    "frontend/app.js": "673ee0c27bd8bf49d8f59fa5600a8b8be3848bb4bbe63a5d70fdaf5ec2f98c6d",
+    "frontend/boot.js": "ff9ae10f3408ba8cff10611bb260394f3eb1b780dbabb899fa9ceee33cce521e",
+    "frontend/company_reference.js": "42637614cfd9cdc4aeb2ed5042a6cf0c8f559f60b1efe64ac8be7da7ca7749fb",
+    "frontend/i18n.js": "3661eb6cbfabbea5f26f0e37258a2793a21700ec53b87d0e8f270032876d5c6e",
+    "frontend/index.html": "959b96845dc623e3d36a4b729399a5995a976dd2b1c1cacdc5a75193d57ad324",
+    "frontend/learning.js": "d2c7b18dfa577ca47f28fe8de7de0fe29d9236c3db2f149b35bfcd813c126374",
+    "frontend/locales/de.json": "0b88e9ddd13fa94ccbe711d959988ee872933384c2649e300a05acd2060152a0",
+    "frontend/locales/en.json": "0b03814541d9b5cebfbcdb53cdec6b0e2dd99032a08e37292d171a284cdf7f24",
+    "frontend/locales/ru.json": "258d407359c0c6589bb8cc703872b77f3d4af1a0a0448c12680e42833ed611d7",
+    "frontend/login.html": "e4b21e8f467006e12542880053af4ca298561ad6313acb63eeefc3e0e858abdb",
+    "frontend/login.js": "19ee25a5a76f2e36519074eec0392abf705dcb6e4cf4b699f6561bf160225a27",
+    "frontend/mentor_studio.js": "1a3e830a21b77c3321f9c12e071f3acbb1649362600c1c21011ac7da08e565f2",
+    "frontend/portals.css": "a1d98dae05f87faa2e0b0ed3c5c82b49c9681f84fcf73ef0694a012c8facc591",
+    "frontend/styles.css": "20eb2621674aaf2851fd1f8cd7419cf510cf89722540bceefe9e42849cdb24db",
+    "frontend/ui_organization.js": "b5623ee04aa544a391f0e8b9ebbfa881e99a37baf4196cc338961c0d85ec96d6",
+    "frontend/voice.js": "5a1a5f422b44eae7335800e2b8946ff53f9e62508e455ccd333470b866bead11"
+  }
+}
