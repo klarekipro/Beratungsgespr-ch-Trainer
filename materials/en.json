@@ -445,6 +445,297 @@
         "Do you already know the expected repair cost?",
         "How long can you wait, and who approves contacting a specialist?"
       ]
+    },
+    {
+      "id": "lindenhaus_backofen",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Lindenhaus · A new oven for the kitchen",
+      "customer_name": "Mara Weber",
+      "public_brief": "At Lindenhaus, advise on an electric domestic oven. Clarify needs and installation conditions, use the saved catalogue, explain the full cost and agree a justified next step.",
+      "opening": "Hello, I am looking for a new oven for my kitchen. I bake regularly and want something easy to operate.",
+      "language": "en",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Use",
+          "value": "Private three-person household. I bake bread, cakes and casseroles two or three times a week; fan cooking and a timer are useful to me.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "preferences",
+          "stage": "needs",
+          "label": "Appearance and controls",
+          "value": "Prefer matt white without chrome, rotary controls and a small readable display. Simple operation matters more than automatic programmes or steam. Non-matt white is a possible compromise to discuss; no model is preselected.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Total budget",
+          "value": "Hard limit EUR 1150 including the appliance and all required services; no finance planned.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "installation",
+          "stage": "capabilities",
+          "label": "Installation",
+          "value": "Replacing an old electric built-in oven. Self-measured niche: 60 cm wide, 60 cm high, 56 cm deep. Connections and ventilation have not been professionally checked; no alterations wanted.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "services",
+          "stage": "capabilities",
+          "label": "Required services",
+          "value": "Delivery, installation and removal of one old oven wanted. Ground floor, no stairs on the known route; within the training delivery area, under 20 km. Access must be checked before confirmation.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Timing",
+          "value": "Prefer within three weeks; no date booked. Weekday afternoons generally possible, final appointment to be agreed separately. No same-day need.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Decision",
+          "value": "I decide and pay myself. After a clear comparison I can make a provisional choice; technical uncertainties must be resolved before a binding order.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Unknown technical details",
+          "value": "I do not know exact connection details, ventilation requirements or approved installation compatibility. I have no confirmed energy class or warranty details for the offered models.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "replacement",
+        "no_fit"
+      ],
+      "question_hints": []
+    },
+    {
+      "id": "lindenhaus_waschmaschine",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Lindenhaus · The washing machine no longer works",
+      "customer_name": "Jonas Becker",
+      "public_brief": "At Lindenhaus, handle a washing machine fault enquiry. Clarify observations and expectations, explain the scope, cost and limits of diagnosis and agree an appropriate next step without promising a repair.",
+      "opening": "Hello, my washing machine is not working properly. It stops before the spin cycle, and I do not know whether a repair would still be worthwhile.",
+      "language": "en",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Expectation",
+          "value": "I want to understand the fault and whether the cost makes sense. I need an understandable assessment before deciding on repair. No replacement purchase has been decided today.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "equipment",
+          "stage": "needs",
+          "label": "Owned appliance",
+          "value": "My own freestanding electric domestic washing machine, about six years old, 7 kg; private use by two people. Not gas or industrial equipment.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "symptoms",
+          "stage": "needs",
+          "label": "Observed symptoms",
+          "value": "For two days it has stopped before spinning, leaving water in the drum. On the latest observations there was no smoke, burning smell or water on the floor. I have not opened or repaired it.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Unknown cause and details",
+          "value": "I do not know the cause, exact model code, error code, connection details or repair price. No technician has diagnosed it. No documented warranty information.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Diagnosis budget and repair",
+          "value": "I can spend up to EUR 100 on a clearly defined diagnosis. I have not set a repair budget; it depends on the findings and estimate. No flat repair price has been agreed.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Decision participants and hesitation",
+          "value": "I can provisionally agree myself to a clearly explained diagnosis within EUR 100. My partner and I decide jointly on repair or replacement after an estimate. I am unsure, not opposed to diagnosis in principle.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Urgency and availability",
+          "value": "Prefer clarification within a week. I can temporarily do washing at my sister’s. Generally available weekday afternoons; no confirmed appointment and no same-day call-out required.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "access",
+          "stage": "capabilities",
+          "label": "Access",
+          "value": "Within the training area, under 20 km, ground floor. Appliance is in the bathroom; the route appears clear, but technical access has not been professionally checked.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "diagnosis",
+        "no_fit"
+      ],
+      "question_hints": []
+    },
+    {
+      "id": "lindenhaus_geschirrspueler",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Lindenhaus · A quiet dishwasher on a limited budget",
+      "customer_name": "Nina Hoffmann",
+      "public_brief": "At Lindenhaus, advise on a dishwasher. Clarify noise preference, installation, total budget and timing. Explain an honest catalogue-based compromise and propose a feasible solution.",
+      "opening": "Hello, we are looking for a dishwasher that is as quiet as possible for our open-plan kitchen, but our budget is limited.",
+      "language": "en",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Use and noise",
+          "value": "Two adults and a child, open-plan living kitchen. We run the dishwasher in the evening. About 40 dB would be ideal, a preference rather than a rigid limit.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "compromise",
+          "stage": "needs",
+          "label": "Possible compromise",
+          "value": "If 40 dB breaks the total budget, I can consider 44 dB if the design, cost and installation fit. I want the difference explained; no model is preselected and no purchase is promised.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Total budget",
+          "value": "Hard limit EUR 900 including appliance, delivery, installation and removal of one old appliance. No finance or self-installation planned.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "installation",
+          "stage": "capabilities",
+          "label": "Design and niche",
+          "value": "Replacing an existing fully integrated 60-cm dishwasher. Self-measured niche: 60 cm wide, 84 cm high, 57 cm deep. Want to retain the existing furniture front; no freestanding appliance or furniture alterations wanted.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Unchecked front and connections",
+          "value": "I do not know front compatibility, fixing, ventilation or connection details. No professional clearance. I also do not know the new models’ energy ratings or consumption figures.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "services",
+          "stage": "capabilities",
+          "label": "Services and access",
+          "value": "Need delivery, integrated installation and removal of one old dishwasher. Training area under 20 km, ground floor with no stairs on the known route; access to be checked before confirmation.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Timing preference",
+          "value": "Prefer within two weeks, but up to five weeks could be acceptable after discussion. The old appliance still works but is disturbingly noisy. No delivery date agreed.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Joint decision",
+          "value": "My partner and I decide jointly. I can take an offer and conditional recommendation away, but cannot confirm the final purchase alone. Discussion is not a refusal.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "lh_sv_03",
+        "no_fit"
+      ],
+      "question_hints": []
     }
   ],
   "persona_labels": {

@@ -447,6 +447,297 @@
         "Kennen Sie die voraussichtlichen Reparaturkosten bereits?",
         "Wie lange können Sie warten und wer entscheidet über die Beauftragung?"
       ]
+    },
+    {
+      "id": "lindenhaus_backofen",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Lindenhaus · Ein neuer Backofen für die Küche",
+      "customer_name": "Mara Weber",
+      "public_brief": "Beraten Sie bei Lindenhaus zur Auswahl eines elektrischen Haushaltsbackofens. Klären Sie Bedarf und Einbaubedingungen, nutzen Sie den hinterlegten Katalog, erläutern Sie den vollständigen Preis und vereinbaren Sie einen begründeten nächsten Schritt.",
+      "opening": "Guten Tag, ich suche einen neuen Backofen für meine Küche. Ich backe regelmäßig und möchte ein Gerät, das sich einfach bedienen lässt.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Nutzung",
+          "value": "Privater Haushalt mit drei Personen. Ich backe zwei- bis dreimal pro Woche Brot, Kuchen und Aufläufe; Umluft und ein Timer sind mir nützlich.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "preferences",
+          "stage": "needs",
+          "label": "Optik und Bedienung",
+          "value": "Bevorzugt mattweiß, ohne Chromakzente, Drehregler und kleines gut lesbares Display. Einfache Bedienung ist wichtiger als Automatikprogramme oder Dampf. Weiß ohne matte Oberfläche ist ein besprechbarer Kompromiss; keine vorab festgelegte Modellwahl.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Gesamtbudget",
+          "value": "Harte Obergrenze 1150 EUR einschließlich Gerät und aller benötigten Leistungen; keine Finanzierung geplant.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "installation",
+          "stage": "capabilities",
+          "label": "Einbausituation",
+          "value": "Ein alter elektrischer Einbaubackofen soll ersetzt werden. Selbst gemessene Nische: 60 cm breit, 60 cm hoch, 56 cm tief. Anschlüsse und Belüftung wurden nicht fachlich geprüft; ein Umbau ist nicht gewünscht.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "services",
+          "stage": "capabilities",
+          "label": "Benötigte Leistungen",
+          "value": "Lieferung, Einbau und Mitnahme eines alten Backofens gewünscht. Wohnung im Erdgeschoss, keine Treppen auf dem bekannten Transportweg; im Übungsgebiet innerhalb 20 km. Zugänglichkeit muss vor Bestätigung geprüft werden.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Zeitbedarf",
+          "value": "Wunsch: innerhalb von drei Wochen; kein bestimmtes Datum gebucht. Werktags nachmittags grundsätzlich möglich, endgültigen Termin gesondert abstimmen. Kein Bedarf an Sofortservice.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Entscheidung",
+          "value": "Ich entscheide und bezahle selbst. Nach verständlichem Vergleich kann ich eine vorläufige Wahl treffen; technische offene Punkte müssen vor verbindlicher Bestellung geklärt sein.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Unbekannte technische Angaben",
+          "value": "Genaue Anschlussdaten, Belüftungsanforderungen und freigegebene Montagekompatibilität kenne ich nicht. Ich habe keine bestätigte Energieklasse oder Garantieangabe für die angebotenen Modelle.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "replacement",
+        "no_fit"
+      ],
+      "question_hints": []
+    },
+    {
+      "id": "lindenhaus_waschmaschine",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Lindenhaus · Die Waschmaschine funktioniert nicht mehr",
+      "customer_name": "Jonas Becker",
+      "public_brief": "Bearbeiten Sie bei Lindenhaus eine Störungsanfrage zu einer Waschmaschine. Klären Sie Beobachtungen und Erwartungen, erklären Sie Umfang, Kosten und Grenzen der Diagnose und vereinbaren Sie einen angemessenen nächsten Schritt ohne Reparaturversprechen.",
+      "opening": "Guten Tag, meine Waschmaschine funktioniert nicht mehr richtig. Sie bleibt vor dem Schleudern stehen, und ich weiß nicht, ob sich eine Reparatur noch lohnt.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Erwartung",
+          "value": "Ich möchte wissen, was defekt ist und welche Kosten sinnvoll wären. Vor einer Reparaturentscheidung brauche ich eine nachvollziehbare Einschätzung. Heute ist kein Neukauf beschlossen.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "equipment",
+          "stage": "needs",
+          "label": "Eigenes Gerät",
+          "value": "Eigene elektrische Haushaltswaschmaschine, freistehend, etwa sechs Jahre alt, 7 kg; private Nutzung für zwei Personen. Keine Gas- oder Industrieanlage.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "symptoms",
+          "stage": "needs",
+          "label": "Beobachteter Verlauf",
+          "value": "Seit zwei Tagen bleibt sie vor dem Schleudern stehen; Wasser bleibt in der Trommel. Bei den letzten Beobachtungen kein Rauch, kein Brandgeruch und kein Wasser auf dem Boden. Ich habe nichts geöffnet oder repariert.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Nicht bekannte Ursache und Daten",
+          "value": "Fehlerursache, genauer Modellcode, Fehlercode, Anschlussdetails und Reparaturpreis sind mir nicht bekannt. Kein Techniker hat eine Diagnose gestellt. Keine belegten Garantieangaben.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Diagnosebudget und Reparatur",
+          "value": "Für eine klar abgegrenzte Diagnose kann ich bis 100 EUR ausgeben. Ein Reparaturbudget habe ich noch nicht festgelegt; das hängt vom Befund und Kostenvoranschlag ab. Keine Reparaturpauschale zugesagt.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Beteiligte und Zögern",
+          "value": "Eine verständlich erklärte Diagnose innerhalb 100 EUR darf ich selbst vorläufig zusagen. Über Reparatur oder Ersatz entscheiden meine Partnerin und ich gemeinsam nach einem Kostenvoranschlag. Ich bin unsicher, nicht grundsätzlich gegen eine Diagnose.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Dringlichkeit und Verfügbarkeit",
+          "value": "Wunsch: Klärung innerhalb einer Woche. Übergangsweise kann ich bei meiner Schwester waschen. Werktags nachmittags grundsätzlich verfügbar; kein bestätigter Termin, kein heutiger Soforteinsatz erforderlich.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "access",
+          "stage": "capabilities",
+          "label": "Zugang",
+          "value": "Im Übungsgebiet innerhalb 20 km, Erdgeschoss. Das Gerät steht im Bad; der Zugang ist nach meiner Beobachtung frei, die technische Zugänglichkeit ist nicht fachlich geprüft.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "diagnosis",
+        "no_fit"
+      ],
+      "question_hints": []
+    },
+    {
+      "id": "lindenhaus_geschirrspueler",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Lindenhaus · Ein leiser Geschirrspüler mit begrenztem Budget",
+      "customer_name": "Nina Hoffmann",
+      "public_brief": "Beraten Sie bei Lindenhaus zur Auswahl eines Geschirrspülers. Klären Sie Geräuschwunsch, Einbau, Gesamtbudget und Zeitbedarf. Erläutern Sie einen ehrlichen Kompromiss anhand des Katalogs und schlagen Sie eine umsetzbare Lösung vor.",
+      "opening": "Guten Tag, wir suchen einen möglichst leisen Geschirrspüler für unsere offene Küche. Unser Budget ist allerdings begrenzt.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Nutzung und Lärm",
+          "value": "Zwei Erwachsene und ein Kind, offene Wohnküche. Wir lassen die Maschine abends laufen. Etwa 40 dB wären ideal, das ist ein Wunsch und keine starre Grenze.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "compromise",
+          "stage": "needs",
+          "label": "Möglicher Kompromiss",
+          "value": "Wenn 40 dB das Gesamtbudget sprengen, kann ich 44 dB erwägen, sofern Bauart, Kosten und Einbau passen. Ich möchte den Unterschied erklärt bekommen; keine feste Modellwahl und kein automatisches Kaufversprechen.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Gesamtbudget",
+          "value": "Harte Obergrenze 900 EUR einschließlich Gerät, Lieferung, Einbau und Mitnahme eines Altgeräts. Keine Finanzierung oder eigenständige Montage vorgesehen.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "installation",
+          "stage": "capabilities",
+          "label": "Bauart und Nische",
+          "value": "Vorhandener vollintegrierter 60-cm-Geschirrspüler soll ersetzt werden. Selbst gemessene Nische: 60 cm breit, 84 cm hoch, 57 cm tief. Eine vorhandene Möbelfront soll bleiben; keine freistehende Maschine und kein Möbelumbau gewünscht.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Ungeprüfte Front und Anschlüsse",
+          "value": "Kompatibilität der Möbelfront, Befestigung, Belüftung und Anschlüsse kenne ich nicht. Keine fachliche Freigabe. Energieklasse und Verbrauchswerte der neuen Modelle kenne ich ebenfalls nicht.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "services",
+          "stage": "capabilities",
+          "label": "Leistungen und Zugang",
+          "value": "Lieferung, integrierter Einbau und Mitnahme eines alten Geschirrspülers benötigt. Übungsgebiet innerhalb 20 km, Erdgeschoss ohne Treppen auf dem bekannten Transportweg; Zugang vor Bestätigung klären.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Zeitwunsch",
+          "value": "Lieber innerhalb von zwei Wochen, aber bis zu fünf Wochen wären nach Rücksprache akzeptabel. Das alte Gerät läuft noch, ist jedoch störend laut. Kein bestimmter Liefertermin vereinbart.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Gemeinsame Entscheidung",
+          "value": "Mein Partner und ich entscheiden gemeinsam. Ich kann ein Angebot und eine bedingte Empfehlung mitnehmen, aber keinen endgültigen Kauf allein bestätigen. Rücksprache ist keine Ablehnung.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "lh_sv_03",
+        "no_fit"
+      ],
+      "question_hints": []
     }
   ],
   "persona_labels": {

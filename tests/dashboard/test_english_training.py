@@ -38,7 +38,8 @@ class EnglishTraining(unittest.TestCase):
                 materials = client.get('/api/materials').json()
                 for item in materials['scenarios'].values():
                     self.assertEqual(item['training_languages'], ['de', 'en', 'ru'])
-                for source in SOURCE['scenarios']:
+                # The translation registry can also contain authored, non-seed tasks.
+                for source in app.state.store.list_scenarios():
                     for language in ('en', 'de', 'ru'):
                         r = client.post('/api/sessions', json={'scenario_id': source['id'], 'mode': 'simple_actor',
                             'client_profile_id': 'decisive_oven', 'training_language': language})
