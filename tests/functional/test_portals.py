@@ -38,6 +38,30 @@ class PortalSmoke(unittest.TestCase):
         c.headers['X-CSRF-Token']=r.json()['csrf'];return c,u
     def training(self,c):
         r=c.post('/api/sessions',json={'scenario_id':'oven_no_fit','mode':'simple_actor','client_profile_id':'decisive_oven'});self.assertEqual(r.status_code,200,r.text);return r.json()['session']
+    def test_wrong_portal_opens_login_without_changing_role_or_session(self):
+        employee,user=self.employee('entry-fixture')
+        anonymous=self.client()
+        for path,portal in [('/mentor','mentor'),('/learner','learner')]:
+            response=anonymous.get(path,follow_redirects=False)
+            self.assertEqual(response.status_code,303)
+            self.assertEqual(response.headers['location'],'/login?portal='+portal)
+        for client,wrong,requested,own in [(employee,'/mentor','mentor','/learner'),(self.m,'/learner','learner','/mentor')]:
+            before=client.get('/api/auth/me').json()['user']
+            response=client.get(wrong,follow_redirects=False)
+            self.assertEqual(response.status_code,303)
+            self.assertEqual(response.headers['location'],'/login?portal='+requested+'&reason=role')
+            page=client.get(response.headers['location'])
+            self.assertEqual(page.status_code,200)
+            self.assertIn('text/html',page.headers['content-type'])
+            self.assertIn('charset=utf-8',page.headers['content-type'])
+            self.assertEqual(page.headers['cache-control'],'no-store')
+            self.assertIn('id="login-form"',page.text)
+            self.assertEqual(client.get('/api/auth/me').json()['user'],before)
+            self.assertEqual(client.get(own).status_code,200)
+        self.assertEqual(employee.get('/api/mentor/employees').status_code,403)
+        self.assertEqual(employee.post('/api/auth/login',json={'username':'entry-fixture','password':'Permanent fixture 43','portal':'mentor'}).status_code,401)
+        self.assertEqual(employee.get('/api/auth/me').json()['user']['id'],user['id'])
+
     def test_locale_preferences_do_not_modify_training_or_access(self):
         c,u=self.employee('locale-fixture')
         self.assertEqual(c.get('/api/auth/me').json()['user']['locale'],'de')

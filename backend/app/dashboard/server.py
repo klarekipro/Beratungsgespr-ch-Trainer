@@ -35,7 +35,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.11.0-mentor-presentation"
+VERSION = "0.11.1-portal-entry"
 
 
 def now():
@@ -701,7 +701,9 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         u=CURRENT_USER.get()
         if not u:return RedirectResponse("/login?portal="+("mentor" if request.url.path=="/mentor" else "learner"),status_code=303)
         expected="/mentor" if u["role"]=="mentor_admin" else "/learner"
-        if request.url.path!=expected:fail("FORBIDDEN","Этот кабинет недоступен вашей роли.",403)
+        if request.url.path!=expected:
+            requested="mentor" if request.url.path=="/mentor" else "learner"
+            return RedirectResponse("/login?portal="+requested+"&reason=role",status_code=303)
         return frontend_page("index.html")
 
     app.mount("/static", StaticFiles(directory=frontend), name="static")

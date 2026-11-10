@@ -1054,5 +1054,7 @@
   "clean.unavailable": "Noch nicht eingerichtet. Wenden Sie sich an die für die Einrichtung zuständige Person.",
   "clean.invalid_file": "Die Datei konnte nicht gelesen werden. Prüfen Sie Format und Inhalt.",
   "mentor19.search_options": "In der Liste suchen",
-  "mentor19.no_options": "Keine passenden Einträge"
+  "mentor19.no_options": "Keine passenden Einträge",
+  "auth.login.other_role": "Dieser Bereich gehört zu einer anderen Rolle. Melden Sie sich mit dem passenden Konto an oder öffnen Sie Ihren aktuellen Bereich.",
+  "auth.login.current_portal": "Eigenen Bereich öffnen"
 }

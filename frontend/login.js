@@ -3,6 +3,11 @@
  const I=window.TrainerI18n;await I.ready;
  const $=s=>document.querySelector(s);let configured=true,lastError=null;
  const requested=new URLSearchParams(location.search).get('portal');if(['mentor','learner'].includes(requested))$('#portal').value=requested;window.TrainerHeaderMenus.enhanceSelects();
+ if(new URLSearchParams(location.search).get('reason')==='role'){
+  const note=document.createElement('section');note.className='notice neutral portal-entry-note';
+  note.innerHTML='<p data-i18n="auth.login.other_role"></p><a class="btn" href="/" data-i18n="auth.login.current_portal"></a>';
+  $('#login-form').before(note);
+ }
  const render=()=>{I.apply();document.title=I.t('auth.login.title')+' · Klare KI';$('#password-toggle').textContent=I.t($('#password').type==='password'?'auth.login.show':'auth.login.hide');$('#setup-help').textContent=I.t(configured?'auth.login.recovery':'auth.login.setup');if(lastError)$('#login-error').textContent=I.error(lastError);};
  $('#password-toggle').onclick=()=>{const p=$('#password'),show=p.type==='password';p.type=show?'text':'password';$('#password-toggle').setAttribute('aria-pressed',String(show));render();p.focus();};
  document.addEventListener('trainer-language',render);

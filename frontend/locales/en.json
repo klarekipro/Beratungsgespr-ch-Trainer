@@ -1054,5 +1054,7 @@
   "clean.unavailable": "Not configured yet. Contact the person responsible for setup.",
   "clean.invalid_file": "The file could not be read. Check its format and contents.",
   "mentor19.search_options": "Search this list",
-  "mentor19.no_options": "No matching entries"
+  "mentor19.no_options": "No matching entries",
+  "auth.login.other_role": "This area requires a different role. Sign in with the appropriate account or return to your current area.",
+  "auth.login.current_portal": "Open my current area"
 }

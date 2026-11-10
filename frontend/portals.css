@@ -87,3 +87,9 @@ body[data-learning-layout="stack"] .studio-picker{display:grid;gap:6px;flex:1}
 @media(max-width:600px){.reference-filters{flex-direction:column}.company-reference{padding:18px}.reference-nav .btn{font-size:13px}.reference-table td,.reference-table th{padding:10px;font-size:13px}}
 .reference-nav .btn{transition:none}.reference-nav .btn[aria-pressed=true]{background:#173b35;color:#fff;border-color:#173b35}.reference-nav .btn[aria-pressed=false]{background:#fff;color:#173b35}.reference-table details>summary{padding:0;margin:0;font-size:13px;line-height:1.4}.reference-table td{padding-top:10px;padding-bottom:10px}.reference-table details p{margin:8px 0}
 .reference-language{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:5px}
+
+.portal-entry-note{display:grid;gap:12px;margin:16px 0}.portal-entry-note .btn{justify-self:start;margin:0}
+.login-body>.language-bar{width:100%;max-width:100%;padding:10px 12px}
+.login-body>.language-bar label{min-width:0;max-width:100%;flex-wrap:wrap;justify-content:flex-end}
+.login-body>.language-bar .app-select{width:145px;max-width:100%;margin:0;flex:0 1 145px}
+.login-card #login-error:empty{display:none}
