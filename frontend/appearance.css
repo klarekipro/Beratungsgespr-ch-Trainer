@@ -107,3 +107,50 @@ html[data-input-modality="keyboard"] .reference-snapshot>summary:focus-visible{o
 .kc-product details[open] .kc-product-open svg{transform:rotate(180deg)}
 .stage-result{flex-wrap:wrap}
 .stage-result>.pill{white-space:normal}
+
+/* Mentor surfaces use the same palette as the accepted employee cabinet.
+   Scoped rules preserve the employee layout and its authored content. */
+.mentor-screen :is(.ui-section,.studio-toolbar,.editor-savebar,.ui-reader>header,.service-row,.fact-row,.checkbox-panel){background:var(--surface);color:var(--ink);border-color:var(--line)}
+.mentor-screen :is(.studio-fact,.studio-preview,.sensitive-note,.inline-code,.aside-step>span,.section-index){background:var(--soft);color:var(--ink);border-color:var(--line)}
+.mentor-screen :is(.fact-indicator,.version-line,.aside-title,.field-hint,.fact-meta,.fact-result p,.checkbox-panel small,.stat-description){color:var(--muted)}
+.mentor-screen .studio-error{color:var(--red)}
+.mentor-screen :is(.menu-btn,.filter-tab){background:var(--control-surface);color:var(--control-text);border-color:var(--line)}
+.mentor-screen .filter-tab.active{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+.mentor-screen :is(.btn,.filter-tab):hover:not(:disabled){background:var(--surface-hover);color:var(--ink);border-color:var(--green)}
+.mentor-screen .btn.primary:hover:not(:disabled){background:var(--primary-hover);color:var(--primary-text)}
+.mentor-screen :is(.form-field,label,fieldset){min-width:0}
+.mentor-screen :is(input:not([type=checkbox]):not([type=radio]),textarea){box-sizing:border-box;width:100%;min-width:0;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--control-surface);color:var(--control-text);font:inherit;line-height:1.5}
+.mentor-screen :is(input,textarea):disabled{background:var(--disabled-surface);color:var(--disabled-text)}
+.mentor-screen :is(input[type=checkbox],input[type=radio]){accent-color:var(--green);flex:none}
+.mentor-screen :is(.report-section,.review-card,#learning-certificate-form) label{display:block;font-size:14px;line-height:1.6;margin:12px 0 6px}
+.mentor-screen :is(.report-section,.review-card) textarea{margin-bottom:12px;resize:vertical}
+.mentor-screen #learning-certificate-form fieldset{border:1px solid var(--line);border-radius:10px;margin:16px 0;padding:12px}
+.mentor-screen #learning-certificate-form fieldset label{display:flex;align-items:flex-start;gap:9px;overflow-wrap:anywhere}
+.mentor-screen #learning-certificate-form input[type=checkbox]{margin-top:5px}
+.mentor-screen .confirm-dialog{max-height:calc(100dvh - 32px);overflow:auto}
+.mentor-screen :is(.studio-layout>section,.form-layout>div,.report-layout>div,.actions>label){min-width:0}
+.mentor-screen .actions>label{max-width:100%}
+.mentor-screen .app-select{max-width:100%}
+.mentor-screen .btn{min-height:40px}
+.mentor-screen :is(.data-table td,.detail-list dd,.learning-result,.reference-import-review){overflow-wrap:anywhere}
+.mentor-screen .studio-toolbar{padding:14px 8px}
+.mentor-screen .studio-preview{overflow-wrap:anywhere;white-space:pre-wrap}
+@media(max-width:760px){
+ .mentor-screen .actions>label{width:100%}
+ .mentor-screen .studio-toolbar{position:static}
+ .mentor-screen .detail-list div{flex-wrap:wrap;gap:6px}
+ .mentor-screen .detail-list dd{max-width:100%;text-align:left}
+}
+.mentor-screen .reference-nav .btn[aria-pressed=false]{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.mentor-screen .reference-nav .btn[aria-pressed=true]{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+.mentor-screen .outcome-option{background:var(--surface);color:var(--ink)}
+.mentor-screen .outcome-option:has(input:checked){background:var(--green-soft);border-color:var(--green)}
+.mentor-screen :is(.service-row,.fact-row) legend{color:var(--muted)}
+.mentor-screen .message-bubble{background:var(--soft);color:var(--ink);border-color:var(--line)}
+.mentor-screen .message.learner .message-bubble{background:var(--green-soft);color:var(--ink);border-color:var(--line)}
+.mentor-screen .mode-notice{background:var(--soft);color:var(--ink);border-color:var(--line)}
+.mentor-screen :is(#company-form,#scenario-form) label{color:var(--ink)}
+/* Contain absolute screen-reader labels inside horizontally scrollable tables. */
+.mentor-screen .table-wrap{position:relative;max-width:100%}
+.mentor-screen .private-note{background:var(--amber-soft);color:var(--warning-text);border-color:var(--line)}
+.mentor-screen .required-star{color:var(--warning-text)}

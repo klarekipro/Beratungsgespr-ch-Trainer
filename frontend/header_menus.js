@@ -33,7 +33,7 @@ window.TrainerHeaderMenus=(()=>{
   const caption=document.createElement('span');caption.className='employee-menu-label';caption.textContent=label;
   const caret=document.createElement('span');caret.className='employee-menu-caret';caret.innerHTML=glyph('chevron');trigger.append(caption,caret);host.append(trigger);
   const popup=document.createElement('div');popup.className='employee-menu-popup';popup.dataset.kind=kind;popup.id='employee-menu-popup-'+serial;popup.hidden=true;popup.setAttribute('role',kind==='select'?'listbox':'menu');popup.setAttribute('aria-labelledby',trigger.id);trigger.setAttribute('aria-controls',popup.id);
-  const buttons=()=>[...popup.querySelectorAll('button:not(:disabled)')];
+  const buttons=()=>[...popup.querySelectorAll('button:not(:disabled):not([hidden])')];
   function focus(button){
    button?.focus({preventScroll:true});if(!button)return;
    if(button.offsetTop<popup.scrollTop)popup.scrollTop=button.offsetTop;
@@ -43,7 +43,25 @@ window.TrainerHeaderMenus=(()=>{
    if(trigger.disabled)return;
    if(active?.trigger===trigger){close(true);return;}
    close();popup.replaceChildren();
-   for(const item of items()){
+   popup.setAttribute('role',kind==='select'?'listbox':'menu');trigger.setAttribute('aria-haspopup',kind==='select'?'listbox':'menu');
+   const entries=items();
+   // Keep the accepted employee menus unchanged. Large mentor lists retain
+   // every option and gain an explicit filter in the same shared popup.
+   let filter=null,optionHost=popup;
+   if(kind==='select'&&window.TRAINER_AUTH?.user.role==='mentor_admin'&&entries.length>=10){
+    filter=document.createElement('input');filter.type='search';filter.className='employee-menu-search';
+    filter.setAttribute('aria-label',t('mentor19.search_options'));filter.placeholder=t('mentor19.search_options');
+    const empty=document.createElement('p');empty.className='employee-menu-empty';empty.textContent=t('mentor19.no_options');empty.hidden=true;
+    filter.addEventListener('input',()=>{
+     const query=filter.value.trim().toLocaleLowerCase();
+     popup.querySelectorAll('[role=option]').forEach(option=>option.hidden=!option.textContent.toLocaleLowerCase().includes(query));
+     empty.hidden=!!popup.querySelector('[role=option]:not([hidden])');popup.scrollTop=0;
+    });
+    optionHost=document.createElement('div');optionHost.id=popup.id+'-options';optionHost.setAttribute('role','listbox');optionHost.setAttribute('aria-labelledby',trigger.id);
+    filter.setAttribute('aria-controls',optionHost.id);popup.setAttribute('role','dialog');trigger.setAttribute('aria-haspopup','dialog');
+    popup.append(filter,empty,optionHost);
+   }
+   for(const item of entries){
     const button=document.createElement('button');button.type='button';button.className='employee-menu-item';button.tabIndex=-1;button.disabled=!!item.disabled;
     button.setAttribute('role',kind==='select'?'option':item.radio?'menuitemradio':'menuitem');
     if(kind==='select'||item.radio)button.setAttribute(kind==='select'?'aria-selected':'aria-checked',String(!!item.selected));
@@ -51,12 +69,13 @@ window.TrainerHeaderMenus=(()=>{
     if(item.icon){const symbol=document.createElement('span');symbol.className='employee-menu-icon';symbol.innerHTML=glyph(item.icon);button.append(symbol);}
     const text=document.createElement('span');text.className='employee-menu-label';text.textContent=item.label;
     const check=document.createElement('span');check.className='employee-menu-check';if(item.selected)check.innerHTML=glyph('check');button.append(text,check);
-    button.addEventListener('click',()=>{close(true);if(!item.action)choose?.(item.value);});popup.append(button);
+    button.addEventListener('click',()=>{close(true);if(!item.action)choose?.(item.value);});optionHost.append(button);
    }
    // A portal escapes scrolling panel clipping; modal readers keep their own top layer.
    (trigger.closest('dialog')||document.getElementById('app')||document.body).append(popup);popup.hidden=false;trigger.setAttribute('aria-expanded','true');active={popup,trigger};position();
    const list=buttons(),selected=popup.querySelector('[aria-checked="true"]:not(:disabled),[aria-selected="true"]:not(:disabled)');
-   focus(edge==='last'?list.at(-1):edge==='first'?list[0]:selected||list[0]);
+   if(filter&&!edge)filter.focus({preventScroll:true});
+   else focus(edge==='last'?list.at(-1):edge==='first'?list[0]:selected||list[0]);
   }
   trigger.addEventListener('click',()=>open());
   trigger.addEventListener('keydown',event=>{
@@ -65,6 +84,12 @@ window.TrainerHeaderMenus=(()=>{
   let search='',searchedAt=0;
   popup.addEventListener('keydown',event=>{
    const list=buttons(),i=list.indexOf(document.activeElement);
+   if(event.target.matches('input')){
+    if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();focus(event.key==='ArrowDown'?list[0]:list.at(-1));}
+    else if(event.key==='Enter'){event.preventDefault();list[0]?.click();}
+    else if(event.key==='Tab')close(true);
+    return;
+   }
    if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)){
     event.preventDefault();focus(list[event.key==='Home'?0:event.key==='End'?list.length-1:(i+(event.key==='ArrowDown'?1:list.length-1))%list.length]);
    }else if(['Enter',' '].includes(event.key)){event.preventDefault();document.activeElement.click();}

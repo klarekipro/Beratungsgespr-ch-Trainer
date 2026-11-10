@@ -48,3 +48,7 @@ select[hidden]{display:none!important}
 .reference-filters .app-select{margin-bottom:0}
 @media(max-width:510px){.kc-filters>.app-select{flex-basis:46%}}
 .editor-more[hidden]{display:none!important}
+/* The search stays in the popup so large mentor lists keep their full data. */
+.employee-menu-popup .employee-menu-search{position:sticky;top:0;z-index:1;display:block;box-sizing:border-box;width:100%;margin:0 0 6px;padding:10px 12px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);font:inherit}
+.employee-menu-popup .employee-menu-empty{padding:10px 12px;margin:0;color:var(--muted);font-size:14px}
+.employee-menu-popup [hidden]{display:none!important}

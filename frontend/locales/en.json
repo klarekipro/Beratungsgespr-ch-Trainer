@@ -379,7 +379,7 @@
   "dashboard.text_378": "Affects the final decision",
   "dashboard.text_379": "Include material constraints in the summary. Reference details need not be repeated. Uncheck required before marking a fact as informational.",
   "dashboard.text_380": "Feedback",
-  "dashboard.text_381": "All employee training and the separate unassigned A09 archive.",
+  "dashboard.text_381": "All employee training conversations and the separate unassigned archive.",
   "dashboard.text_382": "Open",
   "dashboard.text_383": "Training case",
   "dashboard.text_384": "No conversations in this queue yet",
@@ -1052,5 +1052,7 @@
   "clean.connection_help": "Check whether the AI customer and dictation are configured here.",
   "clean.available": "Configured.",
   "clean.unavailable": "Not configured yet. Contact the person responsible for setup.",
-  "clean.invalid_file": "The file could not be read. Check its format and contents."
+  "clean.invalid_file": "The file could not be read. Check its format and contents.",
+  "mentor19.search_options": "Search this list",
+  "mentor19.no_options": "No matching entries"
 }

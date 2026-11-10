@@ -379,7 +379,7 @@
   "dashboard.text_378": "Beeinflusst die abschließende Entscheidung",
   "dashboard.text_379": "Wesentliche Einschränkungen in der Zusammenfassung berücksichtigen. Unwesentliche Details müssen nicht wiederholt werden. Vor einer Einstufung als Zusatzinformation die Pflichtmarkierung entfernen.",
   "dashboard.text_380": "Feedback",
-  "dashboard.text_381": "Alle Mitarbeitertrainings und das separate A09-Archiv ohne Zuordnung.",
+  "dashboard.text_381": "Alle Mitarbeitertrainings und das separate Archiv ohne Zuordnung.",
   "dashboard.text_382": "Öffnen",
   "dashboard.text_383": "Trainingsfall",
   "dashboard.text_384": "Noch keine Gespräche in dieser Liste",
@@ -1052,5 +1052,7 @@
   "clean.connection_help": "Hier sehen Sie, ob KI-Kunde und Diktierfunktion eingerichtet sind.",
   "clean.available": "Eingerichtet.",
   "clean.unavailable": "Noch nicht eingerichtet. Wenden Sie sich an die für die Einrichtung zuständige Person.",
-  "clean.invalid_file": "Die Datei konnte nicht gelesen werden. Prüfen Sie Format und Inhalt."
+  "clean.invalid_file": "Die Datei konnte nicht gelesen werden. Prüfen Sie Format und Inhalt.",
+  "mentor19.search_options": "In der Liste suchen",
+  "mentor19.no_options": "Keine passenden Einträge"
 }
