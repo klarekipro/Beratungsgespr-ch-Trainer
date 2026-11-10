@@ -20,7 +20,7 @@ PH=PasswordHasher(time_cost=3,memory_cost=65536,parallelism=2)
 DUMMY_HASH=PH.hash(secrets.token_urlsafe(32))
 
 def fail(code,message,status=400):raise HTTPException(status_code=status,detail={'code':code,'message':message})
-def public_user(u):return {**{k:u[k] for k in ['id','username','display_name','role']},'active':bool(u['active']),'must_change_password':bool(u['must_change_password']),'locale':u.get('locale','de')}
+def public_user(u):return {**{k:u[k] for k in ['id','username','display_name','role']},'active':bool(u['active']),'must_change_password':bool(u['must_change_password']),'locale':u.get('locale','de'),'archived_at':u.get('archived_at'),'is_test':bool(u.get('is_test',0))}
 def password_ok(p):
     if not isinstance(p,str) or not 12<=len(p)<=128:fail('PASSWORD_POLICY','Пароль должен содержать от 12 до 128 символов.',422)
 def normalize_login(v):
@@ -67,19 +67,20 @@ class AuthStore:
             c.execute('CREATE TABLE IF NOT EXISTS login_limits (key TEXT PRIMARY KEY, failures INTEGER NOT NULL, window_start REAL NOT NULL)')
             c.execute('CREATE TABLE IF NOT EXISTS training_owners (session_id TEXT PRIMARY KEY, employee_id TEXT REFERENCES users(id))')
             c.execute("INSERT OR IGNORE INTO training_owners SELECT id,NULL FROM documents WHERE kind='session'")
+            c.execute("CREATE TABLE IF NOT EXISTS employee_lifecycle (user_id TEXT PRIMARY KEY REFERENCES users(id),archived_at REAL,archived_by TEXT,is_test INTEGER NOT NULL DEFAULT 0,marked_by TEXT,restored_at REAL)")
             c.execute("INSERT OR REPLACE INTO metadata VALUES ('auth_schema_version','1')")
     def user(self,uid):
         with self.store.connection() as c:
-            c.row_factory=__import__('sqlite3').Row;r=c.execute("SELECT u.*,COALESCE(p.locale,'de') AS locale FROM users u LEFT JOIN user_preferences p ON p.user_id=u.id WHERE u.id=?",(uid,)).fetchone()
+            c.row_factory=__import__('sqlite3').Row;r=c.execute("SELECT u.*,COALESCE(p.locale,'de') AS locale,l.archived_at,COALESCE(l.is_test,0) AS is_test FROM users u LEFT JOIN user_preferences p ON p.user_id=u.id LEFT JOIN employee_lifecycle l ON l.user_id=u.id WHERE u.id=?",(uid,)).fetchone()
             return dict(r) if r else None
     def set_locale(self,uid,locale):
         if locale not in {'de','en','ru'}:fail('INVALID_LOCALE','Неподдерживаемый язык.',422)
         with self.store.connection() as c:
             c.execute('INSERT INTO user_preferences VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET locale=excluded.locale',(uid,locale))
-    def users(self):
+    def users(self,archived=False):
         with self.store.connection() as c:
             c.row_factory=__import__('sqlite3').Row
-            return [public_user(dict(r)) for r in c.execute("SELECT * FROM users WHERE role='employee' ORDER BY created_at DESC")]
+            return [public_user(dict(r)) for r in c.execute("SELECT u.*,l.archived_at,COALESCE(l.is_test,0) AS is_test FROM users u LEFT JOIN employee_lifecycle l ON l.user_id=u.id WHERE role='employee' AND (l.archived_at IS NOT NULL)=? ORDER BY created_at DESC",(int(archived),))]
     def has_mentor(self):
         with self.store.connection() as c:return bool(c.execute("SELECT 1 FROM users WHERE role='mentor_admin' AND active=1").fetchone())
     def create_user(self,username,display_name,password,*,role='employee',temporary=True,bootstrap=False):
@@ -101,6 +102,7 @@ class AuthStore:
         with self.store.connection() as c:
             c.execute('UPDATE users SET password_hash=?,must_change_password=? WHERE id=?',(hashed,int(temporary),uid));c.execute('DELETE FROM auth_sessions WHERE user_id=?',(uid,))
     def active(self,uid,active):
+        if active and (self.user(uid) or {}).get('archived_at'):fail('INVALID_INPUT','Archived employee requires IT restoration',409)
         with self.store.connection() as c:
             c.execute('UPDATE users SET active=? WHERE id=?',(int(active),uid));c.execute('DELETE FROM auth_sessions WHERE user_id=?',(uid,))
     def authenticate(self,username,password,ip,portal):
@@ -112,7 +114,7 @@ class AuthStore:
             c.row_factory=__import__('sqlite3').Row;r=c.execute('SELECT * FROM users WHERE username=?',(username,)).fetchone();u=dict(r) if r else None
         try:valid=PH.verify(u['password_hash'] if u else DUMMY_HASH,password)
         except (VerificationError,InvalidHashError):valid=False
-        if not valid or not u or not u['active'] or (u['role']=='mentor_admin')!=(portal=='mentor'):
+        if not valid or not u or not u['active'] or (self.user(u['id']) or {}).get('archived_at') or (u['role']=='mentor_admin')!=(portal=='mentor'):
             with self.store.connection() as c:
                 for key in keys:c.execute('INSERT INTO login_limits VALUES (?,1,?) ON CONFLICT(key) DO UPDATE SET failures=CASE WHEN ?-window_start>=900 THEN 1 ELSE failures+1 END,window_start=CASE WHEN ?-window_start>=900 THEN ? ELSE window_start END',(key,stamp,stamp,stamp,stamp))
             fail('INVALID_CREDENTIALS','Не удалось войти. Проверьте реквизиты.',401)
@@ -121,6 +123,8 @@ class AuthStore:
             if PH.check_needs_rehash(u['password_hash']):c.execute('UPDATE users SET password_hash=? WHERE id=?',(PH.hash(password),u['id']))
         return self.user(u['id'])
     def issue(self,uid):
+        u=self.user(uid)
+        if not u or not u['active'] or u.get('archived_at'):fail('AUTH_REQUIRED','Active account required',401)
         token=secrets.token_urlsafe(32);csrf=secrets.token_urlsafe(32);stamp=time.time()
         with self.store.connection() as c:
             c.execute('DELETE FROM auth_sessions WHERE expires_at<?',(stamp,))
@@ -131,7 +135,7 @@ class AuthStore:
         with self.store.connection() as c:
             r=c.execute('SELECT user_id,csrf FROM auth_sessions WHERE token_hash=? AND expires_at>?',(token_hash(token),time.time())).fetchone()
         u=self.user(r[0]) if r else None
-        return (u,r[1]) if u and u['active'] else (None,None)
+        return (u,r[1]) if u and u['active'] and not u.get('archived_at') else (None,None)
     def logout(self,token):
         with self.store.connection() as c:c.execute('DELETE FROM auth_sessions WHERE token_hash=?',(token_hash(token or ''),))
 
@@ -167,7 +171,7 @@ def attach_auth(app,auth,secure=False):
         if value.current_password==value.new_password:fail('PASSWORD_POLICY','Выберите новый пароль.',422)
         auth.reset(u['id'],value.new_password,temporary=False);return session_response(auth.user(u['id']))
     @router.get('/api/mentor/employees')
-    async def employees():return {'employees':auth.users()}
+    async def employees(archived:bool=False):return {'employees':auth.users(archived)}
     @router.post('/api/mentor/employees')
     def create(value:NewEmployee):return {'employee':auth.create_user(value.username,value.display_name,value.temporary_password)}
     def employee(uid):
@@ -175,7 +179,10 @@ def attach_auth(app,auth,secure=False):
         if not u or u['role']!='employee':fail('NOT_FOUND','Сотрудник не найден.',404)
         return u
     @router.post('/api/mentor/employees/{uid}/password')
-    def reset(uid:str,value:ResetPassword):employee(uid);auth.reset(uid,value.temporary_password);return {'ok':True}
+    def reset(uid:str,value:ResetPassword):
+        employee(uid)
+        if auth.user(uid).get('archived_at'):fail('INVALID_INPUT','Archived employee requires IT restoration',409)
+        auth.reset(uid,value.temporary_password);return {'ok':True}
     @router.patch('/api/mentor/employees/{uid}')
     def active(uid:str,value:AccountState):employee(uid);auth.active(uid,value.active);return {'employee':public_user(auth.user(uid))}
     app.include_router(router)

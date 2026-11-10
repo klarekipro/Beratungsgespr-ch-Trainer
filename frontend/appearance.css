@@ -154,3 +154,18 @@ html[data-input-modality="keyboard"] .reference-snapshot>summary:focus-visible{o
 .mentor-screen .table-wrap{position:relative;max-width:100%}
 .mentor-screen .private-note{background:var(--amber-soft);color:var(--warning-text);border-color:var(--line)}
 .mentor-screen .required-star{color:var(--warning-text)}
+/* Author entries keep the existing mentor palette and disclosure pattern. */
+.mentor-screen .studio-topic{margin:12px 0;border:1px solid var(--line);border-radius:10px;background:var(--surface);min-width:0}
+.mentor-screen .studio-topic>summary{padding:12px 14px;cursor:pointer;font-weight:600;overflow-wrap:anywhere}
+.mentor-screen .studio-topic>.studio-grid,.mentor-screen .studio-topic>[data-open-row]{padding:14px;margin:0}
+.mentor-screen .ui-section>button{margin-bottom:14px}
+.mentor-screen .studio-topic .studio-grid>details{grid-column:1/-1}
+.mentor-screen #employee-delete-confirm input{display:block;margin:8px 0 16px}
+.mentor-screen .confirm-dialog dl>div{display:flex;justify-content:space-between;gap:16px;margin:8px 0}
+.mentor-screen .confirm-dialog dd{margin:0;flex:none}
+.mentor-screen .reference-content textarea{width:100%;margin:8px 0 12px}
+.mentor-screen #company-form:has(button[type=submit]:not(:disabled)) .editor-savebar{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+
+.mentor-screen .employees-table{min-width:760px}
+.mentor-screen .employees-table td:last-child .actions{min-width:270px;max-width:420px}
+.mentor-screen .employees-table .small-btn{white-space:nowrap}

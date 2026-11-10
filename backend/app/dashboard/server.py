@@ -13,6 +13,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from uuid import uuid4
 
+from pydantic import Field
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, RedirectResponse
@@ -35,7 +36,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.11.2-employee-autofill"
+VERSION = "0.12.0-mentor-tools"
 
 
 def now():
@@ -125,6 +126,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     app.state.auth = auth
     secure_cookies = os.environ.get("TRAINER_REMOTE_HTTPS") == "1"
     attach_auth(app,auth,secure=secure_cookies)
+    from .employee_lifecycle import attach_employee_lifecycle
+    attach_employee_lifecycle(app,auth)
     local_token_path = Path(db_path).parent.parent / "installation-token"
     local_token = local_token_path.read_text().strip() if local_token_path.is_file() else None
     app.state.store = store
@@ -267,6 +270,21 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     async def profiles():
         return {"profiles":[visible_profile(p) for p in persona_service.all() if p.get("available",True)]}
 
+    from .models import InputModel
+    class ProfileImport(InputModel):
+        json_text: str = Field(max_length=200000)
+    @app.post('/api/mentor/client-profiles/import-check',dependencies=[Depends(mentor)])
+    async def import_profile(value:ProfileImport):
+        def pairs(items):
+            result={}
+            for key,item in items:
+                if key in result:raise ValueError('Duplicate JSON key: '+key)
+                result[key]=item
+            return result
+        try:profile=ClientProfile.model_validate(json.loads(value.json_text,object_pairs_hook=pairs)).model_dump()
+        except ValueError:fail('INVALID_INPUT','Duplicate keys, invalid field IDs or references in profile',422)
+        return {'profile':profile}
+
     @app.get("/api/mentor/client-profiles/schema", dependencies=[Depends(mentor)])
     async def profile_schema():
         return ClientProfile.model_json_schema()
@@ -296,8 +314,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
             valid_outcomes(scenario, record)
         for profile in persona_service.all():
             valid_outcomes(profile["scenario"]["source_scenario"],record)
-        record["revision"] = previous["revision"] + 1
-        store.save_company(record)
+        from .company_editing import publish_company_edit
+        record = publish_company_edit(store,workflow,previous,record)
         return {"company": record}
 
     @app.get("/api/scenarios")

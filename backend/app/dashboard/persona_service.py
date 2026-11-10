@@ -104,6 +104,7 @@ class PersonaService:
             'source_scenario':sc,'initial_situation':sc['opening'],
             **{k:[i for i in old[k] if i in ids] if same else [] for k in ['reason_fact_ids','observation_fact_ids','need_fact_ids','financial_fact_ids','timing_fact_ids']},
             'open_questions':old['open_questions'] if same else {},
+            'additional_information':old.get('additional_information',[]) if same else [],
             'disclosure_conditions':{i:old['disclosure_conditions'].get(i,'available') if same else 'available' for i in ids},
             'critical_contradictions':['equipment_is_customer_owned','no_confirmed_repair_price','no_confirmed_booking']}
         if not same:p['modifiers']=SessionModifiers().model_dump()

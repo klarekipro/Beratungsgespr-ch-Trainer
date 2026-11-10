@@ -20,7 +20,18 @@ class ProfileField(InputModel):
             raise ValueError('Missing author data cannot assert a value')
         return self
 
+class BehaviorField(InputModel):
+    id: Identifier
+    label: ShortText
+    value: str = Field(min_length=1,max_length=2000)
+
+class SituationField(ProfileField):
+    id: Identifier
+    purpose: Literal['reason','observation','need','financial','timing','other'] = 'other'
+    disclosure: Literal['available','after_needs','after_capabilities','owner_only'] = 'available'
+
 class BasePersona(InputModel):
+    characteristics: list[BehaviorField] = Field(default_factory=list,max_length=30)
     id: Identifier
     version: int = Field(ge=1)
     name: ShortText
@@ -38,6 +49,7 @@ class BasePersona(InputModel):
     additional_behavior: str = Field(default="",max_length=2000)
 
 class ProfileScenario(InputModel):
+    additional_information: list[SituationField] = Field(default_factory=list,max_length=30)
     id: Identifier
     version: int = Field(ge=1)
     persona_ids: list[Identifier] = Field(min_length=1, max_length=20)
@@ -59,6 +71,9 @@ class ProfileScenario(InputModel):
         groups=[self.reason_fact_ids,self.observation_fact_ids,self.need_fact_ids,self.financial_fact_ids,self.timing_fact_ids]
         if any(not set(g)<=ids for g in groups) or set(self.disclosure_conditions)!=ids:
             raise ValueError('Every fact must have an explicit disclosure condition; references must exist')
+        extra=[f.id for f in self.additional_information]
+        if len(extra)!=len(set(extra)) or set(extra)&(ids|set(self.open_questions)):
+            raise ValueError('Duplicate information IDs or conflicting topic references')
         return self
 
 class SessionModifiers(InputModel):
@@ -83,6 +98,8 @@ class ClientProfile(InputModel):
     def binding(self):
         if self.persona.id not in self.scenario.persona_ids:
             raise ValueError('Scenario does not authorize this persona')
+        ids=[f.id for f in self.persona.characteristics]
+        if len(ids)!=len(set(ids)):raise ValueError('Duplicate characteristic IDs')
         return self
 
 def load_profiles(directory=ROOT, overrides=None):

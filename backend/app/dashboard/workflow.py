@@ -144,9 +144,11 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
                   'public_assignment':s['scenario_snapshot']['public_brief'],
                   'transcript':[{'index':i,'role':m['role'],'text':m['text']} for i,m in enumerate(s['messages'])],
                   'technical_issues':s.get('system_issues',[])}
-            if value.audience=='mentor':data['hidden_dossier']=s['scenario_snapshot']
+            if value.audience=='mentor':
+                data['hidden_dossier']=s['scenario_snapshot']
+                data['additional_information']=(s.get('client_profile_snapshot') or {}).get('scenario',{}).get('additional_information',[])
             schema={'type':'object','additionalProperties':False,'required':['sections'], 'properties':{'sections':{'type':'array','items':{'type':'object','additionalProperties':False,'required':['title','text','messages'],'properties':{'title':{'type':'string'},'text':{'type':'string'},'messages':{'type':'array','items':{'type':'integer'}}}}}}}
-            record={'status':'running','started_at':started,'audience':value.audience,'language':u.get('locale','de'),'context_source':ctx['source']}
+            record={'session_id':sid,'status':'running','started_at':started,'audience':value.audience,'language':u.get('locale','de'),'context_source':ctx['source']}
             w.put('analysis',key,record)
             try:
                 if not api_key:raise RuntimeError('AI unavailable')
