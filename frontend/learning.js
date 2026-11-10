@@ -12,6 +12,15 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  const current=k=>preferences?.[k]||localStorage.getItem(storageKey(k))||localStorage.getItem('learning.'+k)||(k==='layout'?'auto':'normal');
  const appearance=k=>window.TrainerI18n.t('appearance18.'+k);
  const theme=()=>preferences?.theme||localStorage.getItem(storageKey('theme'))||'system';
+ let themeWrites=Promise.resolve(),confirmedPreferences=null,themeRevision=0;
+ async function setTheme(next){
+  if(!['light','dark','system'].includes(next))return;
+  const revision=++themeRevision;preferences={...(preferences||{}),theme:next};applyView();
+  const payload={layout:preferences.layout||'auto',density:preferences.density||'normal',theme:next};
+  const write=themeWrites.then(()=>api('/api/ui/preferences',{method:'PUT',body:payload}));themeWrites=write.catch(()=>{});
+  try{const result=await write;confirmedPreferences=result.preferences||payload;localStorage.setItem(storageKey('theme'),next);}
+  catch(error){if(revision===themeRevision){preferences=confirmedPreferences;applyView();}toast(error.message,true);}
+ }
  const systemDark=window.matchMedia('(prefers-color-scheme: dark)');
  const buttons=()=>`<details class="view-settings"><summary class="btn small-btn">${appearance('title')}</summary><div class="view-settings-panel"><button type="button" class="btn appearance-close" data-close-appearance aria-label="${appearance('close')}" title="${appearance('close')}">×</button><label for="learning-theme">${appearance('title')}</label><select id="learning-theme">${['light','dark','system'].map(v=>`<option value="${v}" ${theme()===v?'selected':''}>${appearance(v)}</option>`).join('')}</select></div></details>`;
  function applyView(){
@@ -28,7 +37,7 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  const certificateCount=()=>results.certificates.filter(c=>c.employee_id===window.TRAINER_AUTH.user.id).length;
  async function markRead(){const r=state.session?.published_review;if(state.route.role==='learner'&&r&&isNew(r.session_id)){read=(await api('/api/ui/reviews/read',{method:'POST',body:{session_id:r.session_id,published_at:r.published_at}})).read;const badge=document.querySelector('.new-feedback');if(badge)badge.outerHTML=notification();}}
  async function load(){
-  const [r,receipts,prefs]=await Promise.all([api('/api/learning/results'),api('/api/ui/reviews/read'),api('/api/ui/preferences')]);results=r;read=receipts.read;preferences=prefs.preferences;history=[];applyView();
+  const [r,receipts,prefs]=await Promise.all([api('/api/learning/results'),api('/api/ui/reviews/read'),api('/api/ui/preferences')]);results=r;read=receipts.read;preferences=prefs.preferences;confirmedPreferences=preferences;history=[];applyView();
   const s=state.session;
   if(state.route.view==='review'&&s?.employee_id)history=(await api('/api/mentor/employees/'+encodeURIComponent(s.employee_id)+'/sessions')).sessions;
   if(state.route.view==='company'){materials=(await api('/api/learning/materials')).materials;await reference.load();}
@@ -81,11 +90,8 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  }
  document.addEventListener('change',async e=>{
   if(e.target.id==='learning-theme'){
-   const before=preferences,previous=theme(),next=e.target.value;preferences={...(preferences||{}),theme:next};applyView();
    const control=e.target;control.disabled=true;window.TrainerUI.closePopover(control,true);
-   try{await api('/api/ui/preferences',{method:'PUT',body:{layout:preferences.layout||'auto',density:preferences.density||'normal',theme:next}});localStorage.setItem(storageKey('theme'),next);}
-   catch(error){preferences=before;applyView();toast(error.message,true);control.value=previous;}
-   finally{control.disabled=false;}
+   try{await setTheme(control.value);control.value=theme();}finally{control.disabled=false;}
   }
   if(['learning-md-file','learning-csv-file'].includes(e.target.id)&&e.target.files[0]){const text=await e.target.files[0].text();document.getElementById(e.target.id==='learning-md-file'?'learning-markdown':'learning-csv').value=text;}
  });
@@ -93,5 +99,5 @@ window.createLearning = ({state,api,esc,render,toast}) => {
   if(e.target.id==='learning-product-search'){const q=e.target.value.toLowerCase();document.querySelectorAll('.learning-search-item').forEach(x=>x.hidden=!x.textContent.toLowerCase().includes(q));}
   if(['learning-observations','learning-goal','review-note'].includes(e.target.id)&&state.session){state.learningDrafts??={};state.learningDrafts[state.session.id]=draftValue();}
  });
- return {load,report,referencePage:reference.page,referenceData:reference.snapshotData,materialPanel,importer,guidanceEditor,handle,saveDraft,buttons,notification,certificates,certificateCount,isNew,markRead};
+ return {load,report,referencePage:reference.page,referenceData:reference.snapshotData,materialPanel,importer,guidanceEditor,handle,saveDraft,buttons,theme,setTheme,notification,certificates,certificateCount,isNew,markRead};
 };

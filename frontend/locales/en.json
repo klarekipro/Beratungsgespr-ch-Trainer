@@ -1033,5 +1033,6 @@
   "dictation18.empty": "Recording is empty or too large. Please record again.",
   "dictation18.size": "The 4 MB recording limit was exceeded. Record a shorter clip.",
   "dictation18.empty_text": "No speech was recognized. Your draft is preserved.",
-  "menus18.close_profile": "Close profile menu"
+  "menus18.close_profile": "Close profile menu",
+  "header18.password": "Change password"
 }

@@ -1033,5 +1033,6 @@
   "dictation18.empty": "Aufnahme leer oder zu groß. Bitte erneut aufnehmen.",
   "dictation18.size": "Aufnahmelimit von 4 MB überschritten. Bitte kürzer aufnehmen.",
   "dictation18.empty_text": "Keine Sprache erkannt. Der Entwurf bleibt erhalten.",
-  "menus18.close_profile": "Profilmenü schließen"
+  "menus18.close_profile": "Profilmenü schließen",
+  "header18.password": "Passwort ändern"
 }

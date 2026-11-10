@@ -209,6 +209,7 @@
       <div class="main-shell"><header class="topbar"><button class="menu-btn" data-action="menu" aria-label="${window.TrainerI18n.t("dashboard.text_043")}" aria-controls="sidebar" aria-expanded="${state.menu}">${icon("menu")}</button><div class="topbar-heading"><span>${window.TrainerI18n.t("dashboard.text_044")}</span><span class="truncate"><strong>${navLabel()}</strong></span></div><div class="topbar-actions">${learning.notification()}${learning.buttons()}<span class="local-label"><span class="status-dot"></span>${window.TrainerI18n.t("dashboard.text_045")}</span><div class="portal-user"><span class="caption">${esc(AUTH.user.display_name)} · ${mentor?window.TrainerI18n.t("dashboard.text_033"):window.TrainerI18n.t("dashboard.text_034")}</span><button class="btn small-btn" data-action="own-password">${window.TrainerI18n.t("dashboard.text_046")}</button><button class="btn small-btn" data-action="logout">${window.TrainerI18n.t("dashboard.text_047")}</button></div></div></header><main class="page ${isChat?"chat-page":""}" id="main-content" tabindex="-1">${page}</main></div></div>`;
     document.body.classList.toggle('conversation-screen',isChat);
     U.afterRender();
+    window.TrainerHeaderMenus.mount(learning);
     if(isChat){
       const sidebar=$('#sidebar'),controls=$('.topbar-actions');
       const close=document.createElement('button');close.className='btn conversation-drawer-close';close.dataset.action='menu-close';close.textContent=T('close');sidebar.prepend(close);
@@ -519,7 +520,7 @@
     if(action==="menu-close") {state.menu=false;$("#sidebar").classList.remove("open");$(".mobile-shade").classList.remove("open");($("#kc-app .menu-btn")||$(".menu-btn"))?.setAttribute("aria-expanded","false");conversation.drawer(false);return;}
     if(action==="logout"){
       if(window.TrainerVoice.busy()&&!window.confirm(window.TrainerI18n.t("dictation18.leave")))return;
-      if((state.companyDirty||state.scenarioDirty||studio.dirty())&&!await confirmDialog(window.TrainerI18n.t("dashboard.text_493"),window.TrainerI18n.t("dashboard.text_494"),window.TrainerI18n.t("dashboard.text_047")))return;
+      if((PORTAL_ROLE==='learner'?(window.TrainerHasUnsavedChanges?.()||Object.keys(state.learningDrafts||{}).length):(state.companyDirty||state.scenarioDirty||studio.dirty()))&&!await confirmDialog(window.TrainerI18n.t("dashboard.text_493"),window.TrainerI18n.t("dashboard.text_494"),window.TrainerI18n.t("dashboard.text_047")))return;
       window.TrainerVoice.cancel();await api('/api/auth/logout',{method:'POST'});
       state.companyDirty=false;state.scenarioDirty=false;studio.cancelDraft();document.getElementById('app').replaceChildren();location.replace('/login');return;
     }
