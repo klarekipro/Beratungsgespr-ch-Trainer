@@ -5,7 +5,7 @@
     "scenarios": {
       "de": {
         "id": "lindenhaus_backofen",
-        "revision": 1,
+        "revision": 2,
         "company_id": "training_company",
         "title": "Lindenhaus · Ein neuer Backofen für die Küche",
         "customer_name": "Mara Weber",
@@ -102,7 +102,7 @@
       },
       "en": {
         "id": "lindenhaus_backofen",
-        "revision": 1,
+        "revision": 2,
         "company_id": "training_company",
         "title": "Lindenhaus · A new oven for the kitchen",
         "customer_name": "Mara Weber",
@@ -199,7 +199,7 @@
       },
       "ru": {
         "id": "lindenhaus_backofen",
-        "revision": 1,
+        "revision": 2,
         "company_id": "training_company",
         "title": "Lindenhaus · Новая духовка для кухни",
         "customer_name": "Mara Weber",
@@ -211,7 +211,7 @@
             "id": "goal",
             "stage": "needs",
             "label": "Использование",
-            "value": "Частный домохозяйство из трёх человек. Пеку хлеб, пироги и запеканки два-три раза в неделю; полезны конвекция и таймер.",
+            "value": "Частное домохозяйство из трёх человек. Пеку хлеб, пироги и запеканки два-три раза в неделю; полезны конвекция и таймер.",
             "status": "known",
             "keywords": [],
             "required": true,
