@@ -28,10 +28,14 @@ ID-поля, ключи/столбцы сопоставления импорта
 - 5 целевых Node-проверок прошли: 3 прежних conversation/voice и 2 для заголовков/фильтрации представления без мутации исходника. JS syntax, AST Python, JSON DE/EN/RU, git diff --check — OK. Массовых тестов нет.
 - Git подтверждает отсутствие изменений Actor/engine/workflow/store/auth/экспорта/voice.js/материалов/меню A18.4. Backend — VERSION и fingerprint нового presentation.js.
 
-Все строки documents (55), learning_records (12), users (13), training_owners (30), user_preferences (6) до установки совпали с согласованным backup `runtime/a18-5/before.sqlite3`. Приватные свидетельства: `runtime/a18-5/ui-checks.json`, `json-export-check.json`. 20 JPEG без EXIF — `reports/a18-5/screenshots/`, карта — `reports/a18-5/README.md`. Материалы наружу не загружались, QA-стенд остановлен. Исходящих попыток/платных вызовов 0.
+Все строки documents (55), learning_records (12), users (13), training_owners (30), user_preferences (6) до и после установки совпали с согласованным backup `runtime/a18-5/before.sqlite3`. Приватные свидетельства: `runtime/a18-5/ui-checks.json`, `json-export-check.json`. 20 JPEG без EXIF — `reports/a18-5/screenshots/`, карта — `reports/a18-5/README.md`. Материалы наружу не загружались, QA-стенд остановлен. Исходящих попыток/платных вызовов 0.
 
 ## Ограничения и установка
 
 Safari/Firefox, screen reader и физический микрофон отдельно не проверялись. Содержательная приёмка AI остаётся открытой. Название неизвестного машинного файла без назначения не угадывается: используется «Документ», доступен оригинал. Произвольный авторский текст может содержать собственные технические обозначения и сохранён как авторский.
 
-Main, merge, push и пользовательские untracked-каталоги не затронуты. Результат штатного запуска 8100 и SHA кода фиксируются отдельно после проверки.
+Main, merge, push и пользовательские untracked-каталоги не затронуты. Установка подтверждена ниже.
+
+## Подтверждённая установка
+
+Код `ed83c84beffe640cffa31cd51c9ef5d4ee6dc37d` установлен штатным `.venv/bin/python scripts/local_installation.py start --no-browser`. На 8100 — `0.10.5-clean-presentation`, PID 74805, frontend revision `76e8447447edf051`. Прежние SQLite и Keychain сохранены. 19 frontend-файлов совпали с диском; все строки пяти рабочих таблиц — с согласованной копией. Приватная квитанция — `runtime/a18-5/final-verification.json`. Последующий коммит меняет только документацию, загруженный SHA остаётся SHA кода. Новые тексты доступны после обновления открытой страницы.

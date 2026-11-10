@@ -1,6 +1,6 @@
 # A18.5 — пользовательские экраны
 
-Версия `0.10.5-clean-presentation`, ветка `codex/a18-5-clean-presentation`, основание A18.4 `a7847ca`. Итоговый SHA и состояние 8100 — в PROJECT_STATE.md и A18_5_HANDOFF_RU.md.
+Версия `0.10.5-clean-presentation`, ветка `codex/a18-5-clean-presentation`, основание A18.4 `a7847ca`. Установленный SHA — `ed83c84beffe640cffa31cd51c9ef5d4ee6dc37d`; состояние 8100 — в PROJECT_STATE.md и A18_5_HANDOFF_RU.md.
 
 20 обезличенных JPEG: 1440×900, один узкий 390×844. Результат и реплики синтетические; на кадре наставника открыты только тестовые технические сведения. Реальных транскриптов, паролей, ключей, cookies и EXIF нет.
 
