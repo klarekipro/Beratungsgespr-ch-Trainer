@@ -46,14 +46,15 @@ window.createConversationScreen=({state,esc:E,icon,draftFor,learning,date,time,l
  function features(text){const counts=new Map();return String(text||'').split(';').map(x=>x.trim()).filter(Boolean).map(x=>{const i=x.indexOf(':'),label=i<0?t('feature'):x.slice(0,i).trim(),n=counts.get(label)||0;counts.set(label,n+1);return {key:JSON.stringify([label,n]),label,value:i<0?x:x.slice(i+1).trim()};});}
  const empty=()=>E(window.TrainerI18n.t('company17.unknown'));
  function products(){
+  if(!data.products?.length)return `<p class="kc-empty">${E(window.TrainerI18n.t('company17.empty_products'))}</p>`;
   const u=ui(),picked=(data.products||[]).find(p=>p.id===u.picked[0]);
   const q=u.query.toLocaleLowerCase(),cats=[...new Set(data.products.map(p=>p.category))];let count=0;
   const rows=data.products.map(p=>{
    const shown=[p.name,p.category,article(p),p.features].join(' ').toLocaleLowerCase().includes(q)&&(!u.category||p.category===u.category);if(shown)count++;
    const on=u.picked.includes(p.id),blocked=!on&&(u.picked.length>=3||picked&&p.category!==picked.category);
-   return `<li class="kc-product" ${shown?'':'hidden'}><input type="checkbox" class="kc-pick" data-pick="${E(p.id)}" aria-label="${E(t('pick'))}: ${E(p.name)}" ${on?'checked':''} ${blocked?'disabled':''} title="${E(t('compare_rule'))}"><details data-product="${E(p.id)}" ${u.open.has(p.id)?'open':''}><summary><span class="kc-p-name">${E(p.name)}</span><span class="kc-p-price">${money(p.price_eur)}</span><span class="kc-p-meta">${E(p.category)}${article(p)?' · '+E(article(p)):''}</span><span class="kc-p-feat">${E(p.features)}</span></summary><div class="kc-p-detail">${notice(p)}<dl class="kc-dl">${features(p.features).map(f=>`<dt>${E(f.label)}</dt><dd>${E(f.value)}</dd>`).join('')}${['price_includes','availability','promotion','valid_until'].map(k=>`<dt>${E(t(k))}</dt><dd>${p[k]?E(p[k]):empty()}</dd>`).join('')}</dl></div></details></li>`;
+   return `<li class="kc-product" ${shown?'':'hidden'}><details data-product="${E(p.id)}" ${u.open.has(p.id)?'open':''}><summary><span class="kc-p-name">${E(p.name)}</span><span class="kc-p-price">${money(p.price_eur)}</span><span class="kc-p-meta">${E(p.category)}${article(p)?' · '+E(article(p)):''}</span><span class="kc-p-feat">${E(p.features)}</span><span class="kc-product-open">${E(t('view_product'))}${icon('chevron')}</span></summary><div class="kc-p-detail">${notice(p)}<dl class="kc-dl">${features(p.features).map(f=>`<dt>${E(f.label)}</dt><dd>${E(f.value)}</dd>`).join('')}${['price_includes','availability','promotion','valid_until'].map(k=>`<dt>${E(t(k))}</dt><dd>${p[k]?E(p[k]):empty()}</dd>`).join('')}</dl></div></details><label class="kc-pick-label"><input type="checkbox" class="kc-pick" data-pick="${E(p.id)}" aria-label="${E(t('pick'))}: ${E(p.name)}" ${on?'checked':''} ${blocked?'disabled':''} title="${E(t('compare_rule'))}"><span>${E(t('pick'))}</span></label></li>`;
   }).join('');
-  return `<div class="kc-filters"><input type="search" id="kc-q" aria-label="${E(t('search'))}" placeholder="${E(t('search'))}" value="${E(u.query)}"><select id="kc-cat" class="kc-select" aria-label="${E(window.TrainerI18n.t('company17.category'))}"><option value="">${E(window.TrainerI18n.t('company17.all'))}</option>${cats.map(c=>`<option ${c===u.category?'selected':''}>${E(c)}</option>`).join('')}</select><span class="kc-count" id="kc-n" aria-live="polite">${count}</span></div><p class="kc-cap" id="kc-no-products" ${count?'hidden':''}>${E(t('no_results'))}</p><ul class="kc-products">${rows}</ul>${u.picked.length?`<div class="kc-comparebar"><span>${u.picked.length} · ${E(t('compare_rule'))}</span><button type="button" class="kc-btn" data-kc="clear">${E(t('clear'))}</button><button type="button" class="kc-btn kc-btn--primary" data-kc="compare" ${u.picked.length<2?'disabled':''}>${E(t('compare'))}</button></div>`:''}`;
+  return `<p class="kc-cap">${E(t('compare_rule'))}</p><div class="kc-filters"><input type="search" id="kc-q" aria-label="${E(t('search'))}" placeholder="${E(t('search'))}" value="${E(u.query)}"><select id="kc-cat" class="kc-select" aria-label="${E(window.TrainerI18n.t('company17.category'))}"><option value="">${E(window.TrainerI18n.t('company17.all'))}</option>${cats.map(c=>`<option ${c===u.category?'selected':''}>${E(c)}</option>`).join('')}</select><span class="kc-count" id="kc-n" aria-live="polite">${count}</span></div><p class="kc-cap" id="kc-no-products" ${count?'hidden':''}>${E(t('no_results'))}</p><ul class="kc-products">${rows}</ul>${u.picked.length?`<div class="kc-comparebar"><span role="status">${E(t(u.picked.length===1?'compare_one':'compare_rule'))}</span><button type="button" class="kc-btn" data-kc="clear">${E(t('clear'))}</button><button type="button" class="kc-btn kc-btn--primary" data-kc="compare" ${u.picked.length<2?'disabled':''}>${E(t('compare'))} (${u.picked.length})</button></div>`:''}`;
  }
  function compare(){
   const ps=ui().picked.map(id=>data.products.find(p=>p.id===id)).filter(Boolean),maps=ps.map(p=>new Map(features(p.features).map(f=>[f.key,f]))),labels=new Map();
@@ -78,6 +79,7 @@ window.createConversationScreen=({state,esc:E,icon,draftFor,learning,date,time,l
  function switchPane(change){
   const pane=$('#kc-pane'),active=document.activeElement,focused=active?.dataset?.pick?{pick:active.dataset.pick}:['kc-q','kc-cat'].includes(active?.id)?{id:active.id}:null;
   if(pane)ui().scroll[key()]=pane.scrollTop;change();renderPane();
+  window.TrainerHeaderMenus?.enhanceSelects();
   const next=focused?.pick?[...document.querySelectorAll('[data-pick]')].find(el=>el.dataset.pick===focused.pick):focused?.id?document.getElementById(focused.id):null;
   next?.focus({preventScroll:true});
  }
@@ -114,7 +116,7 @@ window.createConversationScreen=({state,esc:E,icon,draftFor,learning,date,time,l
   if(action==='panel')setPanel(!ui().panel);if(action==='talk')setPanel(false);if(action==='reference')setPanel(true);
   if(action==='guide')keepReading(()=>{ui().guide=!ui().guide;$('#kc-guide').hidden=!ui().guide;button.setAttribute('aria-expanded',String(ui().guide));});
   if(action==='clear')switchPane(()=>{ui().picked=[];ui().view='list';});
-  if(action==='compare')switchPane(()=>{ui().view='compare';});if(action==='list')switchPane(()=>{ui().view='list';});
+  if(action==='compare'&&ui().picked.length>=2&&ui().picked.length<=3)switchPane(()=>{ui().view='compare';});if(action==='list')switchPane(()=>{ui().view='list';});
  });
  document.addEventListener('input',e=>{
   if(!$('#kc-app'))return;

@@ -864,7 +864,7 @@
   "learning.save_draft": "Entwurf serverseitig speichern",
   "learning.draft_notice": "Der Entwurf ist privat. Mit dem Formular unten veröffentlichen Sie die Rückmeldung.",
   "learning.issue_certificate": "Zertifikat ausstellen",
-  "learning.saved_materials": "Materialien dieser Versuchsversion",
+  "learning.saved_materials": "Nachschlagewerk dieses Gesprächs",
   "learning.materials": "Aktueller Katalog und Bedingungen",
   "learning.search": "Produkte und Bedingungen durchsuchen",
   "learning.no_materials": "Kein zusätzlicher Katalog erfasst. Es gilt die gespeicherte Firmenkarte.",
@@ -988,8 +988,8 @@
   "conversation18.availability": "Verfügbarkeit",
   "conversation18.promotion": "Aktion",
   "conversation18.valid_until": "Gültig bis",
-  "conversation18.pick": "Zum Vergleich auswählen",
-  "conversation18.compare_rule": "2–3 Produkte derselben Kategorie",
+  "conversation18.pick": "Zum Vergleich hinzufügen",
+  "conversation18.compare_rule": "Wählen Sie 2–3 Produkte derselben Kategorie.",
   "conversation18.search": "Produkte durchsuchen",
   "conversation18.no_results": "Kein Produkt gefunden.",
   "conversation18.clear": "Auswahl aufheben",
@@ -1034,5 +1034,9 @@
   "dictation18.size": "Aufnahmelimit von 4 MB überschritten. Bitte kürzer aufnehmen.",
   "dictation18.empty_text": "Keine Sprache erkannt. Der Entwurf bleibt erhalten.",
   "menus18.close_profile": "Profilmenü schließen",
-  "header18.password": "Passwort ändern"
+  "header18.password": "Passwort ändern",
+  "learning.saved_materials_hint": "Produkte, Preise und Bedingungen, die für diesen Versuch galten",
+  "company17.empty_products": "Für dieses Verzeichnis sind keine Produkte gespeichert. Die verfügbaren Angaben finden Sie unter Unternehmen und Leistungen.",
+  "conversation18.compare_one": "Wählen Sie ein weiteres Produkt zum Vergleichen.",
+  "conversation18.view_product": "Produktdetails"
 }

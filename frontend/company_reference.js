@@ -16,6 +16,7 @@ window.createCompanyReference=({state,api,esc:E})=>{
  }
  function sectionBody(d,key){
   if(key==='about')return `<h2>${t('about')}</h2><p>${E(d.about)}</p><p class="caption">${t('fictional')}</p>`;
+  if(key==='products'&&!d.products.length)return `<h2>${t('products')}</h2><p class="reference-empty">${t('empty_products')}</p>`;
   if(key==='products')return `<h2>${t('products')} <span class="caption">${d.products.length}</span></h2><div class="reference-filters"><label>${t('search')}<input type="search" class="reference-search" placeholder="${t('search')}"></label><label>${t('category')}<select class="reference-category"><option value="">${t('all')}</option>${[...new Set(d.products.map(p=>p.category))].map(c=>`<option>${E(c)}</option>`).join('')}</select></label></div><p class="caption reference-count" aria-live="polite">${d.products.length}</p>${productList(d.products)}`;
   if(key==='services')return `<h2>${t('service_prices')} <span class="caption">${d.services.length}</span></h2>${servicesTable(d.services)}`;
   if(key==='terms')return `<h2>${t('terms')}</h2>${d.terms.map(([title,text])=>`<details class="reference-document"><summary>${E(title)}</summary><p>${E(text)}</p></details>`).join('')}`;
@@ -42,9 +43,8 @@ window.createCompanyReference=({state,api,esc:E})=>{
  function page(){return current?.reference?reference(current.reference):generic(current?.materials,state.company);}
  function snapshot(m,c){
   const d=m?.translations?.[language()];
-  if(d)return `<details class="reference-snapshot card card-pad"><summary>${window.TrainerI18n.t('learning.saved_materials')}</summary>${reference(d,true)}</details>`;
-  if(m?.documents&&c)return `<details class="reference-snapshot card card-pad"><summary>${window.TrainerI18n.t('learning.saved_materials')}</summary>${generic(m,c)}</details>`;
-  return null;
+  if(!d&&!c)return null;
+  return `<details class="reference-snapshot card card-pad"><summary>${window.TrainerI18n.t('learning.saved_materials')}<small>${window.TrainerI18n.t('learning.saved_materials_hint')}</small></summary>${d?reference(d,true):generic(m,c)}</details>`;
  }
 
  function importer(){return `<details class="card card-pad report-section company-import"><summary>${window.TrainerI18n.t('learning.import')}</summary><p>MD / TXT · CSV / XLSX · PDF (text)</p><label>${t('purpose')}<select id="company-import-purpose">${Object.entries(purposeNames).map(([v,k])=>`<option value="${v}">${t(k)}</option>`).join('')}</select></label><label>${t('original_language')}<select id="company-import-language"><option value="de">Deutsch</option><option value="en">English</option><option value="ru">Русский</option></select></label><input id="company-import-file" type="file" accept=".md,.markdown,.txt,.csv,.xlsx,.pdf"><p role="status" id="company-import-status"></p><div id="company-import-work"></div></details>${page()}`;}

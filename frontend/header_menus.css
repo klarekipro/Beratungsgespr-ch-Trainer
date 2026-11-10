@@ -1,4 +1,4 @@
-/* Employee header only; palette and settings persistence come from the existing app. */
+/* Shared menu presentation; existing fields retain values and event handlers. */
 .employee-menu{position:relative;display:inline-flex;min-width:0;flex:none}
 .employee-menu-trigger{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;min-height:40px;padding:0 12px;margin:0;border:1px solid var(--line);border-radius:10px;background:var(--control-surface,var(--surface));color:var(--control-text,var(--ink));font:500 14px/1.3 var(--font);white-space:nowrap;cursor:pointer;max-width:260px}
 .employee-menu-label{min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:left}
@@ -16,7 +16,7 @@ html[data-theme="dark"] .employee-menu-popup{box-shadow:0 12px 32px #0006}
 .employee-menu-item svg{width:18px;height:18px}
 .employee-menu-item .employee-menu-icon{color:var(--muted)}
 .employee-menu-check{margin-left:auto;color:var(--green)}
-.employee-menu-item[aria-checked="true"]{background:var(--surface-active);font-weight:600}
+.employee-menu-item[aria-checked="true"],.employee-menu-item[aria-selected="true"]{background:var(--surface-active);font-weight:600}
 .employee-menu-item:hover,.employee-menu-item:focus-visible{background:var(--surface-hover);color:var(--ink)}
 .topbar .employee-menu.language-bar,.conversation-drawer-controls .employee-menu.language-bar{position:relative;min-height:0;border:0;padding:0;background:none;flex-direction:row}
 .topbar-actions.employee-header-controls{align-items:center;gap:8px}
@@ -34,3 +34,17 @@ html[data-theme="dark"] .employee-menu-popup{box-shadow:0 12px 32px #0006}
  .topbar .employee-menu-icon{display:none}
  .topbar .employee-menu-caret{margin-left:auto}
 }
+
+select[hidden]{display:none!important}
+.app-select{display:flex;width:100%;min-width:0;margin:5px 0 12px}
+.app-select>.employee-menu-trigger{width:100%;max-width:none;justify-content:space-between;min-width:0;height:auto;min-height:42px;text-align:left;font-weight:400}
+.app-select .employee-menu-caret{margin-left:auto}
+.employee-menu-popup[data-kind="select"] .employee-menu-label{white-space:normal;overflow:visible;overflow-wrap:anywhere}
+.employee-menu-popup[data-kind="select"] .employee-menu-item{white-space:normal}
+.app-select.is-invalid>.employee-menu-trigger{border-color:var(--red)}
+.kc-filters>.app-select{flex:0 1 210px;width:auto;margin:0}
+.kc-tools>.app-select{width:auto;max-width:150px;margin:0}
+.kc-tools>.app-select>.employee-menu-trigger{min-width:90px;min-height:38px;font-size:13px;padding:0 8px}
+.reference-filters .app-select{margin-bottom:0}
+@media(max-width:510px){.kc-filters>.app-select{flex-basis:46%}}
+.editor-more[hidden]{display:none!important}

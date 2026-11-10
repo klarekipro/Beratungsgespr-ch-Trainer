@@ -864,7 +864,7 @@
   "learning.save_draft": "Сохранить черновик на сервере",
   "learning.draft_notice": "Черновик закрытый. Для публикации используйте форму ниже.",
   "learning.issue_certificate": "Выдать сертификат сотруднику",
-  "learning.saved_materials": "Материалы, сохранённые для попытки",
+  "learning.saved_materials": "Справочник этой беседы",
   "learning.materials": "Текущий каталог и условия",
   "learning.search": "Поиск товаров и условий",
   "learning.no_materials": "Дополнительный каталог не зафиксирован. Действует сохранённая карточка компании.",
@@ -988,8 +988,8 @@
   "conversation18.availability": "Наличие",
   "conversation18.promotion": "Акция",
   "conversation18.valid_until": "Действует до",
-  "conversation18.pick": "Выбрать для сравнения",
-  "conversation18.compare_rule": "2–3 товара одной категории",
+  "conversation18.pick": "Добавить к сравнению",
+  "conversation18.compare_rule": "Выберите 2–3 товара одной категории.",
   "conversation18.search": "Поиск товаров",
   "conversation18.no_results": "Товары не найдены.",
   "conversation18.clear": "Снять выбор",
@@ -1034,5 +1034,9 @@
   "dictation18.size": "Превышен лимит записи 4 МБ. Запишите более короткую реплику.",
   "dictation18.empty_text": "Речь не распознана. Черновик сохранён.",
   "menus18.close_profile": "Закрыть меню профиля",
-  "header18.password": "Сменить пароль"
+  "header18.password": "Сменить пароль",
+  "learning.saved_materials_hint": "Товары, цены и условия, действовавшие для этой попытки",
+  "company17.empty_products": "В этом справочнике товары не сохранены. Доступные сведения есть в разделах «Предприятие» и «Услуги».",
+  "conversation18.compare_one": "Для сравнения выберите ещё один товар.",
+  "conversation18.view_product": "Характеристики товара"
 }

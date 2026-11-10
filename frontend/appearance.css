@@ -88,3 +88,22 @@ html[data-theme] :is(.view-settings-panel,.user-menu .portal-user){background:va
 html[data-theme] :is(.view-settings-panel label,.user-menu .portal-user .caption){color:var(--muted)}
 html[data-theme] .conversation-drawer-controls :is(.view-settings-panel,.user-menu>.portal-user){position:relative;top:auto;right:auto}
 html[data-theme] :is(input,textarea)::placeholder{color:var(--muted);opacity:1}
+
+/* Report chips and step numbers use paired theme surfaces/foregrounds. */
+html[data-theme] .pill:not(.green):not(.amber):not(.red):not(.dark){background:var(--surface-active);color:var(--ink);border-color:var(--line)}
+html[data-theme] .stage-result-icon{background:var(--surface-active);color:var(--ink);flex:none}
+html[data-theme] .stage-result.confirmed .stage-result-icon{background:var(--green-soft);color:var(--green)}
+html[data-theme] .report-symbol{background:var(--surface-active);color:var(--green)}
+.reference-snapshot>summary{cursor:pointer}
+.reference-snapshot>summary small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin:5px 0 0 15px}
+html:not([data-input-modality="keyboard"]) .reference-snapshot>summary:focus{outline:none;box-shadow:none}
+html[data-input-modality="keyboard"] .reference-snapshot>summary:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.reference-empty,.kc-empty{padding:16px 0;color:var(--muted);line-height:1.6}
+.kc-product{grid-template-columns:minmax(0,1fr)}
+.kc-pick-label{display:flex;align-items:center;gap:8px;padding:0 0 10px;color:var(--muted);font-size:12px;cursor:pointer}
+.kc-pick-label .kc-pick{margin:0;flex:none}
+.kc-product-open{display:flex;align-items:center;gap:4px;grid-column:1/-1;font-size:12px;margin-top:5px;color:var(--green)}
+.kc-product-open svg{width:14px;height:14px}
+.kc-product details[open] .kc-product-open svg{transform:rotate(180deg)}
+.stage-result{flex-wrap:wrap}
+.stage-result>.pill{white-space:normal}

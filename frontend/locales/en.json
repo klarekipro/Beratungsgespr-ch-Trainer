@@ -864,7 +864,7 @@
   "learning.save_draft": "Save draft to server",
   "learning.draft_notice": "This draft is private. Publish feedback using the form below.",
   "learning.issue_certificate": "Issue certificate to employee",
-  "learning.saved_materials": "Materials saved for this attempt",
+  "learning.saved_materials": "Reference for this conversation",
   "learning.materials": "Current catalogue and terms",
   "learning.search": "Search products and terms",
   "learning.no_materials": "No additional catalogue recorded. Use the saved company card.",
@@ -988,8 +988,8 @@
   "conversation18.availability": "Availability",
   "conversation18.promotion": "Promotion",
   "conversation18.valid_until": "Valid until",
-  "conversation18.pick": "Select for comparison",
-  "conversation18.compare_rule": "2–3 products in the same category",
+  "conversation18.pick": "Add to comparison",
+  "conversation18.compare_rule": "Select 2–3 products from the same category.",
   "conversation18.search": "Search products",
   "conversation18.no_results": "No products found.",
   "conversation18.clear": "Clear selection",
@@ -1034,5 +1034,9 @@
   "dictation18.size": "The 4 MB recording limit was exceeded. Record a shorter clip.",
   "dictation18.empty_text": "No speech was recognized. Your draft is preserved.",
   "menus18.close_profile": "Close profile menu",
-  "header18.password": "Change password"
+  "header18.password": "Change password",
+  "learning.saved_materials_hint": "Products, prices and terms that applied to this attempt",
+  "company17.empty_products": "No products are saved in this reference. See Company and Services for the available information.",
+  "conversation18.compare_one": "Select one more product to compare.",
+  "conversation18.view_product": "Product details"
 }
