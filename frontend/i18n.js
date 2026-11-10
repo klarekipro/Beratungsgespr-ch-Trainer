@@ -19,6 +19,11 @@ window.TrainerI18n=(()=>{
  const ready=Promise.all(supported.map(async lang=>{const r=await fetch('/static/locales/'+lang+'.json',{credentials:'same-origin',cache:'no-cache'});if(!r.ok)throw new Error('Language catalogue unavailable');dict[lang]=await r.json();})).then(()=>{mount();apply();});
  function error(data){const key='errors.'+(data?.code||'REQUEST_FAILED');return Object.hasOwn(dict.de||{},key)?t(key):t('errors.REQUEST_FAILED');}
  function systemText(value){
+   const historical={
+    'Этапы подтверждаются наставником после беседы. Темы и полнота фактов автоматически не оцениваются; отметки ниже не являются результатом семантического анализа.':'report.manual',
+    'Технические ошибки не засчитываются как ошибки ученика.':'report.technical'
+   };
+   if(Object.hasOwn(historical,value))return t(historical[value]);
    let count=/^simple_actor: (\d+) ответов одного OpenAI Actor;/.exec(value);
    if(count){const n=Number(count[1]),form=new Intl.PluralRules(locale).select(n);return t('report.actor.'+(form==='one'?'one':form==='few'?'few':'other'),{count:number(n)});}
    if(locale==='ru')return value;
