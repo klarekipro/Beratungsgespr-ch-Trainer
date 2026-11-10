@@ -18,3 +18,6 @@
 Четыре обезличенных JPEG без EXIF: `reports/a19-2/screenshots/{chrome,safari}-{light,dark}.jpg`. Приватная квитанция — `runtime/a19-2/ui-checks.json`. Проверочные вкладки закрыты, исходная рабочая вкладка Safari сохранена.
 
 Рабочая база не редактировалась. Согласованный backup SQLite API: `runtime/a19-2/before.sqlite3`. Свежий baseline — documents 55, learning_records 17, users 14, training_owners 31, user_preferences 6; все строки этих таблиц до установки неизменны. Это новые пользовательские данные относительно A19.1, они сохранены. Пользовательские untracked-каталоги не затронуты. Main/merge/push не выполнялись. Подтверждение установки добавляется после коммита кода; логика кабинета и содержательная приёмка остаются следующим этапом.
+
+
+Подтверждённая установка: штатный `scripts/local_installation.py start --no-browser`, версия `0.11.2-employee-autofill`, код `9bee3b525b98f42b87630034b0019ee92cd90d58`, PID 81874, прежняя база/Keychain, frontend revision `bf83219b0444f0b1`. Все строки пяти рабочих таблиц (55/17/14/31/6) совпали с backup; все 22 frontend-файла совпали с диском. Проверочный сервер 8101 остановлен. Квитанция — `runtime/a19-2/final-verification.json`. Последующий коммит только фиксирует установку в документации.
