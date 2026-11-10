@@ -7,18 +7,18 @@
 | Параметр | Проверенное состояние |
 |---|---|
 | Рабочая папка | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech` |
-| Рабочая ветка | `a17-company-materials` |
-| Версия приложения | `0.9.0-a17-company-materials` — подтверждена живым `/api/status` |
-| Коммит кода и запущенного A17 | `b4bc3b74dbb8ba002e1865c83e7619d1a56173d6` |
-| Git перед этой задачей | Чистое рабочее дерево |
+| Рабочая ветка | `codex/a18-conversation-screen` |
+| Версия приложения | `0.10.0-a18-conversation-screen` — подтверждена на 8100 после установки |
+| Коммит установленного кода A18 | `9f1f6d06cd7b95a806002378fe1c06552ee3de54` |
+| Git | Код A18 закоммичен; два пользовательских непроиндексированных каталога не затронуты |
 | Адрес | `http://127.0.0.1:8100` |
-| Процесс на 8100 | Python, PID `47048`, запуск 10.11.2026 в 10:55:54 по местному времени Mac |
+| Процесс на 8100 | Python, PID `59942`, штатный перезапуск A18 10.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |
 | cwd процесса | Основная рабочая папка, указанная выше |
 | База | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard/trainer.sqlite3` |
 | OpenAI | `configured=true`, `live_enabled=true`, `simple_actor`, `gpt-4.1-mini-2025-04-14`; один Responses-запрос на попытку хода, без LLM-Verifier |
 
-SHA запущенного A17 подтверждается сохранённым `runtime/a17-final-verification.json`; текущая проверка независимо подтвердила HEAD, PID/cwd/команду, порт и публичную версию API. Привилегированный runtime API заново не запрашивался, секреты и реквизиты не извлекались. Документационный коммит этой задачи следует за указанным SHA кода; его можно найти через `git log -1 -- AGENTS.md PROJECT_STATE.md`. Сервер из-за документации не перезапускается и сохраняет SHA своего запуска.
+Установка A18 подтверждена `runtime/a18-final-verification.json`: версия, PID, SHA загруженного кода, прежняя база, соответствие семи отдаваемых frontend-файлов диску и сохранность рабочих таблиц. Frontend revision: `716f6eb65e864dbf`. Последующий документационный коммит завершает отчёт и не требует нового перезапуска: сервер сохраняет SHA своего запуска. Исторические сведения A17 ниже относятся к состоянию до A18. Актуальный handoff: `A18_HANDOFF_RU.md`.
 
 Открыт `/mentor`: браузер перенаправил на `/login?portal=mentor`, заголовок «Anmelden · Klare KI». Авторизованная пользовательская приёмка этим не выполнена. Вход сотрудника — `/learner`; справочник — `/learner#learner/company`, материалы наставника — `/mentor#mentor/company` после входа.
 
@@ -33,7 +33,7 @@ SHA запущенного A17 подтверждается сохранённы
 | `simple_actor.py`, `providers.py`, `client_profiles.py`, `persona_service.py` | Текущий OpenAI Actor и профили клиентов; старые `customer_actor.py`/`response_planning.py` также сохраняются для совместимости и локальных проверок |
 | `workflow.py`, `company_reference.py`, `materials.py`, `ui_preferences.py` | Самостоятельная практика, анализ/отзывы/сертификаты, справочник и импорт, локализация, настройки/прочтение |
 | `exports.py`, `learning_exports.py`, `transcription.py` | PDF/TXT/JSON, сертификаты и диктовка |
-| `frontend/` | HTML/CSS/JavaScript без сборки: `app.js`, `mentor_studio.js`, `learning.js`, `company_reference.js`, `ui_organization.js`, `voice.js`, `locales/{de,en,ru}.json` |
+| `frontend/` | HTML/CSS/JavaScript без сборки: `app.js`, `conversation.js`/`conversation.css`, `mentor_studio.js`, `learning.js`, `company_reference.js`, `ui_organization.js`, `voice.js`, `locales/{de,en,ru}.json` |
 | `profiles/`, `scenarios/`, `materials/` | Поставляемые учебные данные; `materials/lindenhaus/` — справочник и деловые документы DE/EN/RU |
 | `scripts/` и корневые `.command` | Штатный запуск, остановка, управление установкой/ключом и локальными аккаунтами |
 | `runtime/` | Рабочая SQLite, резервные копии, логи, приватный audit и локальные доказательства; исключён из Git |
@@ -57,7 +57,7 @@ SHA запущенного A17 подтверждается сохранённы
 ./START_TRAINER.command --no-browser
 ```
 
-Эквивалент для установленного окружения: `.venv/bin/python scripts/local_installation.py start --no-browser`. Штатный launcher использует `.venv`, Keychain и прежнюю базу, проверяет экземпляр на 8100. Уже работающий сервер в этой задаче не останавливался и не запускался заново.
+Эквивалент для установленного окружения: `.venv/bin/python scripts/local_installation.py start --no-browser`. Штатный launcher использует `.venv`, Keychain и прежнюю базу, проверяет экземпляр на 8100. При установке A18 сервер штатно перезапущен; прежние база и Keychain сохранены.
 
 Ключ — в macOS Keychain; штатный механизм передаёт его серверу через анонимный pipe. Не копировать ключ в командную строку, документы, Git или браузер. Вход наставника/сотрудника осуществляется собственными аккаунтами; общих паролей нет. `SETUP_MENTOR.command` предназначен для первичной настройки, `RECOVER_MENTOR.command` — для явного восстановления владельцем. В этой задаче они не запускались.
 
@@ -138,4 +138,4 @@ SHA запущенного A17 подтверждается сохранённы
 
 Проверено на обезличенной SQLite-копии с подставным Actor и заблокированными исходящими подключениями: 4 размера Chrome, DE/EN/RU, сравнение/неизвестная цена/свободные характеристики, поле/ошибка/повтор с тем же request_id, фокус, ширина мышью/клавишами, якорь чтения, завершение/отмена/лимит, старый снимок и возврат общей оболочки. 2 новых Node-проверки и 3 целевых прежних Python-проверки прошли; синтаксис/diff проверены. Физический микрофон, другие браузеры и содержательная приёмка владельцем остаются открыты. 11 кадров — `reports/a18/screenshots/`, только обезличенные и синтетические данные. Рабочие documents/learning_records/users/training_owners/user_preferences до/после QA совпали; внешних подключений/платных вызовов не было. Стенд 8101 остановлен.
 
-Код подготовлен к отдельному коммиту, затем штатному перезапуску установки на 8100 с прежней базой и Keychain. Фактическое состояние установки будет дополнено после проверки. Два появившихся пользовательских непроиндексированных каталога (`17_BeratungGesprech_v02   /`, `Lindenhaus_A16_Import_v1/`) сохранены без изменений и не добавляются в Git. Слияний и push не было.
+Код зафиксирован коммитом `9f1f6d06cd7b95a806002378fe1c06552ee3de54`, затем установлен штатным `scripts/local_installation.py start --no-browser`. На 8100 новая версия, PID `59942`, прежняя SQLite и Keychain; frontend revision `716f6eb65e864dbf`. Перед перезапуском SQLite backup: `runtime/backups/a18-20261110-142427/trainer.sqlite3`. После установки побайтно/по значениям строк сохранены 53 documents, 10 learning_records, 13 users, 28 training_owners и 6 user_preferences; 7 отдаваемых frontend-файлов совпали с диском. Полное локальное свидетельство: `runtime/a18-final-verification.json` (не включать в Git). Последующий коммит обновляет только документацию. При открытии/обновлении `/learner` и продолжении активной беседы используется новый экран; старый отчёт остаётся прежним. Два появившихся пользовательских непроиндексированных каталога (`17_BeratungGesprech_v02   /`, `Lindenhaus_A16_Import_v1/`) сохранены без изменений и не добавляются в Git. Слияний и push не было.
