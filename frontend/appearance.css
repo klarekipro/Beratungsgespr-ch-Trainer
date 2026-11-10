@@ -36,3 +36,54 @@ html[data-theme="dark"] :focus-visible{outline-color:#a6e6b7}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 html[data-theme="dark"] .kc-switch button[aria-pressed="true"]{background:var(--green-soft);color:var(--ink);border-color:var(--line)}
 html[data-theme="dark"] :is(.user-menu[open]>.portal-user,.editor-more-actions){background:var(--surface);color:var(--ink);border-color:var(--line)}
+/* Semantic surfaces shared by both palettes and ordinary employee components. */
+:root{
+ --muted:#53655b;--control-surface:var(--surface);--control-text:var(--ink);
+ --surface-hover:#edf3e8;--surface-active:#e3eee1;
+ --disabled-surface:#e9eee8;--disabled-text:#536157;
+ --avatar-surface:#edf0e6;--avatar-text:#365140;
+ --avatar-warm-surface:#f5ebd8;--avatar-warm-text:#745523;
+ --avatar-cool-surface:#e7edf0;--avatar-cool-text:#3f5e6b;
+ --brand-surface:#edf2df;--brand-text:#173b35;--brand-accent:#805613;
+ --primary-hover:#12543f;--primary-text:#fff;
+}
+html[data-theme="dark"]{
+ --control-surface:var(--surface);--control-text:var(--ink);
+ --surface-hover:#294b3b;--surface-active:#325a45;
+ --disabled-surface:#233e31;--disabled-text:#b8c9bd;
+ --avatar-surface:#294b3b;--avatar-text:#e0eee5;
+ --avatar-warm-surface:#493d24;--avatar-warm-text:#f1d99f;
+ --avatar-cool-surface:#284450;--avatar-cool-text:#d2e9f1;
+ --brand-surface:#29432c;--brand-text:#e0eee5;--brand-accent:#f1d99f;
+ --primary-hover:#a0e3b7;--primary-text:#10291c;
+}
+.user-menu>summary,.view-settings>summary{background:var(--control-surface);color:var(--control-text)}
+.resume-banner,.practice-counts>a{background:var(--surface);color:var(--ink)}
+.avatar{background:var(--avatar-surface);color:var(--avatar-text)}
+.avatar.tone-1{background:var(--avatar-warm-surface);color:var(--avatar-warm-text)}
+.avatar.tone-2{background:var(--avatar-cool-surface);color:var(--avatar-cool-text)}
+.message.learner .avatar{background:var(--avatar-surface);color:var(--avatar-text)}
+.brand-mark{background:var(--brand-surface);color:var(--brand-text)}
+.brand-mark span{color:var(--brand-accent)}
+.scenario-brief,.scenario-number,.scenario-client{color:var(--muted)}
+html[data-theme] :is(.btn,.user-menu>summary,.view-settings>summary,.practice-counts>a):hover:not(:disabled){background:var(--surface-hover);color:var(--control-text);border-color:var(--line)}
+html[data-theme] :is(.btn,.user-menu>summary,.view-settings>summary,.practice-counts>a):active:not(:disabled),
+html[data-theme] :is(.user-menu[open]>summary,.view-settings[open]>summary){background:var(--surface-active);color:var(--control-text)}
+html[data-theme] :is(.btn.primary,.kc-btn--primary):hover:not(:disabled){background:var(--primary-hover);color:var(--primary-text)}
+html[data-theme] :is(.btn,button,select,input,textarea):disabled{opacity:1;background:var(--disabled-surface);color:var(--disabled-text);border-color:var(--line);cursor:not-allowed}
+.user-menu[open]>.portal-user{padding-top:48px}
+.popup-close{position:absolute;right:8px;top:6px;min-width:36px;min-height:36px;font-size:22px}
+.portal-meta{color:var(--muted)}
+html[data-theme] a.skip-link{background:var(--control-surface);color:var(--control-text)}
+/* Reports/history share the same readable semantic foregrounds. */
+html[data-theme] :is(.report-hero p,.report-meta,.message-author,.message-author time,.message-author span,.export-buttons .btn span,.data-table th){color:var(--muted)}
+html[data-theme] .notice strong{color:var(--ink)}
+html[data-theme] .pill.dark{background:var(--soft);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] :is(.review-note,.transcript){background:var(--surface);color:var(--ink);border-color:var(--line)}
+:root{--warning-text:#775110}
+html[data-theme="dark"]{--warning-text:#f7d99d}
+html[data-theme] :is(.pill.amber,.notice.amber){color:var(--warning-text)}
+html[data-theme] :is(.btn,.user-menu>summary,.view-settings>summary,.practice-counts>a){transition-property:transform,box-shadow}
+html[data-theme] :is(.view-settings-panel,.user-menu .portal-user){background:var(--surface);color:var(--ink)}
+html[data-theme] :is(.view-settings-panel label,.user-menu .portal-user .caption){color:var(--muted)}
+html[data-theme] .conversation-drawer-controls :is(.view-settings-panel,.user-menu>.portal-user){position:relative;top:auto;right:auto}

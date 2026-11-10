@@ -1032,5 +1032,6 @@
   "dictation18.transcription_error": "Transcription failed. Your draft is preserved; please try again.",
   "dictation18.empty": "Recording is empty or too large. Please record again.",
   "dictation18.size": "The 4 MB recording limit was exceeded. Record a shorter clip.",
-  "dictation18.empty_text": "No speech was recognized. Your draft is preserved."
+  "dictation18.empty_text": "No speech was recognized. Your draft is preserved.",
+  "menus18.close_profile": "Close profile menu"
 }

@@ -1032,5 +1032,6 @@
   "dictation18.transcription_error": "Transkription fehlgeschlagen. Der Entwurf bleibt erhalten; bitte erneut versuchen.",
   "dictation18.empty": "Aufnahme leer oder zu groß. Bitte erneut aufnehmen.",
   "dictation18.size": "Aufnahmelimit von 4 MB überschritten. Bitte kürzer aufnehmen.",
-  "dictation18.empty_text": "Keine Sprache erkannt. Der Entwurf bleibt erhalten."
+  "dictation18.empty_text": "Keine Sprache erkannt. Der Entwurf bleibt erhalten.",
+  "menus18.close_profile": "Profilmenü schließen"
 }

@@ -82,7 +82,7 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  document.addEventListener('change',async e=>{
   if(e.target.id==='learning-theme'){
    const before=preferences,previous=theme(),next=e.target.value;preferences={...(preferences||{}),theme:next};applyView();
-   const control=e.target;control.disabled=true;
+   const control=e.target;control.disabled=true;window.TrainerUI.closePopover(control,true);
    try{await api('/api/ui/preferences',{method:'PUT',body:{layout:preferences.layout||'auto',density:preferences.density||'normal',theme:next}});localStorage.setItem(storageKey('theme'),next);}
    catch(error){preferences=before;applyView();toast(error.message,true);control.value=previous;}
    finally{control.disabled=false;}
