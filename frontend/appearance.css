@@ -87,3 +87,4 @@ html[data-theme] :is(.btn,.user-menu>summary,.view-settings>summary,.practice-co
 html[data-theme] :is(.view-settings-panel,.user-menu .portal-user){background:var(--surface);color:var(--ink)}
 html[data-theme] :is(.view-settings-panel label,.user-menu .portal-user .caption){color:var(--muted)}
 html[data-theme] .conversation-drawer-controls :is(.view-settings-panel,.user-menu>.portal-user){position:relative;top:auto;right:auto}
+html[data-theme] :is(input,textarea)::placeholder{color:var(--muted);opacity:1}
