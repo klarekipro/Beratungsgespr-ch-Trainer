@@ -1,0 +1,358 @@
+{
+  "language": "de",
+  "version": "lindenhaus-a17-v1",
+  "name": "Lindenhaus Hausgeräte",
+  "labels": {
+    "about": "Über das Unternehmen",
+    "products": "Produkte",
+    "services": "Servicepreisliste",
+    "terms": "Arbeitsbedingungen",
+    "documents": "Dokumente",
+    "search": "Suchen",
+    "all": "Alle Kategorien",
+    "service": "Leistung",
+    "price": "Preis",
+    "included": "Enthalten",
+    "more": "Weitere Bedingungen",
+    "fictional": "Lindenhaus ist ein Übungsunternehmen mit erfundenen Daten.",
+    "original_language": "Sprache des Originals",
+    "missing_translation": "Keine Übersetzung vorhanden",
+    "unknown": "Unbekannt – bitte klären",
+    "availability_unknown": "Verfügbarkeit unbekannt",
+    "category": "Kategorie",
+    "original": "Originaldokument",
+    "preview": "Vorschau",
+    "apply": "Anwenden",
+    "purpose": "Zweck",
+    "company_description": "Unternehmensbeschreibung",
+    "product_catalogue": "Produktkatalog",
+    "service_prices": "Servicepreisliste",
+    "internal_rules": "Interne Regeln",
+    "service_conditions": "Servicebedingungen",
+    "mapping": "Spalten zuordnen",
+    "unmapped": "Nicht zugeordnet",
+    "edit": "Ergebnis bearbeiten",
+    "added": "Hinzufügen",
+    "updated": "Ändern",
+    "review": "Prüfung erforderlich"
+  },
+  "about": "Lindenhaus Hausgeräte berät Privatkundinnen und Privatkunden zu elektrischen Einbaubacköfen, Geschirrspülern und Waschmaschinen. Zum Sortiment gehören definierte Lieferung, Einbau, Anschluss und Altgerätemitnahme. Industrieanlagen, Gewerbeküchen und Gasgeräte sind ausgeschlossen. Änderungen an Elektroinstallationen, Wasserleitungen und Möbeln gehören nicht zum Leistungsumfang.",
+  "products": [
+    {
+      "id": "LH-BO-101",
+      "category": "Elektrische Einbaubacköfen",
+      "name": "Basis Weiß 60",
+      "features": "Farbe / Optik: Weiß, schlichte Front; Bedienung: Zwei Drehregler; Funktionen: Ober-/Unterhitze, Umluft, Grill, 65 l; Gerätemaße: 59.5 x 59.5 x 54.5; Erforderliche Nische: 60 x 60 x mindestens 56",
+      "price_eur": "599",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-102",
+      "category": "Elektrische Einbaubacköfen",
+      "name": "Basis Dunkel 60",
+      "features": "Farbe / Optik: Schwarz, schlichte Front; Bedienung: Zwei Drehregler; Funktionen: Ober-/Unterhitze, Umluft, Grill, 65 l; Gerätemaße: 59.5 x 59.5 x 54.5; Erforderliche Nische: 60 x 60 x mindestens 56",
+      "price_eur": "629",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-103",
+      "category": "Elektrische Einbaubacköfen",
+      "name": "Klar Weiß 60",
+      "features": "Farbe / Optik: Mattweiß, ohne Chromakzente; Bedienung: Drehregler, kleines Klartextdisplay; Funktionen: Ober-/Unterhitze, Umluft, Grill, Timer, 71 l; Gerätemaße: 59.5 x 59.5 x 54; Erforderliche Nische: 60 x 60 x mindestens 55",
+      "price_eur": "899",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-104",
+      "category": "Elektrische Einbaubacköfen",
+      "name": "Komfort Weiß 60",
+      "features": "Farbe / Optik: Mattweiß, ohne Chromakzente; Bedienung: Touchdisplay; Funktionen: Umluft, Grill, Automatikprogramme, Dampfunterstützung, 71 l; Gerätemaße: 59.5 x 59.5 x 54.5; Erforderliche Nische: 60 x 60 x mindestens 56",
+      "price_eur": "1199",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-105",
+      "category": "Elektrische Einbaubacköfen",
+      "name": "Klassik Weiß 60",
+      "features": "Farbe / Optik: Weiß, Retro-Optik, sichtbare Metallgriffe; Bedienung: Drehregler, analoge Uhr; Funktionen: Ober-/Unterhitze, Umluft, Grill, 68 l; Gerätemaße: 59.5 x 59.5 x 55; Erforderliche Nische: 60 x 60 x mindestens 57",
+      "price_eur": "1490",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Bestellung",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-106",
+      "category": "Elektrische Einbaubacköfen",
+      "name": "Kompakt Weiß 45",
+      "features": "Farbe / Optik: Weiß, schlichte Front; Bedienung: Drehregler, kleines Display; Funktionen: Ober-/Unterhitze, Umluft, Grill, 45 l; Gerätemaße: 59.5 x 45.5 x 54; Erforderliche Nische: 60 x 46 x mindestens 55",
+      "price_eur": "799",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Bestellung",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-201",
+      "category": "Geschirrspüler",
+      "name": "Stand Weiß 60",
+      "features": "Bauart / Front: Freistehend, weiß; Bedienung: Tasten, kleines Display; Merkmale: 13 Maßgedecke, 46 dB; Gerätemaße: 60 x 85 x 60; Einbau- oder Aufstellvorgabe: Freier Stellplatz, keine Einbaunische",
+      "price_eur": "499",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-202",
+      "category": "Geschirrspüler",
+      "name": "Stand Schmal 45",
+      "features": "Bauart / Front: Freistehend, weiß; Bedienung: Tasten; Merkmale: 9 Maßgedecke, 47 dB; Gerätemaße: 45 x 85 x 60; Einbau- oder Aufstellvorgabe: Freier Stellplatz, keine Einbaunische",
+      "price_eur": "529",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-203",
+      "category": "Geschirrspüler",
+      "name": "Integral 60",
+      "features": "Bauart / Front: Vollintegriert, Kunden-Möbelfront erforderlich; Bedienung: Tasten an der Oberkante; Merkmale: 14 Maßgedecke, 44 dB; Gerätemaße: 59.8 x 81.5 x 55; Einbau- oder Aufstellvorgabe: Nische 60 x 82–87 x mindestens 56",
+      "price_eur": "649",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-204",
+      "category": "Geschirrspüler",
+      "name": "Integral Leise 60",
+      "features": "Bauart / Front: Vollintegriert, Kunden-Möbelfront erforderlich; Bedienung: Tasten, Display an der Oberkante; Merkmale: 14 Maßgedecke, 40 dB, Besteckschublade; Gerätemaße: 59.8 x 81.5 x 55; Einbau- oder Aufstellvorgabe: Nische 60 x 82–87 x mindestens 56",
+      "price_eur": "899",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Bestellung",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-205",
+      "category": "Geschirrspüler",
+      "name": "Teilintegral Weiß 60",
+      "features": "Bauart / Front: Teilintegriert, weiße Bedienblende; Bedienung: Sichtbare Tasten; Merkmale: 13 Maßgedecke, 44 dB; Gerätemaße: 59.8 x 81.5 x 55; Einbau- oder Aufstellvorgabe: Nische 60 x 82–87 x mindestens 56; passende Teilfront prüfen",
+      "price_eur": "699",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-206",
+      "category": "Geschirrspüler",
+      "name": "Integral Schmal 45",
+      "features": "Bauart / Front: Vollintegriert, Kunden-Möbelfront erforderlich; Bedienung: Tasten an der Oberkante; Merkmale: 10 Maßgedecke, 43 dB; Gerätemaße: 44.8 x 81.5 x 55; Einbau- oder Aufstellvorgabe: Nische 45 x 82–87 x mindestens 56",
+      "price_eur": "729",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Bestellung",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-301",
+      "category": "Waschmaschinen",
+      "name": "Basis 7",
+      "features": "Farbe: Weiß; Bedienung: Drehwähler, Tasten; Merkmale: 7 kg, 1200 U/min, 76 dB beim Schleudern; Gerätemaße: 59.5 x 85 x 54; Aufstellung: Freistehend",
+      "price_eur": "449",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-302",
+      "category": "Waschmaschinen",
+      "name": "Klar 8",
+      "features": "Farbe: Weiß; Bedienung: Drehwähler, großes Display; Merkmale: 8 kg, 1400 U/min, 74 dB beim Schleudern; Gerätemaße: 59.5 x 85 x 56; Aufstellung: Freistehend",
+      "price_eur": "599",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-303",
+      "category": "Waschmaschinen",
+      "name": "Leise 8",
+      "features": "Farbe: Weiß; Bedienung: Drehwähler, Display; Merkmale: 8 kg, 1400 U/min, 69 dB beim Schleudern; Gerätemaße: 59.5 x 85 x 58; Aufstellung: Freistehend",
+      "price_eur": "749",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Bestellung",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-304",
+      "category": "Waschmaschinen",
+      "name": "Familie 10",
+      "features": "Farbe: Weiß; Bedienung: Touchdisplay; Merkmale: 10 kg, 1600 U/min, 72 dB beim Schleudern; Gerätemaße: 59.5 x 85 x 62; Aufstellung: Freistehend",
+      "price_eur": "849",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-305",
+      "category": "Waschmaschinen",
+      "name": "Schmal 6",
+      "features": "Farbe: Weiß; Bedienung: Drehwähler, Tasten; Merkmale: 6 kg, 1200 U/min, 75 dB beim Schleudern; Gerätemaße: 59.5 x 85 x 44; Aufstellung: Freistehend; Schlauchraum zusätzlich prüfen",
+      "price_eur": "529",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Lager",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-306",
+      "category": "Waschmaschinen",
+      "name": "Komfort 9",
+      "features": "Farbe: Weiß; Bedienung: Touchdisplay; Merkmale: 9 kg, 1400 U/min, automatische Dosierung, 70 dB beim Schleudern; Gerätemaße: 59.5 x 85 x 60; Aufstellung: Freistehend",
+      "price_eur": "929",
+      "price_includes": "Endpreis in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten.",
+      "availability": "Auf Bestellung",
+      "promotion": "Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen.",
+      "valid_until": ""
+    }
+  ],
+  "services": [
+    {
+      "id": "lh_sv_01",
+      "source_id": "LH-SV-01",
+      "title": "Lieferung",
+      "description": "Transport im Übungsgebiet",
+      "conditions": "Einmal pro Auftrag im Stadtgebiet und bis 20 km; Transportweg und Stockwerk vorher klären.",
+      "price_eur": 49
+    },
+    {
+      "id": "replacement",
+      "source_id": "LH-SV-02",
+      "title": "Standard-Einbau Backofen",
+      "description": "Einbau und Funktionsprüfung",
+      "conditions": "Je Gerät, passende vorhandene Nische und geeigneter Anschluss; keine Umbauten.",
+      "price_eur": 99
+    },
+    {
+      "id": "lh_sv_03",
+      "source_id": "LH-SV-03",
+      "title": "Standard-Einbau integrierter Geschirrspüler",
+      "description": "Einbau an vorhandenen Anschlüssen",
+      "conditions": "Je Gerät; geeignete Anschlüsse und passende Front erforderlich. Neue Möbelfront nicht enthalten.",
+      "price_eur": 129
+    },
+    {
+      "id": "lh_sv_04",
+      "source_id": "LH-SV-04",
+      "title": "Anschluss freistehender Geschirrspüler",
+      "description": "Anschluss und Funktionsprüfung",
+      "conditions": "Je Gerät an geeigneten zugänglichen Anschlüssen.",
+      "price_eur": 69
+    },
+    {
+      "id": "lh_sv_05",
+      "source_id": "LH-SV-05",
+      "title": "Anschluss Waschmaschine",
+      "description": "Anschluss, Ausrichten und Funktionsprüfung",
+      "conditions": "Je Gerät an geeigneten vorhandenen Anschlüssen.",
+      "price_eur": 59
+    },
+    {
+      "id": "lh_sv_06",
+      "source_id": "LH-SV-06",
+      "title": "Altgerätemitnahme im Übungspaket",
+      "description": "Mitnahme eines Altgeräts",
+      "conditions": "Je Gerät zusammen mit Lieferung; Art und Zugänglichkeit vorher klären. Keine Aussage über allgemeine gesetzliche Pflichten.",
+      "price_eur": 29
+    },
+    {
+      "id": "lh_sv_07",
+      "source_id": "LH-SV-07",
+      "title": "Vor-Ort-Prüfung der Einbausituation",
+      "description": "Ein Termin zur Prüfung",
+      "conditions": "Separat zu beauftragen; keine automatische Anrechnung auf Kauf oder Einbau.",
+      "price_eur": 59
+    },
+    {
+      "id": "diagnosis",
+      "source_id": "LH-SV-08",
+      "title": "Diagnose elektrisches Haushaltsgerät",
+      "description": "Prüfung und Fehlerfeststellung",
+      "conditions": "Nur unterstützte elektrische Haushaltsgeräte; keine Reparatur, Teile, Ersatzgerät oder Erfolgsgarantie enthalten.",
+      "price_eur": 90
+    },
+    {
+      "id": "repair",
+      "source_id": "LH-SV-09",
+      "title": "Reparatur",
+      "description": "Nach Diagnose und Kostenvoranschlag",
+      "conditions": "Gesonderter Kostenvoranschlag und Zustimmung erforderlich; kein Festpreis hinterlegt.",
+      "price_eur": null
+    }
+  ],
+  "terms": [
+    [
+      "Lieferung und Termine",
+      "Lieferung im Stadtgebiet und bis 20 km. Transportweg und Stockwerk vor Bestätigung klären. Lager: 5–10 Werktage nach technischer Klärung. Bestellung: voraussichtlich 3–5 Wochen nach Freigabe. Montag bis Freitag 08:00–12:00 oder 13:00–17:00. Exakte Termine sind nicht hinterlegt; Wunschtermine sind keine Buchung. Kein Sofort- oder Same-Day-Service. Außerhalb des Übungsgebiets Machbarkeit und Kosten gesondert klären. Bestände gelten nur für dieses Training."
+    ],
+    [
+      "Einbau und Kompatibilität",
+      "Alle Maße: Breite x Höhe x Tiefe in cm. Gerätemaße sind keine Nischenmaße. Vor verbindlicher Bestellung Anschlüsse, Belüftung, Freiraum und Einbausituation modellbezogen prüfen. Backöfen: elektrischer Anschluss, kein Gas; Anschlusssituation durch Fachkraft prüfen. Die Nischenwerte sind Trainingswerte, keine allgemeine Montageempfehlung. Geschirrspüler: Eco, Normal und Intensiv; bei integrierten Geräten Front, Sockel und Anschlüsse prüfen. Waschmaschinen: elektrische Frontlader für private Haushalte. Anschluss nur an vorhandene, zugängliche, geeignete Anschlüsse. Keine Schlauchverlängerungen, Umbauten, Unterbau oder neue Möbelfront enthalten."
+    ],
+    [
+      "Kosten und Zahlung",
+      "Preise in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten. Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen. Einbau und Anschluss für dasselbe Gerät nicht doppelt berechnen. Lieferung einmal pro Auftrag. Vor-Ort-Prüfung nur als separat beauftragte Leistung, keine automatische Anrechnung. Beratung und unverbindliches Angebot sind kostenlos. Zahlung erst nach ausdrücklicher Bestellfreigabe; keine echten Zahlungsdaten im Training. Zahlungsabwicklung außerhalb des Rollenspiels. Keine Waren- oder Terminreservierung und keine Vorauszahlung für eine Rücksprache."
+    ],
+    [
+      "Angebot und Bestellung",
+      "Vor dem Angebot Bedarf, wesentliche Kriterien, technische Eignung oder offene Prüfung, Gesamtbudget einschließlich Leistungen, Terminbedarf und Entscheidungsbeteiligte klären. Bedarf zusammenfassen und eine begründete Empfehlung geben; nicht allein nach höherem Preis auswählen. Schriftliches Angebot: Produkt-ID, bekannte Merkmale, Leistungen, Gesamtpreis, offene Prüfungen und Lieferstatus; gültig 7 Kalendertage auf diesem Katalogstand, ohne Reservierung. Bestellung erst bei ausdrücklicher Annahme des konkreten Angebots, geklärter Technik und Zustimmung der entscheidungsberechtigten Personen. Interesse, ein Getränk oder Rücksprache mit dem Partner sind keine Bestellung. Offene Entscheidung als Angebot zur Prüfung oder Entscheidung nach Rücksprache kennzeichnen. Nach Annahme kann der Termin noch offen sein; Lieferung oder Einbau nicht als erfolgt darstellen."
+    ],
+    [
+      "Diagnose und Reparatur",
+      "Zuerst Geräteart, Nutzung, Symptome, Verlauf und Erwartungen klären; keine unbestätigte Ursache diagnostizieren. Diagnose: 90 EUR nur für unterstützte elektrische Haushaltsgeräte. Reparatur, Teile und Ersatzgerät sind nicht enthalten; keine Erfolgsgarantie. Reparatur nach Diagnose und gesondertem Kostenvoranschlag mit Zustimmung. Für Gas- oder Industriegeräte keine kostenpflichtige Standarddiagnose anbieten. Keine Partnerfirma erfinden; Hersteller nach geeignetem Service fragen ist ein möglicher nächster Schritt, keine Vermittlungszusage."
+    ],
+    [
+      "Grenzen und offene Fragen",
+      "Nur Katalogpreise und definierte Leistungen anbieten; offene Fragen sammeln und Rückkontakt vereinbaren. Keine Rabatte, Aktionen, kostenlosen Einbau, festen Termine oder Reparaturerfolge erfinden; Abweichungen brauchen dokumentierte Freigabe. Nicht hinterlegte Angaben sind unbekannt. Keine Energieklasse, Verbrauchswerte, Programmdauer oder freiwillige Garantie aus Preis, Marke oder Kapazität ableiten. Rechtliche Ansprüche und Herstellergarantien an die zuständige Stelle geben; keine Dauer oder Deckung erfinden. Diese Übungsregeln sind keine vollständigen AGB oder Rechtsauskunft. Pausen, Vergleichsangebote und gemeinsame Entscheidungen respektieren. Getränke ohne Kaufbedingung; kein persönlicher oder familiärer Druck. Offene Fragen und Gesamtpreis zusammenfassen, Rückkontakt nur mit Zustimmung. Keine fiktiven Kontaktdaten als erfasst darstellen."
+    ]
+  ],
+  "documents": [
+    {
+      "title": "Über das Unternehmen",
+      "format": "md",
+      "text": "# Über das Unternehmen\n\nLindenhaus Hausgeräte berät Privatkundinnen und Privatkunden zu elektrischen Einbaubacköfen, Geschirrspülern und Waschmaschinen. Zum Sortiment gehören definierte Lieferung, Einbau, Anschluss und Altgerätemitnahme. Industrieanlagen, Gewerbeküchen und Gasgeräte sind ausgeschlossen. Änderungen an Elektroinstallationen, Wasserleitungen und Möbeln gehören nicht zum Leistungsumfang.\n\nLindenhaus ist ein Übungsunternehmen mit erfundenen Daten."
+    },
+    {
+      "title": "Interne Regeln",
+      "format": "md",
+      "text": "# Interne Regeln\n\n## Angebot und Bestellung\n\nVor dem Angebot Bedarf, wesentliche Kriterien, technische Eignung oder offene Prüfung, Gesamtbudget einschließlich Leistungen, Terminbedarf und Entscheidungsbeteiligte klären. Bedarf zusammenfassen und eine begründete Empfehlung geben; nicht allein nach höherem Preis auswählen. Schriftliches Angebot: Produkt-ID, bekannte Merkmale, Leistungen, Gesamtpreis, offene Prüfungen und Lieferstatus; gültig 7 Kalendertage auf diesem Katalogstand, ohne Reservierung. Bestellung erst bei ausdrücklicher Annahme des konkreten Angebots, geklärter Technik und Zustimmung der entscheidungsberechtigten Personen. Interesse, ein Getränk oder Rücksprache mit dem Partner sind keine Bestellung. Offene Entscheidung als Angebot zur Prüfung oder Entscheidung nach Rücksprache kennzeichnen. Nach Annahme kann der Termin noch offen sein; Lieferung oder Einbau nicht als erfolgt darstellen.\n\n## Grenzen und offene Fragen\n\nNur Katalogpreise und definierte Leistungen anbieten; offene Fragen sammeln und Rückkontakt vereinbaren. Keine Rabatte, Aktionen, kostenlosen Einbau, festen Termine oder Reparaturerfolge erfinden; Abweichungen brauchen dokumentierte Freigabe. Nicht hinterlegte Angaben sind unbekannt. Keine Energieklasse, Verbrauchswerte, Programmdauer oder freiwillige Garantie aus Preis, Marke oder Kapazität ableiten. Rechtliche Ansprüche und Herstellergarantien an die zuständige Stelle geben; keine Dauer oder Deckung erfinden. Diese Übungsregeln sind keine vollständigen AGB oder Rechtsauskunft. Pausen, Vergleichsangebote und gemeinsame Entscheidungen respektieren. Getränke ohne Kaufbedingung; kein persönlicher oder familiärer Druck. Offene Fragen und Gesamtpreis zusammenfassen, Rückkontakt nur mit Zustimmung. Keine fiktiven Kontaktdaten als erfasst darstellen."
+    },
+    {
+      "title": "Servicebedingungen",
+      "format": "md",
+      "text": "# Servicebedingungen\n\n## Lieferung und Termine\n\nLieferung im Stadtgebiet und bis 20 km. Transportweg und Stockwerk vor Bestätigung klären. Lager: 5–10 Werktage nach technischer Klärung. Bestellung: voraussichtlich 3–5 Wochen nach Freigabe. Montag bis Freitag 08:00–12:00 oder 13:00–17:00. Exakte Termine sind nicht hinterlegt; Wunschtermine sind keine Buchung. Kein Sofort- oder Same-Day-Service. Außerhalb des Übungsgebiets Machbarkeit und Kosten gesondert klären. Bestände gelten nur für dieses Training.\n\n## Einbau und Kompatibilität\n\nAlle Maße: Breite x Höhe x Tiefe in cm. Gerätemaße sind keine Nischenmaße. Vor verbindlicher Bestellung Anschlüsse, Belüftung, Freiraum und Einbausituation modellbezogen prüfen. Backöfen: elektrischer Anschluss, kein Gas; Anschlusssituation durch Fachkraft prüfen. Die Nischenwerte sind Trainingswerte, keine allgemeine Montageempfehlung. Geschirrspüler: Eco, Normal und Intensiv; bei integrierten Geräten Front, Sockel und Anschlüsse prüfen. Waschmaschinen: elektrische Frontlader für private Haushalte. Anschluss nur an vorhandene, zugängliche, geeignete Anschlüsse. Keine Schlauchverlängerungen, Umbauten, Unterbau oder neue Möbelfront enthalten.\n\n## Kosten und Zahlung\n\nPreise in EUR inklusive Steuer; Dienstleistungen zusätzlich, sofern nicht ausdrücklich enthalten. Keine aktuellen Aktionen oder kostenlosen Zusatzleistungen. Einbau und Anschluss für dasselbe Gerät nicht doppelt berechnen. Lieferung einmal pro Auftrag. Vor-Ort-Prüfung nur als separat beauftragte Leistung, keine automatische Anrechnung. Beratung und unverbindliches Angebot sind kostenlos. Zahlung erst nach ausdrücklicher Bestellfreigabe; keine echten Zahlungsdaten im Training. Zahlungsabwicklung außerhalb des Rollenspiels. Keine Waren- oder Terminreservierung und keine Vorauszahlung für eine Rücksprache.\n\n## Angebot und Bestellung\n\nVor dem Angebot Bedarf, wesentliche Kriterien, technische Eignung oder offene Prüfung, Gesamtbudget einschließlich Leistungen, Terminbedarf und Entscheidungsbeteiligte klären. Bedarf zusammenfassen und eine begründete Empfehlung geben; nicht allein nach höherem Preis auswählen. Schriftliches Angebot: Produkt-ID, bekannte Merkmale, Leistungen, Gesamtpreis, offene Prüfungen und Lieferstatus; gültig 7 Kalendertage auf diesem Katalogstand, ohne Reservierung. Bestellung erst bei ausdrücklicher Annahme des konkreten Angebots, geklärter Technik und Zustimmung der entscheidungsberechtigten Personen. Interesse, ein Getränk oder Rücksprache mit dem Partner sind keine Bestellung. Offene Entscheidung als Angebot zur Prüfung oder Entscheidung nach Rücksprache kennzeichnen. Nach Annahme kann der Termin noch offen sein; Lieferung oder Einbau nicht als erfolgt darstellen.\n\n## Diagnose und Reparatur\n\nZuerst Geräteart, Nutzung, Symptome, Verlauf und Erwartungen klären; keine unbestätigte Ursache diagnostizieren. Diagnose: 90 EUR nur für unterstützte elektrische Haushaltsgeräte. Reparatur, Teile und Ersatzgerät sind nicht enthalten; keine Erfolgsgarantie. Reparatur nach Diagnose und gesondertem Kostenvoranschlag mit Zustimmung. Für Gas- oder Industriegeräte keine kostenpflichtige Standarddiagnose anbieten. Keine Partnerfirma erfinden; Hersteller nach geeignetem Service fragen ist ein möglicher nächster Schritt, keine Vermittlungszusage.\n\n## Grenzen und offene Fragen\n\nNur Katalogpreise und definierte Leistungen anbieten; offene Fragen sammeln und Rückkontakt vereinbaren. Keine Rabatte, Aktionen, kostenlosen Einbau, festen Termine oder Reparaturerfolge erfinden; Abweichungen brauchen dokumentierte Freigabe. Nicht hinterlegte Angaben sind unbekannt. Keine Energieklasse, Verbrauchswerte, Programmdauer oder freiwillige Garantie aus Preis, Marke oder Kapazität ableiten. Rechtliche Ansprüche und Herstellergarantien an die zuständige Stelle geben; keine Dauer oder Deckung erfinden. Diese Übungsregeln sind keine vollständigen AGB oder Rechtsauskunft. Pausen, Vergleichsangebote und gemeinsame Entscheidungen respektieren. Getränke ohne Kaufbedingung; kein persönlicher oder familiärer Druck. Offene Fragen und Gesamtpreis zusammenfassen, Rückkontakt nur mit Zustimmung. Keine fiktiven Kontaktdaten als erfasst darstellen."
+    }
+  ],
+  "tagline": "Beratung und Service für elektrische Haushaltsgeräte."
+}

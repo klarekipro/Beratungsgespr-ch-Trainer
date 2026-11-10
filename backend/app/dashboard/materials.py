@@ -26,6 +26,9 @@ def localized_scenario(record, language):
 
 
 def localized_company(record, language):
+    from .company_reference import localized_company as reference_company
+    translated = reference_company(record, language)
+    if translated is not None: return translated
     if language in TRANSLATIONS and record == Company.model_validate(SOURCE['company']).model_dump():
         return deepcopy(TRANSLATIONS[language]['company'])
     return deepcopy(record)

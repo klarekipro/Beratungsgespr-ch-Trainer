@@ -40,6 +40,10 @@ window.TrainerUI=(()=>{
   let closed=false;function done(){if(closed)return;closed=true;placeholder.replaceWith(source);if(wasDetails)source.open=wasOpen;dialog.remove();window.scrollTo({top:scroll,behavior:'instant'});oldFocus?.focus({preventScroll:true});}
   close.onclick=()=>{dialog.close();done();};dialog.addEventListener('close',done,{once:true});
  }
+ const closeView=()=>document.querySelectorAll('.view-settings[open]').forEach(d=>d.open=false);
+ document.addEventListener('click',e=>{if(!e.target.closest('.view-settings'))closeView();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const open=document.querySelector('.view-settings[open]');if(open){closeView();open.querySelector('summary').focus();}}});
+ window.addEventListener('hashchange',closeView);
  document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset?.uiSection)openState.set(d.dataset.uiSection,d.open);},true);
  document.addEventListener('invalid',e=>{if(e.target.closest('#studio-form,#scenario-form,#company-form'))revealError(e.target);},true);
  document.addEventListener('input',e=>{e.target.removeAttribute('aria-invalid');e.target.setCustomValidity?.('');e.target.parentElement?.querySelector('.ui-field-error')?.remove();});

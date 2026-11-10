@@ -1,0 +1,358 @@
+{
+  "language": "en",
+  "version": "lindenhaus-a17-v1",
+  "name": "Lindenhaus Hausgeräte",
+  "labels": {
+    "about": "About the company",
+    "products": "Products",
+    "services": "Service price list",
+    "terms": "Working conditions",
+    "documents": "Documents",
+    "search": "Search",
+    "all": "All categories",
+    "service": "Service",
+    "price": "Price",
+    "included": "Included",
+    "more": "Additional conditions",
+    "fictional": "Lindenhaus is a training company with fictional data.",
+    "original_language": "Original language",
+    "missing_translation": "Translation unavailable",
+    "unknown": "Unknown – clarification required",
+    "availability_unknown": "Availability unknown",
+    "category": "Category",
+    "original": "Original document",
+    "preview": "Preview",
+    "apply": "Apply",
+    "purpose": "Purpose",
+    "company_description": "Company description",
+    "product_catalogue": "Product catalogue",
+    "service_prices": "Service price list",
+    "internal_rules": "Internal rules",
+    "service_conditions": "Service conditions",
+    "mapping": "Map columns",
+    "unmapped": "Not mapped",
+    "edit": "Edit result",
+    "added": "Add",
+    "updated": "Update",
+    "review": "Review required"
+  },
+  "about": "Lindenhaus Hausgeräte advises private households on electric built-in ovens, dishwashers and washing machines. Defined delivery, installation, connection and old-appliance collection services are available. Industrial equipment, commercial kitchens and gas appliances are excluded. Changes to electrical installations, water pipes or furniture are outside the service scope.",
+  "products": [
+    {
+      "id": "LH-BO-101",
+      "category": "Electric built-in ovens",
+      "name": "Basic White 60",
+      "features": "Colour / appearance: White, plain front; Controls: Two rotary knobs; Functions: Top/bottom heat, convection, grill, 65 l; Appliance dimensions: 59.5 x 59.5 x 54.5; Required niche: 60 x 60 x at least 56",
+      "price_eur": "599",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-102",
+      "category": "Electric built-in ovens",
+      "name": "Basic Dark 60",
+      "features": "Colour / appearance: Black, plain front; Controls: Two rotary knobs; Functions: Top/bottom heat, convection, grill, 65 l; Appliance dimensions: 59.5 x 59.5 x 54.5; Required niche: 60 x 60 x at least 56",
+      "price_eur": "629",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-103",
+      "category": "Electric built-in ovens",
+      "name": "Clear White 60",
+      "features": "Colour / appearance: Matt white, without chrome accents; Controls: Rotary knobs, small text display; Functions: Top/bottom heat, convection, grill, timer, 71 l; Appliance dimensions: 59.5 x 59.5 x 54; Required niche: 60 x 60 x at least 55",
+      "price_eur": "899",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-104",
+      "category": "Electric built-in ovens",
+      "name": "Comfort White 60",
+      "features": "Colour / appearance: Matt white, without chrome accents; Controls: Touch display; Functions: convection, grill, automatic programmes, steam assistance, 71 l; Appliance dimensions: 59.5 x 59.5 x 54.5; Required niche: 60 x 60 x at least 56",
+      "price_eur": "1199",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-105",
+      "category": "Electric built-in ovens",
+      "name": "Classic White 60",
+      "features": "Colour / appearance: White, retro appearance, visible metal handles; Controls: Rotary knobs, analogue clock; Functions: Top/bottom heat, convection, grill, 68 l; Appliance dimensions: 59.5 x 59.5 x 55; Required niche: 60 x 60 x at least 57",
+      "price_eur": "1490",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "On order",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-BO-106",
+      "category": "Electric built-in ovens",
+      "name": "Compact White 45",
+      "features": "Colour / appearance: White, plain front; Controls: Rotary knobs, small display; Functions: Top/bottom heat, convection, grill, 45 l; Appliance dimensions: 59.5 x 45.5 x 54; Required niche: 60 x 46 x at least 55",
+      "price_eur": "799",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "On order",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-201",
+      "category": "Dishwashers",
+      "name": "Freestanding White 60",
+      "features": "Type / front: Freestanding, white; Controls: Buttons, small display; Features: 13 place settings, 46 dB; Appliance dimensions: 60 x 85 x 60; Installation requirement: Free standing space, no built-in niche",
+      "price_eur": "499",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-202",
+      "category": "Dishwashers",
+      "name": "Freestanding Slim 45",
+      "features": "Type / front: Freestanding, white; Controls: Buttons; Features: 9 place settings, 47 dB; Appliance dimensions: 45 x 85 x 60; Installation requirement: Free standing space, no built-in niche",
+      "price_eur": "529",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-203",
+      "category": "Dishwashers",
+      "name": "Integrated 60",
+      "features": "Type / front: Fully integrated, customer furniture front required; Controls: Buttons on the top edge; Features: 14 place settings, 44 dB; Appliance dimensions: 59.8 x 81.5 x 55; Installation requirement: Niche 60 x 82–87 x at least 56",
+      "price_eur": "649",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-204",
+      "category": "Dishwashers",
+      "name": "Integrated Quiet 60",
+      "features": "Type / front: Fully integrated, customer furniture front required; Controls: Buttons, display on the top edge; Features: 14 place settings, 40 dB, cutlery drawer; Appliance dimensions: 59.8 x 81.5 x 55; Installation requirement: Niche 60 x 82–87 x at least 56",
+      "price_eur": "899",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "On order",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-205",
+      "category": "Dishwashers",
+      "name": "Part integrated White 60",
+      "features": "Type / front: Partially integrated, white control panel; Controls: Visible buttons; Features: 13 place settings, 44 dB; Appliance dimensions: 59.8 x 81.5 x 55; Installation requirement: Niche 60 x 82–87 x at least 56; check matching partial front",
+      "price_eur": "699",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-GS-206",
+      "category": "Dishwashers",
+      "name": "Integrated Slim 45",
+      "features": "Type / front: Fully integrated, customer furniture front required; Controls: Buttons on the top edge; Features: 10 place settings, 43 dB; Appliance dimensions: 44.8 x 81.5 x 55; Installation requirement: Niche 45 x 82–87 x at least 56",
+      "price_eur": "729",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "On order",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-301",
+      "category": "Washing machines",
+      "name": "Basic 7",
+      "features": "Colour: White; Controls: Rotary selector, Buttons; Features: 7 kg, 1200 rpm, 76 dB during spinning; Appliance dimensions: 59.5 x 85 x 54; Placement: Freestanding",
+      "price_eur": "449",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-302",
+      "category": "Washing machines",
+      "name": "Clear 8",
+      "features": "Colour: White; Controls: Rotary selector, large display; Features: 8 kg, 1400 rpm, 74 dB during spinning; Appliance dimensions: 59.5 x 85 x 56; Placement: Freestanding",
+      "price_eur": "599",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-303",
+      "category": "Washing machines",
+      "name": "Quiet 8",
+      "features": "Colour: White; Controls: Rotary selector, Display; Features: 8 kg, 1400 rpm, 69 dB during spinning; Appliance dimensions: 59.5 x 85 x 58; Placement: Freestanding",
+      "price_eur": "749",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "On order",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-304",
+      "category": "Washing machines",
+      "name": "Family 10",
+      "features": "Colour: White; Controls: Touch display; Features: 10 kg, 1600 rpm, 72 dB during spinning; Appliance dimensions: 59.5 x 85 x 62; Placement: Freestanding",
+      "price_eur": "849",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-305",
+      "category": "Washing machines",
+      "name": "Slim 6",
+      "features": "Colour: White; Controls: Rotary selector, Buttons; Features: 6 kg, 1200 rpm, 75 dB during spinning; Appliance dimensions: 59.5 x 85 x 44; Placement: Freestanding; check extra hose space",
+      "price_eur": "529",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "In stock",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    },
+    {
+      "id": "LH-WM-306",
+      "category": "Washing machines",
+      "name": "Comfort 9",
+      "features": "Colour: White; Controls: Touch display; Features: 9 kg, 1400 rpm, automatic dosing, 70 dB during spinning; Appliance dimensions: 59.5 x 85 x 60; Placement: Freestanding",
+      "price_eur": "929",
+      "price_includes": "Final price in EUR including tax; services extra unless expressly included.",
+      "availability": "On order",
+      "promotion": "No current promotions or free extras.",
+      "valid_until": ""
+    }
+  ],
+  "services": [
+    {
+      "id": "lh_sv_01",
+      "source_id": "LH-SV-01",
+      "title": "Delivery",
+      "description": "Transport within the training area",
+      "conditions": "Once per order within the city and up to 20 km; clarify access and floor beforehand.",
+      "price_eur": 49
+    },
+    {
+      "id": "replacement",
+      "source_id": "LH-SV-02",
+      "title": "Standard oven installation",
+      "description": "Installation and function check",
+      "conditions": "Per appliance; suitable existing niche and connection required. No alterations.",
+      "price_eur": 99
+    },
+    {
+      "id": "lh_sv_03",
+      "source_id": "LH-SV-03",
+      "title": "Standard integrated dishwasher installation",
+      "description": "Installation using existing connections",
+      "conditions": "Per appliance; suitable connections and matching front required. A new furniture front is excluded.",
+      "price_eur": 129
+    },
+    {
+      "id": "lh_sv_04",
+      "source_id": "LH-SV-04",
+      "title": "Freestanding dishwasher connection",
+      "description": "Connection and function check",
+      "conditions": "Per appliance at suitable accessible connections.",
+      "price_eur": 69
+    },
+    {
+      "id": "lh_sv_05",
+      "source_id": "LH-SV-05",
+      "title": "Washing machine connection",
+      "description": "Connection, levelling and function check",
+      "conditions": "Per appliance at suitable existing connections.",
+      "price_eur": 59
+    },
+    {
+      "id": "lh_sv_06",
+      "source_id": "LH-SV-06",
+      "title": "Old-appliance collection in the training package",
+      "description": "Collection of an old appliance",
+      "conditions": "Per appliance with delivery; clarify type and access beforehand. No statement on general statutory obligations.",
+      "price_eur": 29
+    },
+    {
+      "id": "lh_sv_07",
+      "source_id": "LH-SV-07",
+      "title": "On-site installation assessment",
+      "description": "One inspection appointment",
+      "conditions": "Commissioned separately; no automatic credit against purchase or installation.",
+      "price_eur": 59
+    },
+    {
+      "id": "diagnosis",
+      "source_id": "LH-SV-08",
+      "title": "Electric household appliance diagnosis",
+      "description": "Inspection and fault identification",
+      "conditions": "Supported electric household appliances only; repair, parts, replacement appliance and success guarantee excluded.",
+      "price_eur": 90
+    },
+    {
+      "id": "repair",
+      "source_id": "LH-SV-09",
+      "title": "Repair",
+      "description": "After diagnosis and a quotation",
+      "conditions": "A separate quotation and consent are required; no fixed price recorded.",
+      "price_eur": null
+    }
+  ],
+  "terms": [
+    [
+      "Delivery and timing",
+      "Delivery within the city and up to 20 km. Clarify access and floor before confirmation. In stock: 5–10 working days after technical clarification. On order: approximately 3–5 weeks after approval. Monday to Friday 08:00–12:00 or 13:00–17:00. Exact appointments are not recorded; requested dates are not bookings. No immediate or same-day service. Outside the training area, clarify feasibility and costs separately. Stock figures apply only to this training."
+    ],
+    [
+      "Installation and compatibility",
+      "All dimensions: width x height x depth in cm. Appliance dimensions are not niche dimensions. Before a binding order, check connections, ventilation, clearance and installation for the specific model. Ovens: electric connection, no gas; a qualified professional must check the connection. Niche values are training values, not general installation guidance. Dishwashers: Eco, Normal and Intensive; check furniture front, plinth and connections for integrated models. Washing machines: electric front loaders for private households. Connection requires existing accessible suitable connections. Hose extensions, alterations, under-counter fitting and new furniture fronts are excluded."
+    ],
+    [
+      "Costs and payment",
+      "Prices in EUR include tax; services cost extra unless expressly included. No current promotions or free extras. Do not charge installation and connection twice for the same appliance. Delivery is charged once per order. A site inspection is separately commissioned, with no automatic credit. Advice and a non-binding quotation are free. Request payment only after explicit order approval; collect no real payment details during training. Payment processing is outside the role play. No goods or appointment reservations and no advance payment for consulting another decision maker."
+    ],
+    [
+      "Quotation and order approval",
+      "Before a quotation, clarify needs, key criteria, technical suitability or pending checks, total budget including services, timing and decision makers. Summarise needs and give a reasoned recommendation; do not select solely for a higher price. A written quotation includes product ID, known features, services, total price, pending checks and delivery status; valid for 7 calendar days on this catalogue version, without reservation. An order requires explicit acceptance of the specific quotation, resolved technical questions and consent of authorised decision makers. Interest, a drink or discussion with a partner is not an order. Mark an open decision as quotation for review or decision pending consultation. After acceptance the appointment may remain open; do not claim delivery or installation has happened."
+    ],
+    [
+      "Diagnosis and repair",
+      "First clarify appliance type, use, symptoms, history and expectations; do not diagnose an unconfirmed cause. Diagnosis: 90 EUR for supported electric household appliances only. Repair, parts and a replacement appliance are excluded; no success guarantee. Repair requires diagnosis and a separate quotation with consent. Do not sell standard paid diagnosis for gas or industrial appliances. Do not invent a partner company; asking the manufacturer for a suitable service is a possible next step, not a referral promise."
+    ],
+    [
+      "Limits and questions requiring clarification",
+      "Offer only catalogue prices and defined services; collect open questions and agree a follow-up. Do not invent discounts, promotions, free installation, fixed appointments or repair success; exceptions require documented approval. Unrecorded information is unknown. Do not infer energy ratings, consumption, programme durations or voluntary warranties from price, brand or capacity. Refer legal rights and manufacturer warranties to the responsible party; invent no duration or coverage. These training rules are not complete terms and conditions or legal advice. Respect breaks, comparison quotations and shared decisions. Drinks must have no purchase condition; no personal or family pressure. Summarise open questions and the total price, arrange follow-up with consent only. Do not claim fictional contact details have been collected."
+    ]
+  ],
+  "documents": [
+    {
+      "title": "About the company",
+      "format": "md",
+      "text": "# About the company\n\nLindenhaus Hausgeräte advises private households on electric built-in ovens, dishwashers and washing machines. Defined delivery, installation, connection and old-appliance collection services are available. Industrial equipment, commercial kitchens and gas appliances are excluded. Changes to electrical installations, water pipes or furniture are outside the service scope.\n\nLindenhaus is a training company with fictional data."
+    },
+    {
+      "title": "Internal rules",
+      "format": "md",
+      "text": "# Internal rules\n\n## Quotation and order approval\n\nBefore a quotation, clarify needs, key criteria, technical suitability or pending checks, total budget including services, timing and decision makers. Summarise needs and give a reasoned recommendation; do not select solely for a higher price. A written quotation includes product ID, known features, services, total price, pending checks and delivery status; valid for 7 calendar days on this catalogue version, without reservation. An order requires explicit acceptance of the specific quotation, resolved technical questions and consent of authorised decision makers. Interest, a drink or discussion with a partner is not an order. Mark an open decision as quotation for review or decision pending consultation. After acceptance the appointment may remain open; do not claim delivery or installation has happened.\n\n## Limits and questions requiring clarification\n\nOffer only catalogue prices and defined services; collect open questions and agree a follow-up. Do not invent discounts, promotions, free installation, fixed appointments or repair success; exceptions require documented approval. Unrecorded information is unknown. Do not infer energy ratings, consumption, programme durations or voluntary warranties from price, brand or capacity. Refer legal rights and manufacturer warranties to the responsible party; invent no duration or coverage. These training rules are not complete terms and conditions or legal advice. Respect breaks, comparison quotations and shared decisions. Drinks must have no purchase condition; no personal or family pressure. Summarise open questions and the total price, arrange follow-up with consent only. Do not claim fictional contact details have been collected."
+    },
+    {
+      "title": "Service conditions",
+      "format": "md",
+      "text": "# Service conditions\n\n## Delivery and timing\n\nDelivery within the city and up to 20 km. Clarify access and floor before confirmation. In stock: 5–10 working days after technical clarification. On order: approximately 3–5 weeks after approval. Monday to Friday 08:00–12:00 or 13:00–17:00. Exact appointments are not recorded; requested dates are not bookings. No immediate or same-day service. Outside the training area, clarify feasibility and costs separately. Stock figures apply only to this training.\n\n## Installation and compatibility\n\nAll dimensions: width x height x depth in cm. Appliance dimensions are not niche dimensions. Before a binding order, check connections, ventilation, clearance and installation for the specific model. Ovens: electric connection, no gas; a qualified professional must check the connection. Niche values are training values, not general installation guidance. Dishwashers: Eco, Normal and Intensive; check furniture front, plinth and connections for integrated models. Washing machines: electric front loaders for private households. Connection requires existing accessible suitable connections. Hose extensions, alterations, under-counter fitting and new furniture fronts are excluded.\n\n## Costs and payment\n\nPrices in EUR include tax; services cost extra unless expressly included. No current promotions or free extras. Do not charge installation and connection twice for the same appliance. Delivery is charged once per order. A site inspection is separately commissioned, with no automatic credit. Advice and a non-binding quotation are free. Request payment only after explicit order approval; collect no real payment details during training. Payment processing is outside the role play. No goods or appointment reservations and no advance payment for consulting another decision maker.\n\n## Quotation and order approval\n\nBefore a quotation, clarify needs, key criteria, technical suitability or pending checks, total budget including services, timing and decision makers. Summarise needs and give a reasoned recommendation; do not select solely for a higher price. A written quotation includes product ID, known features, services, total price, pending checks and delivery status; valid for 7 calendar days on this catalogue version, without reservation. An order requires explicit acceptance of the specific quotation, resolved technical questions and consent of authorised decision makers. Interest, a drink or discussion with a partner is not an order. Mark an open decision as quotation for review or decision pending consultation. After acceptance the appointment may remain open; do not claim delivery or installation has happened.\n\n## Diagnosis and repair\n\nFirst clarify appliance type, use, symptoms, history and expectations; do not diagnose an unconfirmed cause. Diagnosis: 90 EUR for supported electric household appliances only. Repair, parts and a replacement appliance are excluded; no success guarantee. Repair requires diagnosis and a separate quotation with consent. Do not sell standard paid diagnosis for gas or industrial appliances. Do not invent a partner company; asking the manufacturer for a suitable service is a possible next step, not a referral promise.\n\n## Limits and questions requiring clarification\n\nOffer only catalogue prices and defined services; collect open questions and agree a follow-up. Do not invent discounts, promotions, free installation, fixed appointments or repair success; exceptions require documented approval. Unrecorded information is unknown. Do not infer energy ratings, consumption, programme durations or voluntary warranties from price, brand or capacity. Refer legal rights and manufacturer warranties to the responsible party; invent no duration or coverage. These training rules are not complete terms and conditions or legal advice. Respect breaks, comparison quotations and shared decisions. Drinks must have no purchase condition; no personal or family pressure. Summarise open questions and the total price, arrange follow-up with consent only. Do not claim fictional contact details have been collected."
+    }
+  ],
+  "tagline": "Advice and service for electric household appliances."
+}

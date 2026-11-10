@@ -35,7 +35,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.8.2-lindenhaus-scenarios"
+VERSION = "0.9.0-a17-company-materials"
 
 
 def now():
@@ -241,6 +241,8 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     attach_workflow(app,workflow,auth,get_session,lock,api_key,model,summary)
     from .ui_preferences import attach_ui_preferences
     attach_ui_preferences(app,workflow,auth)
+    from .company_reference import attach_company_reference
+    attach_company_reference(app,workflow,store,lock)
 
     def valid_outcomes(scenario, company):
         if scenario["company_id"] != company["id"]:
@@ -666,7 +668,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     # Fresh HTML changes URLs even when an older browser cache entry is still fresh.
     frontend_files = [frontend / name for name in (
         'index.html', 'login.html', 'app.js', 'boot.js', 'i18n.js', 'login.js',
-        'mentor_studio.js', 'voice.js', 'ui_organization.js', 'learning.js', 'styles.css', 'portals.css',
+        'mentor_studio.js', 'voice.js', 'ui_organization.js', 'learning.js', 'company_reference.js', 'styles.css', 'portals.css',
         'locales/de.json', 'locales/en.json', 'locales/ru.json')]
     frontend_revision = hashlib.sha256(b''.join(
         p.relative_to(frontend).as_posix().encode() + b'\0' + p.read_bytes() + b'\0'
