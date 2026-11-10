@@ -23,6 +23,10 @@ Backend меняет только VERSION; voice.js, Actor, workflow, app.js, д
 - Рамка справочника: pointer — none; keyboard focus-visible — solid; после Tab/blur — none. Метки/номера отчёта: контраст 10,26:1 (светлая) и 6,53:1 (тёмная). Это целевая проверка пар, не сертификация доступности.
 - Три существующие Node conversation/voice проверки прошли. JS syntax, AST Python, JSON DE/EN/RU и git diff --check — OK. Массовых тестов не было.
 
-24 полных JPEG без EXIF и персональных данных — `reports/a18-4/screenshots/`, карта — `reports/a18-4/README.md`. Приватное свидетельство — `runtime/a18-4/ui-checks.json`; резервная копия — `runtime/a18-4/before.sqlite3`. До установки все строки documents (55), learning_records (12), users (13), training_owners (30), user_preferences (6) совпали с backup. QA-стенд остановлен. Исходящих попыток и платных вызовов 0. Ничего не загружено наружу.
+24 полных JPEG без EXIF и персональных данных — `reports/a18-4/screenshots/`, карта — `reports/a18-4/README.md`. Приватное свидетельство — `runtime/a18-4/ui-checks.json`; резервная копия — `runtime/a18-4/before.sqlite3`. До и после установки все строки documents (55), learning_records (12), users (13), training_owners (30), user_preferences (6) совпали с backup. QA-стенд остановлен. Исходящих попыток и платных вызовов 0. Ничего не загружено наружу.
 
-Safari/Firefox, touch, экранные дикторы и все варианты будущих импортированных данных отдельно не проверялись. Содержательная приёмка AI остаётся открытой. Main/merge/push и пользовательские untracked-каталоги не затронуты. Штатный запуск и SHA установленного кода фиксируются отдельно после проверки на 8100.
+Safari/Firefox, touch, экранные дикторы и все варианты будущих импортированных данных отдельно не проверялись. Содержательная приёмка AI остаётся открытой. Main/merge/push и пользовательские untracked-каталоги не затронуты. Установка подтверждена ниже.
+
+## Подтверждённая установка
+
+Код `0a5fb366e949891b1db6f3c3ec085895f6da5531` установлен штатным `.venv/bin/python scripts/local_installation.py start --no-browser`. На 8100 — `0.10.4-unified-dropdowns`, PID 71596, frontend revision `789a151da70f59b0`. Прежние SQLite и Keychain сохранены, 17 frontend-файлов совпали с диском, все строки пяти рабочих таблиц совпали с резервной копией. Квитанция — `runtime/a18-4/final-verification.json`. Последующий коммит только фиксирует эту проверку; SHA процесса остаётся SHA кода.
