@@ -126,6 +126,7 @@
     return {role,view:parts[1] || (role === "mentor" ? "overview" : "practice"),id:parts[2] ? decodeURIComponent(parts[2]) : null};
   }
   const learning=window.createLearning({state,api,esc,render,toast});
+  const conversation=window.createConversationScreen({state,esc,icon,draftFor,learning,date,time,languageName:l=>languageName(l),modeLabel});
   function go(path) {state.menu=false;if(location.hash === `#${path}`)loadRoute();else location.hash=path;}
   function captureDrafts() {
     if ($("#company-form")) state.companyDraft = readCompanyForm();
@@ -182,8 +183,7 @@
       }
       if(generation!==state.generation)return;
       await learning.load();state.loading=false;render();
-      if(view === "session" && state.session?.status === "active") scrollChat();
-      else window.scrollTo({top:view==="history"?(historyPositions.get(state.historyFilter)||0):0,behavior:"auto"});
+      if(view !== "session" || state.session?.status !== "active") window.scrollTo({top:view==="history"?(historyPositions.get(state.historyFilter)||0):0,behavior:"auto"});
     } catch(error) {if(generation!==state.generation)return;state.loading=false;state.error=error;render();}
   }
   function navLabel() {
@@ -194,6 +194,7 @@
   let feedbackObserver;
   function observeFeedback(){feedbackObserver?.disconnect();const el=$('#learning-published-review .review-note');if(PORTAL_ROLE!=='learner'||!el)return;feedbackObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){learning.markRead().catch(e=>toast(e.message,true));feedbackObserver.disconnect();}},{threshold:0.01});feedbackObserver.observe(el);}
   function render() {
+    conversation.capture();
     const role = state.route.role;const mentor = role === "mentor";const view = state.route.view;
     const nav = mentor ? [["overview","grid",window.TrainerI18n.t("dashboard.text_018")],["employees","user",window.TrainerI18n.t("dashboard.text_019")],["personas","user",window.TrainerI18n.t("dashboard.text_020")],["company","building",window.TrainerI18n.t("dashboard.text_021")],["scenarios","book",window.TrainerI18n.t("dashboard.text_022")],["reviews","clipboard",window.TrainerI18n.t("dashboard.text_023")],["setup","settings",window.TrainerI18n.t("dashboard.text_024")]] : [["practice","chat",window.TrainerI18n.t("dashboard.text_025")],["history","history",window.TrainerI18n.t("dashboard.text_026")],["company","building",window.TrainerI18n.t("dashboard.text_027")]];
     let page;
@@ -205,7 +206,14 @@
     $("#app").innerHTML=`<div class="app-shell"><div class="mobile-shade ${state.menu?"open":""}" data-action="menu-close"></div>
       <aside class="sidebar ${state.menu?"open":""}" id="sidebar" aria-label="${window.TrainerI18n.t("dashboard.text_035")}"><a class="brand" href="#${role}/${mentor?"overview":"practice"}" aria-label="Klare KI — ${window.TrainerI18n.t("dashboard.text_036")}"><span class="brand-mark" aria-hidden="true">K<span>·</span></span><div><div class="brand-text">klare ki</div><div class="brand-sub">${window.TrainerI18n.t("dashboard.text_037")}</div></div></a><p class="sidebar-label">${mentor?window.TrainerI18n.t("dashboard.text_031"):window.TrainerI18n.t("dashboard.text_032")}</p><nav class="nav-list">${nav.map(([key,ico,label])=>{const active=view===key||(key==="practice"&&view==="session")||(key==="scenarios"&&view==="scenario")||(key==="reviews"&&view==="review");return `<a class="nav-link ${active?"active":""}" href="#${role}/${key}" ${active?'aria-current="page"':""}>${icon(ico)}<span>${label}</span>${key==="reviews"&&state.reviews.filter(s=>s.review_status==="submitted").length?`<span class="nav-count">${state.reviews.filter(s=>s.review_status==="submitted").length}</span>`:""}</a>`;}).join("")}</nav><div class="sidebar-footer"><div class="sidebar-note"><span>${window.TrainerI18n.t("dashboard.text_038")}</span><p>${window.TrainerI18n.t("dashboard.text_039")}<br>${window.TrainerI18n.t("dashboard.text_040")}<br>${window.TrainerI18n.t("dashboard.text_041")}</p></div><div class="workspace-tag"><span class="status-dot"></span>${window.TrainerI18n.t("dashboard.text_042")}${state.status?.version?` · ${esc(state.status.version)}`:""}</div></div></aside>
       <div class="main-shell"><header class="topbar"><button class="menu-btn" data-action="menu" aria-label="${window.TrainerI18n.t("dashboard.text_043")}" aria-controls="sidebar" aria-expanded="${state.menu}">${icon("menu")}</button><div class="topbar-heading"><span>${window.TrainerI18n.t("dashboard.text_044")}</span><span class="truncate"><strong>${navLabel()}</strong></span></div><div class="topbar-actions">${learning.notification()}${learning.buttons()}<span class="local-label"><span class="status-dot"></span>${window.TrainerI18n.t("dashboard.text_045")}</span><div class="portal-user"><span class="caption">${esc(AUTH.user.display_name)} · ${mentor?window.TrainerI18n.t("dashboard.text_033"):window.TrainerI18n.t("dashboard.text_034")}</span><button class="btn small-btn" data-action="own-password">${window.TrainerI18n.t("dashboard.text_046")}</button><button class="btn small-btn" data-action="logout">${window.TrainerI18n.t("dashboard.text_047")}</button></div></div></header><main class="page ${isChat?"chat-page":""}" id="main-content" tabindex="-1">${page}</main></div></div>`;
-    U.afterRender();observeFeedback();
+    document.body.classList.toggle('conversation-screen',isChat);
+    U.afterRender();
+    if(isChat){
+      const sidebar=$('#sidebar'),controls=$('.topbar-actions');
+      const close=document.createElement('button');close.className='btn conversation-drawer-close';close.dataset.action='menu-close';close.textContent=T('close');sidebar.prepend(close);
+      controls.classList.add('conversation-drawer-controls');sidebar.append(controls);
+    }
+    conversation.afterRender(isChat);observeFeedback();
     document.title=`${navLabel()} · Klare KI`;
   }
   function readonlyTraining(s){return `${pageHead(window.TrainerI18n.t("dashboard.text_048"),window.TrainerI18n.t("dashboard.text_049"),window.TrainerI18n.t("dashboard.text_050"))}<div class="actions gap-bottom">${["pdf","json","txt"].map(f=>`<button class="btn" data-action="export" data-format="${f}">${window.TrainerI18n.t("dashboard.text_051")} ${f.toUpperCase()}</button>`).join("")}</div><div class="card mentor-readonly"><div class="transcript">${s.messages.map(m=>messageHTML(m,s,true)).join("")}</div></div>`;}
@@ -218,7 +226,7 @@
       if(view==="practice")return practicePage();
       if(view==="history")return historyPage();
       if(view==="company")return companyPage();
-      if(view==="session")return state.session.status==="finished"?reportPage(state.session,false):learning.materialPanel(state.session.learning_context?.materials,true)+chatPage(state.session);
+      if(view==="session")return state.session.status==="finished"?reportPage(state.session,false):chatPage(state.session);
     } else {
       if(view==="overview")return studio.overview();
       if(view==="employees")return studio.employees(state.route.id);
@@ -297,13 +305,7 @@
     const learner=message.role==="learner";const name=learner?window.TrainerI18n.t("dashboard.text_168"):session.customer_name;
     return `<article class="message ${learner?"learner":"customer"}" ${transcript?`data-message-index="${session.messages.indexOf(message)}" data-transcript-turn="${Number(message.turn)||0}"`:""}><span class="avatar small-avatar">${learner?icon("user"):esc(initials(name))}</span><div class="message-content"><div class="message-author"><span>${esc(name)}</span>${message.at?`<time datetime="${esc(message.at)}">${time(message.at)}</time>`:""}${transcript&&learner?`<span>· ${window.TrainerI18n.t("dashboard.text_137")} ${Number(message.turn)||0}</span>`:""}</div><div class="message-bubble">${esc(message.text)}</div></div></article>`;
   }
-  function chatPage(s) {
-    const draft=draftFor(s.id);const limit=state.status?.limits?.max_turns||30;const complete=s.phase==="completed";const exhausted=s.turn_count>=limit;
-    const phaseInfo={needs:["01",window.TrainerI18n.t("dashboard.text_636"),window.TrainerI18n.t("dashboard.text_637")],capabilities:["02",window.TrainerI18n.t("dashboard.text_638"),window.TrainerI18n.t("dashboard.text_639")],proposal:["03",window.TrainerI18n.t("dashboard.text_640"),window.TrainerI18n.t("dashboard.text_641")],completed:["03",window.TrainerI18n.t("dashboard.text_642"),window.TrainerI18n.t("dashboard.text_643")]}[s.phase]||["01",window.TrainerI18n.t("dashboard.text_094"),""];
-    return `<div class="chat-topline"><a class="back-link" href="#learner/practice">${icon("back")}${window.TrainerI18n.t("dashboard.text_206")}</a><button class="btn small-btn ${complete?"green":""}" data-action="finish" ${draft.sending?'disabled':""}>${icon("clipboard")}${complete?window.TrainerI18n.t("dashboard.text_169"):window.TrainerI18n.t("dashboard.text_170")}</button></div>${sessionModeNotice(s)}<div class="employee-chat"><div class="chat-layout"><section class="card conversation" aria-label="${window.TrainerI18n.t("dashboard.text_207")}"><header class="conversation-header"><span class="avatar large">${esc(initials(s.customer_name))}</span><div class="conversation-heading"><h1>${esc(s.customer_name)}</h1><p>${esc(s.title)} · ${window.TrainerI18n.t("training.language")}: ${esc(languageName(s.training_language))}</p></div>${modePill(s.mode)}</header><div class="messages" id="chat-messages" role="log" aria-label="${window.TrainerI18n.t("dashboard.text_208")}" aria-live="polite" aria-relevant="additions"><div class="chat-date">${date(s.created_at)}</div>${s.messages.map(m=>messageHTML(m,s)).join("")}${draft.sending?`<article class="message customer"><span class="avatar small-avatar">${esc(initials(s.customer_name))}</span><div class="message-content"><div class="message-author">${s.mode!=="demo"?window.TrainerI18n.t("dashboard.text_171"):window.TrainerI18n.t("dashboard.text_172")}</div><div class="message-bubble"><div class="message-typing" role="status" aria-label="${window.TrainerI18n.t("dashboard.text_173")}"><span></span><span></span><span></span></div></div></div></article>`:""}${complete?`<div class="message-system">${icon("check")}${window.TrainerI18n.t("dashboard.text_174")}</div>`:""}</div>
-      ${complete||exhausted?`<div class="complete-chat-panel"><h3>${complete?window.TrainerI18n.t("dashboard.text_175"):window.TrainerI18n.t("dashboard.text_176")}</h3><p>${complete?window.TrainerI18n.t("dashboard.text_177"):window.TrainerI18n.t("dashboard.text_178")}</p><button class="btn primary" data-action="finish">${icon("clipboard")}${window.TrainerI18n.t("dashboard.text_169")}</button></div>`:`<form class="composer" id="message-form"><div class="composer-field"><label class="sr-only" for="message-text">${window.TrainerI18n.t("dashboard.text_185")}</label><textarea id="message-text" name="message" maxlength="6000" rows="2" placeholder="${draft.kind==="summary"?window.TrainerI18n.t("dashboard.text_179"):draft.kind==="proposal"?window.TrainerI18n.t("dashboard.text_180"):window.TrainerI18n.t("dashboard.text_181")}" required ${draft.sending?'disabled':""}>${esc(draft.text)}</textarea><button class="send-btn" type="submit" aria-label="${window.TrainerI18n.t("dashboard.text_186")}" ${draft.sending||!draft.text.trim()?'disabled':""}>${draft.sending?icon("clock"):icon("arrow")}</button></div><div class="voice-controls"><button class="btn small-btn" type="button" data-action="voice-start" aria-label="${window.TrainerI18n.t("dashboard.text_187")}">${icon("mic")}${window.TrainerI18n.t("dashboard.text_188")}</button><button class="btn small-btn" type="button" data-action="voice-stop">${window.TrainerI18n.t("dashboard.text_189")}</button><button class="btn small-btn" type="button" data-action="voice-cancel">${window.TrainerI18n.t("dashboard.text_190")}</button><label class="caption" for="voice-language">${window.TrainerI18n.t("dashboard.text_191")}</label><select id="voice-language"><option value="ru" ${!["de","en"].includes(s.training_language)?"selected":""}>${window.TrainerI18n.t("dashboard.text_192")}</option><option value="de" ${s.training_language==="de"?"selected":""}>Deutsch</option><option value="en" ${s.training_language==="en"?"selected":""}>English</option></select></div><div id="voice-status" class="voice-status" role="status"></div><p class="caption">${window.TrainerI18n.t("dashboard.text_193")}</p><div class="composer-bottom"><span>${draft.kind==="summary"&&s.mode==="demo"?window.TrainerI18n.t("dashboard.text_182"):window.TrainerI18n.t("dashboard.text_183")}</span><span><kbd>Ctrl</kbd> + <kbd>Enter</kbd> · ${s.turn_count}/${limit}</span></div>${draft.error?`<div class="notice error" role="alert">${icon("alert")}<div><p>${esc(draft.error)}</p><button class="text-link" type="button" data-action="retry-message">${window.TrainerI18n.t("dashboard.text_184")}</button></div></div>`:""}</form>`}</section>
-      <aside class="chat-aside"><section class="card card-pad phase-card"><div class="phase-number">${phaseInfo[0]}</div><div class="stage-title">${window.TrainerI18n.t("dashboard.text_209")}</div><h3>${phaseInfo[1]}</h3><p>${phaseInfo[2]}</p></section><section class="card card-pad"><h3>${window.TrainerI18n.t("dashboard.text_210")}</h3>${[[window.TrainerI18n.t("dashboard.text_094"),[window.TrainerI18n.t("dashboard.text_194"),window.TrainerI18n.t("dashboard.text_195"),window.TrainerI18n.t("dashboard.text_196")]],[window.TrainerI18n.t("dashboard.text_096"),[window.TrainerI18n.t("dashboard.text_197"),window.TrainerI18n.t("dashboard.text_198"),window.TrainerI18n.t("dashboard.text_199")]],[window.TrainerI18n.t("dashboard.text_200"),[window.TrainerI18n.t("dashboard.text_201"),window.TrainerI18n.t("dashboard.text_202"),window.TrainerI18n.t("dashboard.text_203")]]].map(([label,items],i)=>`<details class="guide-details" ${i===0&&s.phase==="needs"?"open":""}><summary>${label}</summary><ul>${items.map(item=>`<li>${item}</li>`).join("")}</ul></details>`).join("")}</section><section class="card card-pad"><div class="field-row-label"><h3>${window.TrainerI18n.t("dashboard.text_211")}</h3>${icon("building")}</div><p><strong>${esc(s.company?.name||window.TrainerI18n.t("dashboard.text_021"))}</strong></p><details class="guide-details"><summary>${window.TrainerI18n.t("dashboard.text_165")}</summary>${(s.company?.services||[]).map(service=>`<div class="company-mini-service"><strong>${esc(service.title)}</strong><p>${esc(service.description)}</p>${service.conditions?`<p><strong>${window.TrainerI18n.t("dashboard.text_204")}</strong> ${esc(service.conditions)}</p>`:""}</div>`).join("")}</details><details class="guide-details"><summary>${window.TrainerI18n.t("dashboard.text_212")}</summary><p class="gap-top">${esc(s.company?.limitations||window.TrainerI18n.t("dashboard.text_205"))}</p></details></section></aside></div></div>`;
-  }
+  function chatPage(s) {return conversation.page(s);}
   function scrollChat() {requestAnimationFrame(()=>{const node=$("#chat-messages");if(node)node.scrollTop=node.scrollHeight;});}
 
   function overviewPage() {
@@ -511,8 +513,8 @@
     captureDrafts();
     const action=target.dataset.action;
     if(await learning.handle(action,target))return;
-    if(action==="menu") {state.menu=!state.menu;$("#sidebar").classList.toggle("open",state.menu);$(".mobile-shade").classList.toggle("open",state.menu);target.setAttribute("aria-expanded",String(state.menu));return;}
-    if(action==="menu-close") {state.menu=false;$("#sidebar").classList.remove("open");$(".mobile-shade").classList.remove("open");$(".menu-btn")?.setAttribute("aria-expanded","false");return;}
+    if(action==="menu") {state.menu=!state.menu;$("#sidebar").classList.toggle("open",state.menu);$(".mobile-shade").classList.toggle("open",state.menu);target.setAttribute("aria-expanded",String(state.menu));conversation.drawer(state.menu);return;}
+    if(action==="menu-close") {state.menu=false;$("#sidebar").classList.remove("open");$(".mobile-shade").classList.remove("open");($("#kc-app .menu-btn")||$(".menu-btn"))?.setAttribute("aria-expanded","false");conversation.drawer(false);return;}
     if(action==="logout"){
       if((state.companyDirty||state.scenarioDirty||studio.dirty())&&!await confirmDialog(window.TrainerI18n.t("dashboard.text_493"),window.TrainerI18n.t("dashboard.text_494"),window.TrainerI18n.t("dashboard.text_047")))return;
       window.TrainerVoice.cancel();await api('/api/auth/logout',{method:'POST'});
@@ -577,7 +579,7 @@
     if(target.id==="message-text"&&state.session) {
       const draft=draftFor(state.session.id);draft.text=target.value;
       if(draft.pending&&(draft.pending.text!==target.value.trim()))draft.pending=null;
-      const send=$(".send-btn");if(send)send.disabled=draft.sending||!target.value.trim();return;
+      const send=$(".send-btn");if(send)send.disabled=draft.sending||window.TrainerVoice.busy()||!target.value.trim();return;
     }
     if(target.id==="history-search") {state.historySearch=target.value;renderKeepFocus("history-search");return;}
     if(target.id==="scenario-search") {state.scenarioSearch=target.value;renderKeepFocus("scenario-search");return;}
@@ -623,7 +625,7 @@
   $("#app").addEventListener("change",changeHandler);
   $("#app").addEventListener("submit",submitHandler);
   document.addEventListener("keydown",event=>{
-    if(event.key==="Escape"&&state.menu){state.menu=false;$("#sidebar")?.classList.remove("open");$(".mobile-shade")?.classList.remove("open");$(".menu-btn")?.setAttribute("aria-expanded","false");$(".menu-btn")?.focus();}
+    if(event.key==="Escape"&&state.menu){state.menu=false;$("#sidebar")?.classList.remove("open");$(".mobile-shade")?.classList.remove("open");($("#kc-app .menu-btn")||$(".menu-btn"))?.setAttribute("aria-expanded","false");($("#kc-app .menu-btn")||$(".menu-btn"))?.focus();conversation.drawer(false);}
     if(event.key==="Enter"&&(event.ctrlKey||event.metaKey)&&event.target.id==="message-text"){event.preventDefault();sendMessage();}
   });
   window.addEventListener("hashchange",loadRoute);

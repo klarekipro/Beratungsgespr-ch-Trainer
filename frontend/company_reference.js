@@ -23,7 +23,7 @@ window.createCompanyReference=({state,api,esc:E})=>{
  }
  let serial=0;const bundles=new Map();
  function reference(d,compact=false){const id=String(++serial);bundles.set(id,d);return `<section class="company-reference card card-pad ${compact?'reference-in-chat':''}" data-reference-id="${id}"><h1>${E(d.name)}</h1><p>${E(d.tagline||d.about)}</p><nav class="reference-nav" aria-label="${t('documents')}">${['about','products','services','terms','documents'].map((k,i)=>`<button type="button" class="btn ${i===0?'primary':''}" data-reference-tab="${k}" aria-pressed="${i===0}">${t(k)}</button>`).join('')}</nav><div class="reference-content">${body(d,'about')}</div></section>`;}
- function generic(m,c){
+ function genericData(m,c){
   const oldItems=m?.import_items||{};
   const services=(c?.services||[]).map(s=>{
    const imported=oldItems.services?.[s.id],match=s.conditions.match(/(?:Preis|Price|Цена)?\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:EUR|€)/i);
@@ -34,8 +34,10 @@ window.createCompanyReference=({state,api,esc:E})=>{
   const textDocs=(m?.documents||[]).map(d=>({title:t(purposeNames[d.purpose])+' · '+d.name,text:d.text,notice:langNotice(d.language),source_id:d.source_id}));
   const conditions=(m?.documents||[]).filter(d=>['policy','terms'].includes(d.purpose));
   const d={name:c?.name||'',tagline:t('original_language')+': '+(m?.original_language||'de').toUpperCase(),about:c?.description||'',products:m?.products||[],services,terms:conditions.length?conditions.map(d=>[t(purposeNames[d.purpose])+' · '+langNotice(d.language),d.text]):[[t('terms'),c?.limitations||'']],documents:[{title:t('about'),text:c?.description||'',notice:notices.description},...textDocs],notices};
-  return reference(d);
+  return d;
  }
+ function generic(m,c){return reference(genericData(m,c));}
+ function snapshotData(m,c){return m?.translations?.[language()]||{...genericData(m,c),no_catalogue:!m};}
 
  function page(){return current?.reference?reference(current.reference):generic(current?.materials,state.company);}
  function snapshot(m,c){
@@ -68,5 +70,5 @@ window.createCompanyReference=({state,api,esc:E})=>{
  });
  function filter(el){const box=el.closest('.company-reference'),q=box.querySelector('.reference-search').value.toLocaleLowerCase(),category=box.querySelector('.reference-category').value;let n=0;box.querySelectorAll('.reference-content .reference-product').forEach(p=>{p.hidden=!(p.textContent.toLocaleLowerCase().includes(q)&&(!category||p.dataset.category===category));if(!p.hidden)n++;});box.querySelector('.reference-count').textContent=String(n);}
  document.addEventListener('input',e=>{if(e.target.matches('.reference-search'))filter(e.target);if(e.target.matches('[data-import-row],#company-import-text,#company-import-name'))invalidate();});
- return {load,page,snapshot,importer};
+ return {load,page,snapshot,importer,snapshotData};
 };

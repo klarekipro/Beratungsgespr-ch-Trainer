@@ -1,9 +1,11 @@
 "use strict";
 window.TrainerVoice=(()=>{
+ let lastStatus="";
  let recorder=null,stream=null,timer=null,chunks=[],cancelled=false,controller=null,callbacks=null,asking=false,sequence=0;
  const release=()=>{clearTimeout(timer);stream?.getTracks().forEach(t=>t.stop());stream=null;};
  async function start(options){
   if(recorder?.state==="recording"||asking||controller)return;
+  const report=options.status,failure=options.error;options={...options,status:text=>{lastStatus=text;report(text);},error:text=>{lastStatus=text;failure(text);}};
   callbacks=options;cancelled=false;asking=true;const generation=++sequence;
   if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){asking=false;options.error(window.TrainerI18n.t("voice.text_603"));return;}
   const mime=["audio/webm;codecs=opus","audio/mp4","audio/webm"].find(x=>MediaRecorder.isTypeSupported(x));
@@ -35,5 +37,5 @@ window.TrainerVoice=(()=>{
  function stop(){if(recorder?.state==="recording")recorder.stop();}
  function cancel(){cancelled=true;sequence++;asking=false;controller?.abort();if(recorder?.state==="recording")recorder.stop();release();chunks=[];callbacks?.status("");}
  window.addEventListener("pagehide",cancel);
- return {start,stop,cancel,busy:()=>asking||recorder?.state==="recording"||!!controller};
+ return {start,stop,cancel,status:()=>lastStatus,phase:()=>asking?"asking":recorder?.state==="recording"?"recording":controller?"transcribing":"idle",busy:()=>asking||recorder?.state==="recording"||!!controller};
 })();

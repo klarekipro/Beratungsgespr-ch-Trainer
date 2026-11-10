@@ -79,5 +79,5 @@ window.createLearning = ({state,api,esc,render,toast}) => {
   if(e.target.id==='learning-product-search'){const q=e.target.value.toLowerCase();document.querySelectorAll('.learning-search-item').forEach(x=>x.hidden=!x.textContent.toLowerCase().includes(q));}
   if(['learning-observations','learning-goal','review-note'].includes(e.target.id)&&state.session){state.learningDrafts??={};state.learningDrafts[state.session.id]=draftValue();}
  });
- return {load,report,referencePage:reference.page,materialPanel,importer,guidanceEditor,handle,saveDraft,buttons,notification,certificates,certificateCount,isNew,markRead};
+ return {load,report,referencePage:reference.page,referenceData:reference.snapshotData,materialPanel,importer,guidanceEditor,handle,saveDraft,buttons,notification,certificates,certificateCount,isNew,markRead};
 };
