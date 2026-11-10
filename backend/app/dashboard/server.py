@@ -35,7 +35,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.10.0-a18-conversation-screen"
+VERSION = "0.10.1-a18-appearance-dictation"
 
 
 def now():
@@ -668,7 +668,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     # Fresh HTML changes URLs even when an older browser cache entry is still fresh.
     frontend_files = [frontend / name for name in (
         'index.html', 'login.html', 'app.js', 'boot.js', 'i18n.js', 'login.js',
-        'mentor_studio.js', 'voice.js', 'ui_organization.js', 'learning.js', 'company_reference.js', 'styles.css', 'portals.css',
+        'mentor_studio.js', 'voice.js', 'ui_organization.js', 'learning.js', 'company_reference.js', 'styles.css', 'portals.css', 'conversation.js', 'conversation.css', 'appearance.css',
         'locales/de.json', 'locales/en.json', 'locales/ru.json')]
     frontend_revision = hashlib.sha256(b''.join(
         p.relative_to(frontend).as_posix().encode() + b'\0' + p.read_bytes() + b'\0'

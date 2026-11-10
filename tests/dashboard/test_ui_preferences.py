@@ -27,9 +27,10 @@ class UIRecords(unittest.TestCase):
                 self.assertEqual(learner.post('/api/ui/reviews/read',json={**receipt,'published_at':'old'}).status_code,409)
                 self.assertEqual(learner.post('/api/ui/reviews/read',json=receipt).status_code,200)
                 self.assertEqual(other.get('/api/ui/reviews/read').json()['read'],{})
-                prefs={'layout':'stack','density':'compact'}
+                prefs={'layout':'stack','density':'compact','theme':'dark'}
                 self.assertEqual(learner.put('/api/ui/preferences',json=prefs).status_code,200)
                 self.assertIsNone(other.get('/api/ui/preferences').json()['preferences'])
+                self.assertEqual(learner.put('/api/ui/preferences',json={'theme':'neon'}).status_code,422)
                 self.assertEqual(learner.put('/api/ui/preferences',json={'layout':'invalid'}).status_code,422)
                 with client(users[1]) as reopened:
                     self.assertEqual(reopened.get('/api/ui/preferences').json()['preferences'],prefs)

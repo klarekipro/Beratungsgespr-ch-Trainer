@@ -41,7 +41,7 @@ window.TrainerUI=(()=>{
   close.onclick=()=>{dialog.close();done();};dialog.addEventListener('close',done,{once:true});
  }
  const closeView=()=>document.querySelectorAll('.view-settings[open]').forEach(d=>d.open=false);
- document.addEventListener('click',e=>{if(!e.target.closest('.view-settings'))closeView();});
+ document.addEventListener('click',e=>{if(e.target.closest('[data-close-appearance]')){const d=e.target.closest('.view-settings');d.open=false;d.querySelector('summary').focus();}else if(!e.target.closest('.view-settings'))closeView();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const open=document.querySelector('.view-settings[open]');if(open){closeView();open.querySelector('summary').focus();}}});
  window.addEventListener('hashchange',closeView);
  document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset?.uiSection)openState.set(d.dataset.uiSection,d.open);},true);

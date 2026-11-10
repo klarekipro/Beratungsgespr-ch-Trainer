@@ -1,0 +1,38 @@
+/* Explicit palette, no page inversion. Light keeps the accepted A18 tokens. */
+html[data-theme="dark"] {
+ --ink:#e0eee5;--ink-strong:#f1f7f2;--muted:#afc5b9;--paper:#0c211c;--surface:#142e26;--soft:#203d32;
+ --line:#3c5b4c;--green:#83d6a4;--green-soft:#214936;--amber:#e7bd74;--amber-soft:#433820;--red:#ffb2a5;--red-soft:#4a2a29;
+}
+html[data-theme="dark"] body{background:var(--paper);color:var(--ink)}
+html[data-theme="dark"] .kc-app{--ink:#e0eee5;--ink-strong:#f1f7f2;--muted:#afc5b9;--paper:#0c211c;--surface:#142e26;--soft:#203d32;--line:#3c5b4c;--green:#83d6a4;--green-soft:#214936;--amber:#e7bd74;--amber-soft:#433820;--red:#ffb2a5;--red-soft:#4a2a29;--sage:#52735e;--sage-soft:#29432c;--amber-ink:#f7d99d}
+html[data-theme="dark"] :is(.card,.topbar,.view-settings-panel,.user-menu[open],.language-bar,.confirm-dialog,.ui-reader,.reference-detail,.reference-document,.reference-prose,.kc-dialog,.toast){background:var(--surface);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] :is(input,textarea,select,.btn,.filter-tab,.search-box,.kc-btn,.kc-select){background:var(--surface);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] :is(input,textarea)::placeholder{color:#9ab5a5;opacity:1}
+html[data-theme="dark"] :is(input,textarea,select):disabled{color:#8eaa99;background:#21382d;opacity:1}
+html[data-theme="dark"] :is(.btn.primary,.kc-btn--primary){background:#83d6a4;color:#10291c;border-color:#83d6a4}
+html[data-theme="dark"] :is(button,.btn):disabled{opacity:.6;cursor:not-allowed}
+html[data-theme="dark"] :is(.notice.neutral,.message.customer,.report-hero,.learning-result,.reference-product,.studio-section,.reference-section,.kc-tools kbd){background:var(--soft);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] :is(.notice.error,.form-error,.ui-field-error){background:var(--red-soft);color:var(--red)}
+html[data-theme="dark"] :is(.pill.amber,.notice.amber){background:var(--amber-soft);color:#f7d99d}
+html[data-theme="dark"] :is(.pill.green,.filter-tab.active,.notice.success){background:var(--green-soft);color:var(--green)}
+html[data-theme="dark"] :is(th,td,.data-table tr,.form-section,.fact-result,.stage-result){border-color:var(--line)}
+html[data-theme="dark"] :is(thead,th,.data-table tbody tr:hover){background:#1e3a2e;color:var(--ink)}
+html[data-theme="dark"] :is(.sidebar,.kc-bar){background:#102d25;color:#e0eee5}
+html[data-theme="dark"] a{color:var(--green)}
+html[data-theme="dark"] .kc-bar a{color:inherit}
+html[data-theme="dark"] :is(.kc-field,.reference-tabs,.reference-tabs .active){background:var(--surface);border-color:var(--line);color:var(--ink)}
+html[data-theme="dark"] :is(.muted,.caption,.cell-sub,.small.muted){color:var(--muted)}
+:where(button,a,summary,input,select,textarea):focus-visible{outline:3px solid #2e9769;outline-offset:3px}
+html[data-theme="dark"] :focus-visible{outline-color:#a6e6b7}
+.view-settings-panel{min-width:220px;padding-top:42px;position:absolute}
+.appearance-close{position:absolute;right:8px;top:6px;min-width:36px;min-height:36px;font-size:22px}
+.kc-tools [data-action^="voice-"]{min-width:44px;min-height:44px;justify-content:center}
+.voice-stop span{font-size:19px}.voice-cancel span{font-size:26px}
+.voice-meter{display:inline-flex;gap:3px;align-items:center;justify-content:center;height:34px;min-width:50px}
+.voice-meter i{display:block;width:4px;height:3px;background:var(--green,#176b55);border-radius:2px}
+.voice-timer{font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.kc-tools [hidden]{display:none!important}
+.kc-tools #voice-meter-unavailable{max-width:210px;font-size:11px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+html[data-theme="dark"] .kc-switch button[aria-pressed="true"]{background:var(--green-soft);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] :is(.user-menu[open]>.portal-user,.editor-more-actions){background:var(--surface);color:var(--ink);border-color:var(--line)}

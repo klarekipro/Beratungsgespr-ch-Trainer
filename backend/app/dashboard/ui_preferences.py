@@ -5,6 +5,7 @@ from .models import InputModel
 from .auth import CURRENT_USER
 
 class ViewPreferences(InputModel):
+    theme: Literal['light','dark','system'] = 'system'
     layout: Literal['auto','side','stack'] = 'auto'
     density: Literal['normal','compact'] = 'normal'
 

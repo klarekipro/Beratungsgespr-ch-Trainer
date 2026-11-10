@@ -10,8 +10,16 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  let read={},preferences=null;
  const storageKey=k=>'trainer.'+window.TRAINER_AUTH.user.id+'.'+k;
  const current=k=>preferences?.[k]||localStorage.getItem(storageKey(k))||localStorage.getItem('learning.'+k)||(k==='layout'?'auto':'normal');
- const buttons=()=>`<details class="view-settings"><summary class="btn small-btn">${T('view')}</summary><div class="view-settings-panel"><label>${t('layout')} <select id="learning-layout">${['auto','side','stack'].map(v=>`<option value="${v}" ${current('layout')===v?'selected':''}>${v==='auto'?T('auto'):t(v)}</option>`).join('')}</select></label><label>${t('density')} <select id="learning-density">${options(['normal','compact'],current('density'))}</select></label></div></details>`;
- function applyView(){document.body.dataset.learningLayout=current('layout');document.body.dataset.learningDensity=current('density');}
+ const appearance=k=>window.TrainerI18n.t('appearance18.'+k);
+ const theme=()=>preferences?.theme||localStorage.getItem(storageKey('theme'))||'system';
+ const systemDark=window.matchMedia('(prefers-color-scheme: dark)');
+ const buttons=()=>`<details class="view-settings"><summary class="btn small-btn">${appearance('title')}</summary><div class="view-settings-panel"><button type="button" class="btn appearance-close" data-close-appearance aria-label="${appearance('close')}" title="${appearance('close')}">×</button><label for="learning-theme">${appearance('title')}</label><select id="learning-theme">${['light','dark','system'].map(v=>`<option value="${v}" ${theme()===v?'selected':''}>${appearance(v)}</option>`).join('')}</select></div></details>`;
+ function applyView(){
+  const selected=theme();document.documentElement.dataset.theme=selected==='system'?(systemDark.matches?'dark':'light'):selected;
+  document.documentElement.style.colorScheme=document.documentElement.dataset.theme;
+  document.body.dataset.learningLayout='auto';document.body.dataset.learningDensity='normal';
+ }
+ if(systemDark.addEventListener)systemDark.addEventListener('change',applyView);else systemDark.addListener(applyView);
  applyView();
  const unread=()=>results.reviews.filter(r=>read[r.session_id]!==r.published_at);
  const isNew=id=>unread().some(r=>r.session_id===id);
@@ -72,7 +80,13 @@ window.createLearning = ({state,api,esc,render,toast}) => {
   return true;
  }
  document.addEventListener('change',async e=>{
-  if(['learning-layout','learning-density'].includes(e.target.id)){e.target.closest('.view-settings').open=false;const key=e.target.id==='learning-layout'?'layout':'density';const previous={layout:current('layout'),density:current('density')};const next={...previous,[key]:e.target.value};const controls=[...document.querySelectorAll('#learning-layout,#learning-density')];controls.forEach(el=>el.disabled=true);preferences=next;applyView();try{await api('/api/ui/preferences',{method:'PUT',body:next});localStorage.setItem(storageKey(key),next[key]);}catch(error){preferences=previous;applyView();toast(error.message,true);e.target.value=current(key);}finally{controls.forEach(el=>el.disabled=false);}}
+  if(e.target.id==='learning-theme'){
+   const before=preferences,previous=theme(),next=e.target.value;preferences={...(preferences||{}),theme:next};applyView();
+   const control=e.target;control.disabled=true;
+   try{await api('/api/ui/preferences',{method:'PUT',body:{layout:preferences.layout||'auto',density:preferences.density||'normal',theme:next}});localStorage.setItem(storageKey('theme'),next);}
+   catch(error){preferences=before;applyView();toast(error.message,true);control.value=previous;}
+   finally{control.disabled=false;}
+  }
   if(['learning-md-file','learning-csv-file'].includes(e.target.id)&&e.target.files[0]){const text=await e.target.files[0].text();document.getElementById(e.target.id==='learning-md-file'?'learning-markdown':'learning-csv').value=text;}
  });
  document.addEventListener('input',e=>{

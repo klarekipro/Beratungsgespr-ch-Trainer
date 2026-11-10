@@ -141,6 +141,7 @@
     if(leaving&&(studio.dirty()&&state.route.view==='personas'||state.companyDirty&&state.route.view==='company'||state.scenarioDirty&&state.route.view==='scenario')){
       captureDrafts();if(!window.confirm(T('leave_unsaved'))){restoringHash=true;location.hash=acceptedHash;return;}
     }
+    if(window.TrainerVoice.busy()&&!window.confirm(window.TrainerI18n.t('dictation18.leave'))){restoringHash=true;location.hash=acceptedHash;return;}
     acceptedHash=location.hash;
     if(next.role==='learner'&&next.view==='history'){state.historyFilter=next.id||'all';if(state.route.view==='practice'||next.id==='new'&&state.route.view!=='history')state.historySearch='';}
     captureDrafts();const generation = ++state.generation;const previousRole = state.route.role;state.route = getRoute();state.menu=false;
@@ -435,12 +436,13 @@
     }
   }
   async function finishSession() {
-    window.TrainerVoice.cancel();
     const session=state.session;if(!session||session.status!=="active"||draftFor(session.id).sending)return;
+    if(window.TrainerVoice.busy()&&!window.confirm(window.TrainerI18n.t("dictation18.leave")))return;
     if(session.phase!=="completed") {
       const accepted=await confirmDialog(window.TrainerI18n.t("dashboard.text_476"),window.TrainerI18n.t("dashboard.text_477"),window.TrainerI18n.t("dashboard.text_170"));
       if(!accepted)return;
     }
+    window.TrainerVoice.cancel();
     try {const result=await api(`/api/sessions/${encodeURIComponent(session.id)}/finish`,{method:"POST"});state.session=result.session;render();window.scrollTo({top:0,behavior:"smooth"});}
     catch(error){toast(error.message,true);}
   }
@@ -516,11 +518,12 @@
     if(action==="menu") {state.menu=!state.menu;$("#sidebar").classList.toggle("open",state.menu);$(".mobile-shade").classList.toggle("open",state.menu);target.setAttribute("aria-expanded",String(state.menu));conversation.drawer(state.menu);return;}
     if(action==="menu-close") {state.menu=false;$("#sidebar").classList.remove("open");$(".mobile-shade").classList.remove("open");($("#kc-app .menu-btn")||$(".menu-btn"))?.setAttribute("aria-expanded","false");conversation.drawer(false);return;}
     if(action==="logout"){
+      if(window.TrainerVoice.busy()&&!window.confirm(window.TrainerI18n.t("dictation18.leave")))return;
       if((state.companyDirty||state.scenarioDirty||studio.dirty())&&!await confirmDialog(window.TrainerI18n.t("dashboard.text_493"),window.TrainerI18n.t("dashboard.text_494"),window.TrainerI18n.t("dashboard.text_047")))return;
       window.TrainerVoice.cancel();await api('/api/auth/logout',{method:'POST'});
       state.companyDirty=false;state.scenarioDirty=false;studio.cancelDraft();document.getElementById('app').replaceChildren();location.replace('/login');return;
     }
-    if(action==="own-password"){window.TrainerVoice.cancel();passwordDialog();return;}
+    if(action==="own-password"){if(window.TrainerVoice.busy()&&!window.confirm(window.TrainerI18n.t("dictation18.leave")))return;window.TrainerVoice.cancel();passwordDialog();return;}
     if(action.startsWith('studio-')||action.startsWith('employee-')){if(await studio.handle(action,target))return;}
     if(action==='voice-start'){
       const id=state.session.id;const status=text=>{const el=document.getElementById('voice-status');if(el)el.textContent=text;};
@@ -630,7 +633,7 @@
   });
   window.addEventListener("hashchange",loadRoute);
   window.TrainerHasUnsavedChanges=()=>state.companyDirty||state.scenarioDirty||studio.dirty()||Object.values(state.drafts).some(d=>d.text?.trim())||[...document.querySelectorAll("#employee-create input,#review-form textarea")].some(el=>el.value.length>0);
-  window.addEventListener("beforeunload",event=>{if(!window.TrainerLocaleReload&&(state.companyDirty||state.scenarioDirty||studio.dirty()||Object.keys(state.learningDrafts||{}).length)){event.preventDefault();event.returnValue="";}});
+  window.addEventListener("beforeunload",event=>{if(!window.TrainerLocaleReload&&(window.TrainerVoice.busy()||state.companyDirty||state.scenarioDirty||studio.dirty()||Object.keys(state.learningDrafts||{}).length)){event.preventDefault();event.returnValue="";}});
   if(!location.hash)history.replaceState(null,"",`#${PORTAL_ROLE}/${PORTAL_ROLE==="mentor"?"overview":"practice"}`);
   loadRoute();
 })();
