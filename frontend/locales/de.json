@@ -1261,5 +1261,14 @@
   "mentor33.dictation_language": "Diktiersprache",
   "mentor33.voice_too_long": "Das Diktat wurde nicht eingefügt: Das Feedback würde 6000 Zeichen überschreiten. Der eingegebene Text bleibt erhalten.",
   "errors.REVIEW_ALREADY_PUBLISHED": "Das Feedback wurde bereits veröffentlicht und ist schreibgeschützt.",
-  "mentor33.certificates": "Zertifikate des Mitarbeiters"
+  "mentor33.certificates": "Zertifikate des Mitarbeiters",
+  "learner35.analysis_tab": "KI-Auswertung",
+  "learner35.evidence_tab": "Gespräch und Phasen",
+  "learner35.result_tabs": "Gesprächsergebnis",
+  "learner35.open_ai": "Vollständige KI-Auswertung öffnen",
+  "learner35.open_feedback": "Mentorfeedback öffnen",
+  "learner35.legacy_step": "Diese gespeicherte Auswertung enthält keine separate Empfehlung. Die verfügbare Aktion steht unten.",
+  "learner35.no_ai_step": "Der nächste Schritt ist auch ohne neue KI-Auswertung verfügbar.",
+  "learner35.feedback_waiting": "Das Gespräch wurde eingereicht. Feedback erscheint nach Veröffentlichung durch den Mentor.",
+  "learner35.feedback_private": "Noch kein Feedback veröffentlicht. Sie können diesen Versuch beim Mentor einreichen."
 }

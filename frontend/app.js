@@ -192,8 +192,6 @@
     return labels[state.route.view] || window.TrainerI18n.t("dashboard.text_017");
   }
   function historyMatches(s,filter){return filter==='all'||filter==='active'&&s.status==='active'||filter==='finished'&&s.status==='finished'||filter==='ready'&&s.status==='finished'&&s.review_status==='not_submitted'||filter==='submitted'&&s.review_status==='submitted'||filter==='reviewed'&&s.review_status==='reviewed'||filter==='new'&&learning.isNew(s.id);}
-  let feedbackObserver;
-  function observeFeedback(){feedbackObserver?.disconnect();const el=$('#learning-published-review .review-note');if(PORTAL_ROLE!=='learner'||!el)return;feedbackObserver=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){learning.markRead().catch(e=>toast(e.message,true));feedbackObserver.disconnect();}},{threshold:0.01});feedbackObserver.observe(el);}
   function render() {
     conversation.capture();
     const role = state.route.role;const mentor = role === "mentor";const view = state.route.view;
@@ -218,7 +216,7 @@
       const close=document.createElement('button');close.className='btn conversation-drawer-close';close.dataset.action='menu-close';close.textContent=T('close');sidebar.prepend(close);
       controls.classList.add('conversation-drawer-controls');sidebar.append(controls);
     }
-    conversation.afterRender(isChat);learning.mentorAfterRender();observeFeedback();
+    conversation.afterRender(isChat);learning.mentorAfterRender();
     document.title=`${navLabel()} · Klare KI`;
   }
   function readonlyTraining(s){return `${pageHead(window.TrainerI18n.t("dashboard.text_048"),window.TrainerI18n.t("dashboard.text_049"),window.TrainerI18n.t("dashboard.text_050"))}<div class="actions gap-bottom">${["pdf","json","txt"].map(f=>`<button class="btn" data-action="export" data-format="${f}">${window.TrainerI18n.t("dashboard.text_051")} ${f.toUpperCase()}</button>`).join("")}</div><div class="card mentor-readonly"><div class="transcript">${s.messages.map(m=>messageHTML(m,s,true)).join("")}</div></div>`;}
@@ -402,7 +400,7 @@
       <div><label for="review-fit">${reviewText("company_fit")}</label><select id="review-fit">${choices(COMPANY_FIT,a.company_fit,"fit.")}</select></div></div>`;
   }
   function reportPage(s, mentor) {
-    if(!mentor)return learning.employeeReport(s);
+    if(!mentor)return learning.employeeReport(s,{messageHTML});
     return learning.mentorReport(s,{reviewControls,messageHTML});
   }
 

@@ -1261,5 +1261,14 @@
   "mentor33.dictation_language": "Dictation language",
   "mentor33.voice_too_long": "Dictation was not inserted: feedback would exceed 6000 characters. Your typed text is preserved.",
   "errors.REVIEW_ALREADY_PUBLISHED": "Feedback is already published and is read-only.",
-  "mentor33.certificates": "Employee certificates"
+  "mentor33.certificates": "Employee certificates",
+  "learner35.analysis_tab": "AI review",
+  "learner35.evidence_tab": "Conversation & phases",
+  "learner35.result_tabs": "Conversation result",
+  "learner35.open_ai": "Open full AI review",
+  "learner35.open_feedback": "Open mentor feedback",
+  "learner35.legacy_step": "This saved review has no separate recommendation. The available action appears below.",
+  "learner35.no_ai_step": "The next step is available without a new AI review.",
+  "learner35.feedback_waiting": "The conversation has been submitted. Feedback appears after the mentor publishes it.",
+  "learner35.feedback_private": "Feedback has not been published. You can explicitly submit this attempt to the mentor."
 }

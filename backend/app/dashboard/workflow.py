@@ -165,6 +165,29 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
             w.put('analysis',key,record)
             return {'analysis':review_service.public_analysis(record,u['role']=='mentor_admin',s,w.context(s))}
 
+    @app.get('/api/learning/sessions/{sid}/analysis-export.{format}')
+    async def export_learner_analysis(sid:str,format:str,language:str='de'):
+        s=get_session(sid)
+        if format not in ('pdf','txt'):reject('Unknown format',404)
+        record=w.get('analysis',sid+':learner')
+        if not record or not record.get('result'):reject('Saved learner analysis not found',404)
+        analysis=review_service.public_analysis(record,False,s,w.context(s))
+        from .learning_exports import saved_analysis_text,review_document_pdf
+        text=saved_analysis_text(s,analysis,language,'learner')
+        content=review_document_pdf(text,language) if format=='pdf' else text
+        return Response(content,media_type='application/pdf' if format=='pdf' else 'text/plain; charset=utf-8',headers={'Content-Disposition':f'attachment; filename="learner-analysis.{format}"','Cache-Control':'private, no-store'})
+
+    @app.get('/api/learning/sessions/{sid}/feedback-export.{format}')
+    async def export_published_feedback(sid:str,format:str,language:str='de'):
+        s=get_session(sid)
+        if format not in ('pdf','txt'):reject('Unknown format',404)
+        record=w.published(s,auth)
+        if not record:reject('Published feedback not found',404)
+        from .learning_exports import published_feedback_text,review_document_pdf
+        text=published_feedback_text(s,record,language)
+        content=review_document_pdf(text,language) if format=='pdf' else text
+        return Response(content,media_type='application/pdf' if format=='pdf' else 'text/plain; charset=utf-8',headers={'Content-Disposition':f'attachment; filename="mentor-feedback.{format}"','Cache-Control':'private, no-store'})
+
     @app.get('/api/mentor/learning/reviews/{sid}/analysis-export.{format}',dependencies=mentor)
     async def export_mentor_analysis(sid:str,format:str,language:str='de'):
         s=get_session(sid)

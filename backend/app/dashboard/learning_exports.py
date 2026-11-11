@@ -72,19 +72,19 @@ def report_text(s,language='de'):
         for fact in sc['facts']:lines += [fact['label'],fact['value']]
     return '\n'.join(lines)
 
-def mentor_analysis_text(session,analysis,language='de'):
-    """Read-only private export; never substitute learner analysis or today's sources."""
+def saved_analysis_text(session,analysis,language='de',audience='mentor'):
+    """Format the explicitly selected saved audience; never generate or change sources."""
     import json
     from pathlib import Path
     language=lang(language)
     labels=json.loads((Path(__file__).resolve().parents[3]/'frontend/locales'/f'{language}.json').read_text())
     t=lambda key:labels.get(key,key)
     r=analysis['result']
-    lines=[t('mentor32.ai'),t('mentor32.private_ai'),session['scenario_snapshot']['title'],analysis.get('completed_at','')]
+    lines=[t('review22.preliminary') if audience=='learner' else t('mentor32.ai'),t('review22.notice') if audience=='learner' else t('mentor32.private_ai'),session['scenario_snapshot']['title'],analysis.get('completed_at','')]
     if analysis.get('attempt_status')=='error':lines.append(t('review22.previous_analysis'))
     sections=r.get('sections') or [{'title':k,'text':'\n'.join(r[k]) if isinstance(r[k],list) else r[k]} for k in ('summary','actual_outcome','strengths','gaps','next_attempt') if k in r]
     for section in sections:
-        lines += ['',t('mentor32.summary') if section['title']=='summary' else labels.get('review22.'+section['title'],section['title']),section['text']]
+        lines += ['',t('mentor32.summary') if section['title']=='summary' else labels.get('review22.'+section['title'],section['title']),section['text'] or (t('review25.no_gaps') if section['title']=='gaps' else t('review25.no_required_changes') if section['title']=='next_attempt' else '')]
         for index in section.get('messages',[]):
             if isinstance(index,int) and 0<=index<len(session['messages']):lines.append(f"[{index+1}] "+session['messages'][index]['text'])
     def evidence(items):return [item.get('quote','') for item in items]
@@ -95,6 +95,24 @@ def mentor_analysis_text(session,analysis,language='de'):
         lines += [item.get('quote') or t('review23.source_missing') for item in claim.get('material_evidence',[])]
     advice=r.get('recommendation')
     if advice:lines += ['',t('review23.title'),t('review23.'+advice['action']),advice['explanation'],*advice.get('priorities',[]),*evidence(advice.get('evidence',[])),t('review23.advisory')]
+    return '\n'.join(str(line) for line in lines)
+
+def mentor_analysis_text(session,analysis,language='de'):
+    return saved_analysis_text(session,analysis,language,'mentor')
+
+def published_feedback_text(session,record,language='de'):
+    """Only a published human decision. No draft or private analysis is consulted."""
+    import json
+    from pathlib import Path
+    labels=json.loads((Path(__file__).resolve().parents[3]/'frontend/locales'/f'{lang(language)}.json').read_text())
+    t=lambda key:labels.get(key,key)
+    a=record.get('assessment') or {}
+    lines=[t('review22.mentor_feedback'),session['scenario_snapshot']['title'],record.get('mentor_name',''),record.get('published_at',''),'',t('review22.mentor_stages'),t('mentor32.goal_outcome')+': '+t('learning.'+record.get('goal','not_reviewed'))]
+    for key in ('needs','capabilities','proposal'):
+        lines.append(t('review22.'+key)+': '+t('review.rating.'+a.get('stages',{}).get(key,'not_reviewed')))
+    lines += [t('review.commercial')+': '+t('review.outcome.'+a['commercial_outcome'] if a.get('commercial_outcome') else 'review.unset'),t('review.company_fit')+': '+t('review.fit.'+a.get('company_fit','not_checked'))]
+    lines += ['',t('review22.mentor_feedback'),record.get('note','')]
+    if record.get('observations'):lines += ['',t('learning.observations'),record['observations']]
     return '\n'.join(str(line) for line in lines)
 
 def pdf_lines(title, lines, headings=()):
@@ -110,6 +128,14 @@ def pdf_lines(title, lines, headings=()):
     def footer(c,d):
         c.setFont('KlareRegular',8);c.drawString(48,28,'Klare KI');c.drawRightString(547,28,str(d.page))
     doc.build(story,onFirstPage=footer,onLaterPages=footer);return buf.getvalue()
+def review_document_pdf(text,language='de'):
+    import json
+    from pathlib import Path
+    labels=json.loads((Path(__file__).resolve().parents[3]/'frontend/locales'/f'{lang(language)}.json').read_text())
+    keys=['mentor32.summary','review22.actual_outcome','review22.strengths','review22.gaps','review22.next_attempt','review22.needs','review22.capabilities','review22.proposal','review22.evidence_found','review22.no_clear_evidence','review22.insufficient_evidence','review22.mentor_stages','review22.mentor_feedback','review23.conditions','review23.title','learning.observations']
+    lines=text.splitlines()
+    return pdf_lines(lines[0],lines[1:],[labels[key] for key in keys])
+
 def report_pdf(s,language='de'):
     language=lang(language);lines=report_text(s,language).splitlines()
     headings=[LABELS[language][i] for i in [8,9,13]]+EXTRA[language][:3]+[f['label'] for f in s['scenario_snapshot']['facts']]+[x['title'] for x in s['company_snapshot']['services']]

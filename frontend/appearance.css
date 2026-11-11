@@ -290,3 +290,20 @@ html[data-theme="dark"] .mentor32-status.reviewed { color:#cbeed6; background:#2
 .mentor33-published dd { margin:0; overflow-wrap:anywhere; }
 .mentor33-published .review-note { white-space:pre-wrap; overflow-wrap:anywhere; }
 @media(max-width:600px){.mentor33-published dl{grid-template-columns:1fr;gap:4px}.mentor33-published dd{margin-bottom:8px}}
+
+/* A35: finished learner sessions use the same compact document pattern. */
+.learner35-page { max-width:1060px; margin-inline:auto; }
+.learner35-page [hidden] { display:none !important; }
+.learner35-heading { margin-block:12px 16px; }
+.learner35-heading h1 { font-size:clamp(1.2rem,2.5vw,1.8rem); line-height:1.25; overflow-wrap:anywhere; }
+.learner35-page h2 { margin-bottom:12px; }
+.learner35-page [role="tabpanel"] > .card + .card { margin-top:16px; }
+.learner35-preview { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; white-space:pre-wrap; overflow-wrap:anywhere; margin-block:14px; }
+.learner35-more { margin-top:18px; font-size:.9rem; }
+.learner35-secondary { display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; margin-top:16px; }
+.learner35-page .actions { flex-wrap:wrap; }
+.learner35-note-entry { padding-block:18px; }
+.learner35-viewer .mentor33-published { max-width:100%; box-shadow:none; }
+.learner35-viewer [data-feedback-text] { font-size:1.05rem; }
+@media(max-width:650px){.learner35-page .btn{max-width:100%;white-space:normal}.learner35-page .mentor32-tabs [role="tab"]{overflow-wrap:anywhere}}
+.learner35-viewer [data-feedback-text] { background:var(--soft); border-color:var(--line); color:var(--ink); }
