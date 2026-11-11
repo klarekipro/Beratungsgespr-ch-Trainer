@@ -468,3 +468,16 @@ Textarea и прежние voice controls теперь в одной рамке:
 Ручная проверка: сохранить имеющийся несохранённый отзыв перед обновлением страницы; открыть проверку → Решение наставника. Микрофон и язык должны находиться внутри рамки поля. Проверить ввод/смену вкладки/возврат, light/dark и нужный язык диктовки. Реальный явный stop/transcribe может быть платным; без него достаточно визуальной приёмки. Safari и узкое мобильное окно отдельно не проверены.
 
 Активация A37: код `fe28682f90b1833b6ceebd70217cd63770a3f325`, backend0.14.1, PID32743, frontend revision `d6a451279d31296e`. Backup API `runtime/a37/before-install.sqlite3`; все строки7 защищённых таблиц совпали после штатного запуска,22 frontend-файла побайтно совпали с диском. Квитанция runtime/a37/final-verification.json вне Git.8101 остановлен. Изменены frontend/learning.js, frontend/appearance.css, frontend/locales/{de,en,ru}.json, PROJECT_STATE.md, CONTINUE_FROM_HERE_RU.md. Последующая фиксация только документационная, новый restart не нужен.
+
+
+## A38 — пропорции поля отзыва, 11.11.2026
+
+Владелец указал на чрезмерно крупное пустое поле A37. До работы проверены основная папка/AGENTS/PROJECT_STATE/A17/current handoff, ветка codex/a37-mentor-feedback-composer, HEADf714105b1964044d997cdeba930a1bb6188caec9, tracked-файлы чистые,8100 PID32743. Новая ветка `codex/a38-mentor-composer-proportions`.
+
+Пустое поле теперь rows2/68px, автоматически растёт по содержимому до240px, затем имеет внутреннюю прокрутку. Пересчёт после ввода/диктовки/восстановления страницы/возврата на вкладку/resize. Убран ручной resize-handle посреди составного поля. Внутренние микрофон/язык36px без постоянных отдельных рамок; есть hover/focus, короткая подсказка и локализованный placeholder DE/EN/RU. Существующие callback, черновики, permissions, backend и публикация не менялись.
+
+Проверки: три существующих JS-checks (mentor voice, mentor navigation, learner compact), syntax/diff — OK. Voice-check дополнен проверкой роста/ограничения/сжатия; два остальных DOM-double получили window.addEventListener. Chrome synthetic8101: пустое поле,14 строк с ограничением высоты, возврат к короткому тексту, light/dark; снимки runtime/a38/{empty-field,compact-light,compact-dark}.png вне Git. Реальные голос/provider/Safari/узкое окно не проверены, платных вызовов0. Рабочая SQLite в разработке не менялась. Backend0.14.1 прежний; frontend A38 активируется штатно после backup/сверки.
+
+Изменённые файлы: frontend/learning.js, frontend/appearance.css, frontend/locales/{de,en,ru}.json, tests/{mentor_feedback_voice_checks,mentor_review_ux_checks,learner_review_compact_checks}.js, PROJECT_STATE.md, CONTINUE_FROM_HERE_RU.md. Main/merge/push не затронуты.
+
+Ручная приёмка: сохранить текущий несохранённый отзыв перед обновлением; открыть Решение наставника. Пустое/короткое поле компактно, микрофон/язык внутри снизу, длинный текст растёт до ограниченной высоты и доступен через внутреннюю прокрутку. Удаление текста возвращает компактный размер. Проверить возврат между вкладками без потери текста и обе темы. Реальная диктовка только по желанию владельца, с прежней возможной оплатой.

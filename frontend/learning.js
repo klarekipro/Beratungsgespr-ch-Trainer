@@ -58,6 +58,7 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
   const view=learnerView(state.session);view.scroll[view.tab]=window.scrollY;view.tab=tab;
   page.querySelectorAll('[role="tab"]').forEach(b=>{const selected=b.dataset.learnerTab===tab;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;if(selected&&focus)b.focus({preventScroll:true});});
   page.querySelectorAll('[role="tabpanel"]').forEach(panel=>{panel.hidden=panel.dataset.learnerPanel!==tab;});
+  if(tab==='decision')fitMentorFeedback();
   window.scrollTo({top:view.scroll[tab]||0,behavior:'instant'});
  }
  function learnerNextStep(s){
@@ -133,6 +134,7 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
    if(selected&&focus)button.focus({preventScroll:true});
   });
   page.querySelectorAll('[role="tabpanel"]').forEach(panel=>{panel.hidden=panel.dataset.mentorPanel!==tab;});
+  if(tab==='decision')fitMentorFeedback();
   window.scrollTo({top:view.scroll[tab]||0,behavior:'instant'});
  }
  function mentorStageDocument(s,audience='mentor'){
@@ -182,7 +184,7 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
    ${s.review_status==='not_submitted'?`<p>${t('history_readonly')}</p>`:''}
    <form id="review-form"><fieldset ${disabled?'disabled':''}><label for="learning-goal">${M('goal_outcome')}</label><select id="learning-goal">${options(['not_reviewed','achieved','partly','not_achieved'],d.goal||'not_reviewed')}</select>
    ${s.mode==='simple_actor'?reviewControls(s,report):''}
-   <label for="review-note">${M('feedback')}</label><div class="mentor37-field"><textarea id="review-note" class="review-textarea" rows="4" maxlength="6000" required>${E(state.noteDrafts[s.id]??d.note??s.review_note??'')}</textarea>
+   <label for="review-note">${M('feedback')}</label><div class="mentor37-field"><textarea id="review-note" class="review-textarea" rows="2" maxlength="6000" placeholder="${E(P('feedback_placeholder'))}" aria-describedby="mentor-voice-hint" required>${E(state.noteDrafts[s.id]??d.note??s.review_note??'')}</textarea>
    ${mentorVoiceControls(s)}</div>
    <p id="mentor-voice-hint" class="caption">${E(P('dictation_hint'))}</p><p id="mentor-voice-status" role="status" aria-live="polite"></p>
    <div class="actions gap-top"><button type="button" class="btn" data-action="learning-save-draft">${state.draftSaving?M('saving'):M('save_draft')}</button><button type="submit" class="btn primary">${state.saving?M('saving'):M('publish')}</button></div>
@@ -225,10 +227,18 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
   const language=document.getElementById('mentor-feedback-language');if(language)language.disabled=working||state.saving||state.draftSaving;
   form.querySelectorAll('[data-action="learning-save-draft"],[type="submit"]').forEach(b=>{b.disabled=!!(working||state.saving||state.draftSaving);});
  }
+ function fitMentorFeedback(){
+  const field=document.getElementById('review-note');
+  if(!field?.style||!field.getClientRects().length)return;
+  const scroll=field.scrollTop;field.style.height='auto';
+  field.style.height=Math.max(68,Math.min(240,field.scrollHeight))+'px';
+  field.scrollTop=scroll;
+ }
+ window.addEventListener('resize',fitMentorFeedback);
  function mentorAfterRender(){
   mentorVoiceUnsubscribe?.();mentorVoiceUnsubscribe=null;
   if(state.route.role!=='mentor'||state.route.view!=='review'||!document.getElementById('review-form')){cancelMentorVoice();return;}
-  mentorVoiceUnsubscribe=window.TrainerVoice.subscribe(syncMentorVoice);
+  fitMentorFeedback();mentorVoiceUnsubscribe=window.TrainerVoice.subscribe(syncMentorVoice);
  }
  async function startMentorVoice(){
   const s=state.session,field=document.getElementById('review-note');
@@ -361,6 +371,7 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
   if(['learning-md-file','learning-csv-file'].includes(e.target.id)&&e.target.files[0]){const text=await e.target.files[0].text();document.getElementById(e.target.id==='learning-md-file'?'learning-markdown':'learning-csv').value=text;}
  });
  document.addEventListener('input',e=>{
+  if(e.target.id==='review-note')fitMentorFeedback();
   if(e.target.id==='learning-product-search'){const q=e.target.value.toLowerCase();document.querySelectorAll('.learning-search-item').forEach(x=>x.hidden=!x.textContent.toLowerCase().includes(q));}
   if((['learning-observations','learning-goal','review-note'].includes(e.target.id)||e.target.id.startsWith('review-'))&&state.session){state.learningDrafts??={};state.learningDrafts[state.session.id]=draftValue();state.draftSavedFor=null;const status=document.getElementById('learning-draft-status');if(status)status.textContent=M('draft_changed');}
  });

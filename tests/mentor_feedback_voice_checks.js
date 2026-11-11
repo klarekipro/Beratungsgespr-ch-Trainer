@@ -14,7 +14,7 @@ class Recorder {
 }
 function media(){const track={stops:0,stop(){this.stops++;}};const s={getTracks:()=>[track],track};streams.push(s);return s;}
 const button=()=>({hidden:false,disabled:false}),buttons=Object.fromEntries(['start','stop','cancel'].map(k=>['learning-voice-'+k,button()])),save=button(),publish=button();
-const field={id:'review-note',value:'Typed feedback.',focus(){},dispatchEvent(e){e.target=this;for(const fn of docEvents[e.type]||[])fn(e);}};
+const field={id:'review-note',style:{},scrollHeight:68,scrollTop:0,getClientRects:()=>[{}],value:'Typed feedback.',focus(){},dispatchEvent(e){e.target=this;for(const fn of docEvents[e.type]||[])fn(e);}};
 const status={textContent:'',setAttribute(k,v){this[k]=v;}},timer={hidden:true,textContent:''},language={value:'en'};
 const form={querySelector:selector=>buttons[selector.match(/data-action="([^"]+)/)?.[1]],querySelectorAll:()=>[save,publish]};
 const nodes={'review-note':field,'review-form':form,'mentor-feedback-language':language,'mentor-voice-status':status,'mentor-voice-timer':timer};
@@ -28,7 +28,7 @@ vm.createContext(context);vm.runInContext(fs.readFileSync('frontend/voice.js','u
 const learning=context.window.createLearning({state,esc:String,api:()=>{throw Error('No automatic persistence');},render(){},toast(){}}),voice=context.window.TrainerVoice;
 const flush=async()=>{for(let i=0;i<40;i++)await Promise.resolve();};
 (async()=>{
- learning.mentorAfterRender();assert.equal(micRequests,0);assert.equal(requests.length,0);
+ learning.mentorAfterRender();assert.equal(field.style.height,'68px');field.scrollHeight=500;for(const fn of windowEvents.resize||[])fn();assert.equal(field.style.height,'240px');field.scrollHeight=68;for(const fn of windowEvents.resize||[])fn();assert.equal(field.style.height,'68px');assert.equal(micRequests,0);assert.equal(requests.length,0);
  await learning.startMentorVoice();assert.equal(voice.phase(),'recording');assert.equal(buttons['learning-voice-stop'].hidden,false);assert.equal(publish.disabled,true);
  clock=5000;for(const {fn} of intervals.values())fn();assert.equal(timer.textContent,'00:05 / 01:00');
  field.value='Typed while recording.';voice.stop();await flush();assert.equal(field.value,'Typed while recording.\nDictated continuation.');assert.ok(streams.at(-1).track.stops>0);assert.equal(voice.phase(),'ready');assert.equal(publish.disabled,false);assert.equal(state.learningDrafts.qa.note,field.value);

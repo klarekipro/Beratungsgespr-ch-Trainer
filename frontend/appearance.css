@@ -316,8 +316,12 @@ html[data-theme="dark"] .mentor32-status.reviewed { color:#cbeed6; background:#2
 /* One input frame: editable feedback above its microphone and language tools. */
 .mentor37-field {border:1px solid var(--line);border-radius:12px;background:var(--surface,#fff);overflow:visible}
 .mentor37-field:focus-within {outline:2px solid var(--green);outline-offset:2px}
-.mentor37-field #review-note {display:block;width:100%;border:0;border-radius:12px 12px 0 0;background:transparent;box-shadow:none;outline:none;margin:0;min-height:100px;resize:vertical}
-.mentor37-field .mentor33-voice {margin:0;padding:8px 12px 12px;gap:8px}
+.mentor37-field #review-note {display:block;width:100%;border:0;border-radius:12px 12px 0 0;background:transparent;box-shadow:none;outline:none;margin:0;min-height:68px;max-height:240px;resize:none}
+.mentor37-field .mentor33-voice {margin:0;padding:6px 10px 8px;gap:6px;border-radius:0 0 12px 12px}
+.mentor37-field .mentor33-voice :is(.voice-mic,.voice-stop,.voice-cancel) {width:36px;height:36px;padding:8px;min-height:36px;background:transparent;border-color:transparent}
+.mentor37-field .mentor33-voice .employee-menu-trigger {min-height:36px;padding:6px 10px;border-color:transparent;background:transparent;font-size:.875rem}
+.mentor37-field .mentor33-voice :is(.btn,.employee-menu-trigger):hover {background:var(--soft);border-color:var(--line)}
+.mentor37-field .voice-timer {font-size:.8rem}
 #mentor-voice-hint {font-size:.8rem;margin:8px 0 0}
 #mentor-voice-status {font-size:.85rem;margin:6px 0 0}
 #mentor-voice-status:empty {display:none}
