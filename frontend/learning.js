@@ -95,10 +95,12 @@ window.createLearning = ({state,api,esc,render,toast}) => {
   return (items||[]).map(e=>{const i=ids.indexOf(e.message_id);return `<blockquote>${E(e.quote||'')}${i<0?'':`<button type="button" class="text-link" data-action="learning-message" data-index="${i}">${R('view')} · ${i+1}</button>`}</blockquote>`;}).join('');
  }
  const N=k=>window.TrainerI18n.t('mentorNav.'+k);
+ const P=k=>window.TrainerI18n.t('mentor33.'+k),V=k=>window.TrainerI18n.t('dictation18.'+k);
+ let mentorVoiceOwner=null,mentorVoiceUnsubscribe=null;
  const mentorViews=new Map();
  let mentorMessageHTML=null;
  function mentorView(s){
-  if(!mentorViews.has(s.id))mentorViews.set(s.id,{tab:'ai',scroll:{}});
+  if(!mentorViews.has(s.id))mentorViews.set(s.id,{tab:s.published_review||s.review_status==='reviewed'?'decision':'ai',scroll:{}});
   return mentorViews.get(s.id);
  }
  function rememberMentorDraft(){
@@ -109,6 +111,7 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  function selectMentorTab(tab,focus=false){
   if(!['ai','evidence','decision'].includes(tab))return;
   const page=document.querySelector('.mentor32-page');if(!page)return;
+  if(tab!=='decision')cancelMentorVoice();
   const view=mentorView(state.session);view.scroll[view.tab]=window.scrollY;
   view.tab=tab;
   page.querySelectorAll('[role="tab"]').forEach(button=>{
@@ -137,42 +140,87 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  function mentorAI(s){
   const a=s.mentor_analysis||{status:'not_run'},r=a.result,running=busy||a.status==='running',initial=a.status==='not_run';
   const summary=r?.summary||r?.sections?.find(x=>x.title==='summary')?.text||'';
-  return `<section id="learning-analysis" class="card card-pad" aria-busy="${!!running}"><h2>${M('ai')}</h2><p class="caption">${M('private_ai')}</p>
+  return `<section id="learning-analysis" class="card card-pad" aria-busy="${!!running}"><h2>${M('ai')}</h2>
    <p role="status" aria-live="polite">${running?M('running'):R(r?(a.attempt_status==='error'?'previous_analysis':'ready'):a.status==='error'?'failed':'not_started')}</p>
    ${a.status==='error'||a.attempt_status==='error'?`<p role="alert">${R(r?'regeneration_error':'error')}</p>`:''}
    ${summary?`<p class="mentor32-summary">${E(summary)}</p>`:''}
    ${r?`<button type="button" class="btn" data-action="learning-mentor-document" data-document="ai">${N('open_ai')}</button>`:
-    initial?`<p class="caption">${M('manual_ai')}</p><button type="button" class="btn" data-action="learning-analysis" ${running?'disabled':''}>${t('analyze')}</button>`:`<p class="caption">${N('retry_advanced')}</p>`}</section>`;
+    initial?`<p class="caption">${M('manual_ai')}</p><button type="button" class="btn" data-action="learning-analysis" ${running?'disabled':''}>${t('analyze')}</button>`:`<p class="caption">${running?'':P('retry_here')}</p>`}
+   ${a.status!=='not_run'?`<details class="mentor33-reanalysis"><summary>${P('reanalysis')}</summary><p>${M('paid_warning')}</p><button type="button" class="btn small-btn" data-action="learning-analysis" ${running?'disabled':''}>${t('rerun')}</button></details>`:''}</section>`;
  }
  function mentorReport(s,{reviewControls,messageHTML}){
   mentorMessageHTML=messageHTML;
   const ctx=s.learning_context||{},r=s.published_review,d=state.learningDrafts?.[s.id]||s.decision_draft||r||{},report=s.report||{},view=mentorView(s);
   const disabled=s.review_status==='not_submitted'||state.saving||state.draftSaving;
-  const reviewed=!!r||s.review_status==='reviewed',savedObservations=d.observations??r?.observations??'';
+  const reviewed=!!r||s.review_status==='reviewed';
   const tab=(key,title)=>`<button type="button" role="tab" id="mentor-tab-${key}" aria-controls="mentor-panel-${key}" aria-selected="${view.tab===key}" tabindex="${view.tab===key?0:-1}" data-mentor-tab="${key}">${title}</button>`;
   const panel=(key,content)=>`<section role="tabpanel" id="mentor-panel-${key}" aria-labelledby="mentor-tab-${key}" data-mentor-panel="${key}" ${view.tab===key?'':'hidden'}>${content}</section>`;
   const evidence=`<section class="card card-pad"><h2>${M('evidence')}</h2><div class="mentor32-documents">
    <button type="button" class="btn" data-action="learning-mentor-document" data-document="transcript">${N('open_transcript')} · ${s.messages.length}</button>
    <button type="button" class="btn" data-action="learning-mentor-document" data-document="stages">${N('open_stages')}</button>
-   <button type="button" class="text-link" data-action="learning-mentor-document" data-document="snapshot">${R('saved_reference')}</button></div></section>
+   <button type="button" class="btn" data-action="learning-mentor-document" data-document="snapshot">${P('open_conditions')}</button></div></section>
    <section class="card card-pad mentor32-history"><h3>${t('employee_history')} · ${E(s.employee_name)}</h3><p class="caption">${M('attempts_notice')}</p><ul>${history.filter(x=>x.id!==s.id).map(x=>`<li><a href="#mentor/review/${E(x.id)}">${E(x.title)} · ${E(x.created_at.slice(0,16))}</a><span>${N(x.review_status==='reviewed'?'reviewed':'awaiting')}</span></li>`).join('')||`<li>${t('none')}</li>`}</ul></section>`;
-  const decision=`<section id="mentor32-decision" class="card card-pad"><h2>${M('decision')}</h2><p class="caption">${M('visibility')}</p>
+  const decision=reviewed?publishedMentorResult(s):`<section id="mentor32-decision" class="card card-pad"><h2>${M('decision')}</h2>
    ${s.review_status==='not_submitted'?`<p>${t('history_readonly')}</p>`:''}
    <form id="review-form"><fieldset ${disabled?'disabled':''}><label for="learning-goal">${M('goal_outcome')}</label><select id="learning-goal">${options(['not_reviewed','achieved','partly','not_achieved'],d.goal||'not_reviewed')}</select>
    ${s.mode==='simple_actor'?reviewControls(s,report):''}
    <label for="review-note">${M('feedback')}</label><textarea id="review-note" class="review-textarea" rows="4" maxlength="6000" required>${E(state.noteDrafts[s.id]??d.note??s.review_note??'')}</textarea>
+   ${mentorVoiceControls(s)}
    <div class="actions gap-top"><button type="button" class="btn" data-action="learning-save-draft">${state.draftSaving?M('saving'):M('save_draft')}</button><button type="submit" class="btn primary">${state.saving?M('saving'):M('publish')}</button></div>
    <p id="learning-draft-status" role="status" aria-live="polite">${state.draftSavedFor===s.id||d.saved_at&&(!r||d.saved_at>r.published_at)?M('draft_saved'):''}</p></fieldset></form></section>
-   ${r?`<details id="learning-published-review" class="card card-pad"><summary>${M('published')}</summary><p>${E(r.mentor_name)} · ${E(r.published_at?.slice(0,16))}</p><p>${t('goal')}: ${t(r.goal||'not_reviewed')}</p>${r.observations?`<p class="review-note">${E(r.observations)}</p>`:''}<div class="review-note">${E(r.note)}</div></details>`:''}`;
+   `;
   return `<div class="mentor32-page"><a class="back-link" href="#mentor/reviews">← ${window.TrainerI18n.t('dashboard.text_408')}</a>
    <header class="card card-pad mentor32-heading"><p class="eyebrow">${E(s.employee_name)} · ${E(s.customer_name)}</p><h1>${E(s.title)}</h1><p class="mentor32-objective"><strong>${t('goal')}:</strong> ${E(localizedGoal(ctx.guidance?.goal)||R('objective_missing'))}</p><p class="caption">${R('training_language')}: ${E(String(s.training_language||'').toUpperCase())} · ${E(s.created_at?.slice(0,16).replace('T',' '))}</p><span class="mentor32-status ${reviewed?'reviewed':'awaiting'}"><span aria-hidden="true">${reviewed?'✓':'◷'}</span> ${N(reviewed?'reviewed':'awaiting')}</span>${ctx.source==='legacy_fallback_not_original'?`<p class="caption">${t('legacy')}</p>`:''}</header>
    <div class="mentor32-tabs" role="tablist" aria-label="${M('workflow')}">${tab('ai',M('ai'))}${tab('evidence',N('evidence_tab'))}${tab('decision',M('decision'))}</div>
    ${panel('ai',mentorAI(s))}${panel('evidence',evidence)}${panel('decision',decision)}
-   <div class="mentor32-secondary"><details class="card card-pad mentor32-advanced"><summary>${N('advanced')}</summary><p class="caption">${window.TrainerI18n.t('review.instructions')}</p>
-    ${s.mentor_analysis?.status&&s.mentor_analysis.status!=='not_run'?`<h3>${M('repeat')}</h3><p>${M('paid_warning')}</p><button type="button" class="btn small-btn" data-action="learning-analysis" ${busy||s.mentor_analysis.status==='running'?'disabled':''}>${t('rerun')}</button>`:''}
-    ${savedObservations?`<h3>${N('saved_observations')}</h3><p class="review-note">${E(savedObservations)}</p>`:''}
-    <details><summary>${M('technical')}</summary><pre class="studio-preview">${E(JSON.stringify({id:s.id,mode:s.mode,analysis:s.mentor_analysis,limitations:report.limitations,facts:report.facts,findings:report.findings},null,2))}</pre><button type="button" class="btn small-btn" data-action="diagnostics">${window.TrainerI18n.t('dashboard.text_455')}</button><pre id="diagnostics-result" class="studio-preview"></pre></details></details>
-   <details class="card card-pad mentor32-certificates"><summary>${t('issue_certificate')}</summary><p>${M('certificate_notice')}</p><button type="button" class="btn" data-action="learning-certificate">${t('issue_certificate')}</button>${certificateList(s.employee_id)}</details></div></div>`;
+   <div class="mentor33-secondary"><button type="button" class="btn small-btn" data-action="learning-certificate">${P('certificates')}</button></div></div>`;
+ }
+ function publishedMentorResult(s){
+  const r=s.published_review||{},when=r.published_at||s.reviewed_at||'',date=new Date(when),timestamp=Number.isNaN(date.getTime())?when:date.toLocaleString(locale()),a=r.assessment||s.report?.assessment||{},rating=k=>window.TrainerI18n.t('review.rating.'+(a.stages?.[k]||'not_reviewed'));
+  return `<section id="learning-published-review" class="card card-pad mentor33-published"><h2>${P('published')}</h2><p class="caption">${E(r.mentor_name||window.TrainerI18n.t('dashboard.text_033'))} · <time datetime="${E(when)}">${E(timestamp)}</time></p>
+   <dl><dt>${M('goal_outcome')}</dt><dd>${t(r.goal||'not_reviewed')}</dd>${['needs','capabilities','proposal'].map(k=>`<dt>${R(k)}</dt><dd>${rating(k)}</dd>`).join('')}
+   <dt>${window.TrainerI18n.t('review.commercial')}</dt><dd>${window.TrainerI18n.t(a.commercial_outcome?'review.outcome.'+a.commercial_outcome:'review.unset')}</dd>
+   <dt>${window.TrainerI18n.t('review.company_fit')}</dt><dd>${window.TrainerI18n.t('review.fit.'+(a.company_fit||'not_checked'))}</dd></dl>
+   <h3>${M('feedback')}</h3><p class="review-note">${E(r.note||s.review_note||'')}</p></section>`;
+ }
+ function mentorVoiceControls(s){
+  const language=mentorView(s).voiceLanguage||locale();
+  return `<div class="mentor33-voice"><button type="button" class="btn small-btn" data-action="learning-voice-start">${V('start')}</button><button type="button" class="btn small-btn" data-action="learning-voice-stop" hidden>${V('stop')}</button><button type="button" class="btn small-btn" data-action="learning-voice-cancel" hidden>${V('cancel')}</button>
+   <label for="mentor-feedback-language">${P('dictation_language')}</label><select id="mentor-feedback-language">${['de','en','ru'].map(l=>`<option value="${l}" ${language===l?'selected':''}>${l.toUpperCase()}</option>`).join('')}</select>
+   <span id="mentor-voice-timer" class="voice-timer" role="timer" aria-live="off" hidden></span><span id="mentor-voice-status" role="status" aria-live="polite"></span></div>`;
+ }
+ function mentorVoiceBusy(){return mentorVoiceOwner!==null&&!!window.TrainerVoice?.busy();}
+ function cancelMentorVoice(){if(mentorVoiceOwner===null)return;mentorVoiceOwner=null;window.TrainerVoice.cancel();}
+ function syncMentorVoice(v){
+  const form=document.getElementById('review-form');if(!form)return;
+  const active=mentorVoiceOwner===state.session?.id,phase=active?v.phase:'idle',working=['asking','recording','transcribing'].includes(phase);
+  for(const action of ['start','stop','cancel']){
+   const button=form.querySelector(`[data-action="learning-voice-${action}"]`);if(!button)continue;
+   button.hidden=action==='start'?working:action==='stop'?phase!=='recording':!working;
+   button.disabled=action==='start'&&(state.saving||state.draftSaving);
+  }
+  const status=document.getElementById('mentor-voice-status');if(status){status.textContent=active?v.status:'';status.setAttribute('role',phase==='error'?'alert':'status');}
+  const timer=document.getElementById('mentor-voice-timer');if(timer){timer.hidden=phase!=='recording';timer.textContent=`${String(Math.floor(v.elapsed/60)).padStart(2,'0')}:${String(v.elapsed%60).padStart(2,'0')} / 01:00`;}
+  const language=document.getElementById('mentor-feedback-language');if(language)language.disabled=working||state.saving||state.draftSaving;
+  form.querySelectorAll('[data-action="learning-save-draft"],[type="submit"]').forEach(b=>{b.disabled=!!(working||state.saving||state.draftSaving);});
+ }
+ function mentorAfterRender(){
+  mentorVoiceUnsubscribe?.();mentorVoiceUnsubscribe=null;
+  if(state.route.role!=='mentor'||state.route.view!=='review'||!document.getElementById('review-form')){cancelMentorVoice();return;}
+  mentorVoiceUnsubscribe=window.TrainerVoice.subscribe(syncMentorVoice);
+ }
+ async function startMentorVoice(){
+  const s=state.session,field=document.getElementById('review-note');
+  if(!field||s.published_review||s.review_status==='reviewed'||state.saving||state.draftSaving)return;
+  if(window.TrainerVoice.busy())return;
+  mentorVoiceOwner=s.id;
+  await window.TrainerVoice.start({language:document.getElementById('mentor-feedback-language').value,status:()=>{},error:text=>toast(text,true),text:text=>{
+   if(mentorVoiceOwner!==s.id||state.session?.id!==s.id||state.session.published_review||state.session.review_status==='reviewed')return;
+   const field=document.getElementById('review-note');if(!field)return;
+   const combined=(field.value?field.value+'\n':'')+text;
+   if(combined.length>6000){toast(P('voice_too_long'),true);return;}
+   field.value=combined;field.dispatchEvent(new Event('input',{bubbles:true}));field.focus({preventScroll:true});
+  }});
  }
  function documentExportURL(s,kind,format){
   const root=kind==='ai'?'/api/mentor/learning/reviews/'+encodeURIComponent(s.id)+'/analysis-export.':'/api/sessions/'+encodeURIComponent(s.id)+'/export.';
@@ -187,7 +235,7 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  }
  function openMentorDocument(s,kind){
   if(!['ai','transcript','stages','snapshot'].includes(kind)||document.querySelector('.mentor32-viewer[open]'))return;
-  rememberMentorDraft();
+  cancelMentorVoice();rememberMentorDraft();
   const oldFocus=document.activeElement,scroll=window.scrollY,dialog=document.createElement('dialog'),positions={};
   const previousOverflow=document.body.style.overflow;let current=kind,closed=false;
   const titles={ai:N('open_ai'),transcript:R('view_conversation'),stages:R('stages'),snapshot:R('saved_reference')};
@@ -215,7 +263,7 @@ window.createLearning = ({state,api,esc,render,toast}) => {
   });
   const leave=()=>dialog.close();
   function done(){
-   if(closed)return;closed=true;window.removeEventListener('hashchange',leave);dialog.remove();document.body.style.overflow=previousOverflow;
+   if(closed)return;closed=true;cancelMentorVoice();window.removeEventListener('hashchange',leave);dialog.remove();document.body.style.overflow=previousOverflow;
    if(state.session?.id===s.id&&state.route.view==='review'){
     window.scrollTo({top:scroll,behavior:'instant'});
     const focus=oldFocus?.isConnected?oldFocus:document.querySelector(`[data-document="${kind}"]`);focus?.focus({preventScroll:true});
@@ -237,9 +285,10 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  }
  async function saveDraft(){const s=state.session,d=draftValue();state.learningDrafts??={};state.learningDrafts[s.id]=d;await api('/api/mentor/learning/reviews/'+s.id+'/draft',{method:'PUT',body:d});return d;}
  function certificateDialog(replacement=null){
-  cert=null;const previous=replacement?results.certificates.find(x=>x.id===replacement):null;const s=state.session,dialog=document.getElementById('confirm-dialog');
+  cancelMentorVoice();cert=null;const previous=replacement?results.certificates.find(x=>x.id===replacement):null;const s=state.session,dialog=document.getElementById('confirm-dialog');
   dialog.innerHTML=`<h2>${t('issue_certificate')}</h2><p>${E(s.employee_name)}</p><form id="learning-certificate-form"><label>${t('print_name')}<input id="learning-cert-name" value="${E(previous?.print_name||s.employee_name)}" maxlength="120" required></label><label>${t('topic')}<input id="learning-cert-topic" value="${E(previous?.topic||'')}" maxlength="240" required></label><fieldset><legend>${t('basis')}</legend>${history.filter(x=>x.status==='finished').map(x=>`<label><input type="checkbox" name="learning-basis" value="${E(x.id)}" ${x.id===s.id?'checked disabled':''}>${E(x.title)} · ${E(x.created_at.slice(0,16))}</label>`).join('')}</fieldset>${field('learning-cert-comment','comment')}<button class="btn" type="submit">${t('preview')}</button></form><div id="learning-cert-preview"></div><button class="btn" id="learning-cert-close">${t('close')}</button>`;
-  dialog.showModal();document.getElementById('learning-cert-close').onclick=()=>dialog.close();
+  if(!dialog.open)dialog.showModal();document.getElementById('learning-cert-close').onclick=()=>dialog.close();
+  dialog.onclick=async e=>{const b=e.target.closest('[data-action]');if(!b||!['learning-revoke','learning-replace'].includes(b.dataset.action))return;try{await handle(b.dataset.action,b);if(b.dataset.action==='learning-revoke')certificateDialog();}catch(error){toast(error.message,true);}};
   document.getElementById('learning-certificate-form').onsubmit=async e=>{e.preventDefault();try{
    const body={session_id:s.id,print_name:document.getElementById('learning-cert-name').value,topic:document.getElementById('learning-cert-topic').value,basis:[...document.querySelectorAll('[name=learning-basis]:checked')].map(x=>x.value),comment:document.getElementById('learning-cert-comment').value,replaces:replacement};
    const r=await api('/api/mentor/learning/certificates/preview',{method:'POST',body});cert=r.certificate;
@@ -250,12 +299,15 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  async function handle(action,target){
   if(!action.startsWith('learning-'))return false;
   const s=state.session;
+  if(action==='learning-voice-start'){await startMentorVoice();return true;}
+  if(action==='learning-voice-stop'){window.TrainerVoice.stop();return true;}
+  if(action==='learning-voice-cancel'){cancelMentorVoice();return true;}
   if(action==='learning-review-viewer'){openReviewViewer(s);return true;}
   if(action==='learning-review-evidence'){openReviewViewer(s,JSON.parse(target.dataset.evidence));return true;}
   if(action==='learning-mentor-document'){openMentorDocument(s,target.dataset.document);return true;}
   if(action==='learning-analysis'){if(busy)return true;if(state.route.role==='mentor'){if(s.mentor_analysis?.status&&s.mentor_analysis.status!=='not_run'&&!window.confirm(M('paid_warning')))return true;state.learningDrafts??={};state.learningDrafts[s.id]=draftValue();}busy=true;render();try{const audience=state.route.role==='mentor'?'mentor':'learner';const a=audience==='mentor'?s.mentor_analysis:s.analysis;const r=await api('/api/learning/sessions/'+s.id+'/analysis',{method:'POST',body:{audience,restart:a?.status!=='not_run'}});if(audience==='mentor')s.mentor_analysis=r.analysis;else s.analysis=r.analysis;}catch(_){toast(R('error'),true);}finally{busy=false;render();}}
   if(action==='learning-message'){document.querySelector('.ui-reader[open]>header button')?.click();const d=document.getElementById('report-transcript');d.open=true;const el=d.querySelector(`[data-message-index="${Number(target.dataset.index)}"]`);el?.scrollIntoView({behavior:'smooth',block:'center'});el?.classList.add('learning-highlight');}
-  if(action==='learning-save-draft'){if(state.saving||state.draftSaving)return true;const pending=saveDraft();state.draftSaving=true;render();try{await pending;state.draftSavedFor=s.id;}finally{state.draftSaving=false;render();}}
+  if(action==='learning-save-draft'){if(mentorVoiceBusy()||s.published_review||s.review_status==='reviewed'||state.saving||state.draftSaving)return true;const pending=saveDraft();state.draftSaving=true;render();try{await pending;state.draftSavedFor=s.id;}finally{state.draftSaving=false;render();}}
   if(action==='learning-certificate')certificateDialog();
   if(action==='learning-replace')certificateDialog(target.dataset.id);
   if(action==='learning-revoke'){await api('/api/mentor/learning/certificates/'+target.dataset.id+'/revoke',{method:'POST'});await load();render();}
@@ -274,6 +326,7 @@ window.createLearning = ({state,api,esc,render,toast}) => {
   selectMentorTab(keys[e.key==='Home'?0:e.key==='End'?2:(i+(e.key==='ArrowRight'?1:2))%3],true);
  });
  document.addEventListener('change',async e=>{
+  if(e.target.id==='mentor-feedback-language'&&state.session)mentorView(state.session).voiceLanguage=e.target.value;
   if(e.target.id==='learning-theme'){
    const control=e.target;control.disabled=true;window.TrainerUI.closePopover(control,true);
    try{await setTheme(control.value);control.value=theme();}finally{control.disabled=false;}
@@ -284,5 +337,5 @@ window.createLearning = ({state,api,esc,render,toast}) => {
   if(e.target.id==='learning-product-search'){const q=e.target.value.toLowerCase();document.querySelectorAll('.learning-search-item').forEach(x=>x.hidden=!x.textContent.toLowerCase().includes(q));}
   if((['learning-observations','learning-goal','review-note'].includes(e.target.id)||e.target.id.startsWith('review-'))&&state.session){state.learningDrafts??={};state.learningDrafts[state.session.id]=draftValue();state.draftSavedFor=null;const status=document.getElementById('learning-draft-status');if(status)status.textContent=M('draft_changed');}
  });
- return {load,mentorReport,localizedGoal,selectMentorTab,documentExportURL,downloadMentorDocument,employeeReport,referencePage:reference.page,referenceData:reference.snapshotData,materialPanel,importer,guidanceEditor,handle,saveDraft,buttons,theme,setTheme,notification,certificates,certificateCount,isNew,markRead};
+ return {load,mentorAfterRender,cancelMentorVoice,mentorVoiceBusy,startMentorVoice,mentorReport,localizedGoal,selectMentorTab,documentExportURL,downloadMentorDocument,employeeReport,referencePage:reference.page,referenceData:reference.snapshotData,materialPanel,importer,guidanceEditor,handle,saveDraft,buttons,theme,setTheme,notification,certificates,certificateCount,isNew,markRead};
 };

@@ -276,3 +276,17 @@ html[data-theme="dark"] .mentor32-status.reviewed { color:#cbeed6; background:#2
  .mentor32-viewer > header h2 { flex-basis:100%; }
  .mentor32-viewer-body { padding:16px; }
 }
+
+/* A33 keeps publication, dictation and the separate certificate entry compact. */
+.mentor33-secondary { display:flex; justify-content:flex-end; margin-top:16px; }
+.mentor33-reanalysis { margin-top:18px; font-size:.9rem; }
+.mentor33-voice { display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; margin-top:10px; }
+.mentor33-voice [hidden] { display:none !important; }
+.mentor33-voice label { margin:0; font-size:.85rem; }
+.mentor33-voice #mentor-feedback-language { width:auto; }
+.mentor33-voice #mentor-voice-status { flex-basis:100%; font-size:.85rem; }
+.mentor33-published dl { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px 18px; margin-block:18px; }
+.mentor33-published dt { color:var(--muted); }
+.mentor33-published dd { margin:0; overflow-wrap:anywhere; }
+.mentor33-published .review-note { white-space:pre-wrap; overflow-wrap:anywhere; }
+@media(max-width:600px){.mentor33-published dl{grid-template-columns:1fr;gap:4px}.mentor33-published dd{margin-bottom:8px}}

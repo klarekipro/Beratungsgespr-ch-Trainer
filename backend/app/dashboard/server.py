@@ -36,7 +36,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.13.8-mentor-navigation"
+VERSION = "0.13.9-mentor-voice-feedback"
 
 
 def now():
@@ -179,7 +179,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
                 return deny("PASSWORD_CHANGE_REQUIRED","Сначала измените временный пароль.",423)
             if unsafe and path.startswith("/api/sessions") and user["role"]!="employee":
                 return deny("EMPLOYEE_REQUIRED","Тренировки создаются в кабинете сотрудника.",403)
-            if path=="/api/transcriptions" and user["role"]!="employee":
+            if path=="/api/transcriptions" and user["role"] not in {"employee","mentor_admin"}:
                 return deny("EMPLOYEE_REQUIRED","Диктовка доступна сотруднику.",403)
         if unsafe:
             origin=request.headers.get("origin","")
@@ -591,6 +591,13 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     async def review(sid: str, value: ReviewInput):
         async with lock(sid):
             session = submitted(sid)
+            # Published feedback is immutable. An identical retry returns the original receipt.
+            if session.get('review_status')=='reviewed' or workflow.published(session,auth):
+                same_assessment=value.assessment is None or value.assessment.model_dump()==session.get('mentor_assessment')
+                legacy_change=any(x is not None for x in (value.needs_confirmed,value.capabilities_confirmed,value.outcome))
+                if value.note==session.get('review_note') and same_assessment and not legacy_change:
+                    return {"session":session_view(session)}
+                fail('REVIEW_ALREADY_PUBLISHED','Published feedback is read-only.',409)
             previous = session["version"]
             if session["mode"] == "simple_actor" and (value.needs_confirmed is not None or value.capabilities_confirmed is not None or value.outcome is not None):
                 needs = value.needs_confirmed is True

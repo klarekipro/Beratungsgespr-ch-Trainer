@@ -1253,5 +1253,13 @@
   "mentorNav.open_stages": "Belege zu den drei Phasen öffnen",
   "mentorNav.advanced": "Erweitert / Administration",
   "mentorNav.saved_observations": "Bereits gespeicherte Beobachtungen (nur lesen)",
-  "mentorNav.retry_advanced": "Ein erneuter Start ist unter „Erweitert / Administration“ verfügbar."
+  "mentorNav.retry_advanced": "Ein erneuter Start ist unter „Erweitert / Administration“ verfügbar.",
+  "mentor33.reanalysis": "KI-Analyse erneut ausführen",
+  "mentor33.retry_here": "Ein erneuter Start ist unten unter den weiteren Aktionen verfügbar.",
+  "mentor33.open_conditions": "Historische Gesprächsbedingungen öffnen",
+  "mentor33.published": "Feedback veröffentlicht",
+  "mentor33.dictation_language": "Diktiersprache",
+  "mentor33.voice_too_long": "Das Diktat wurde nicht eingefügt: Das Feedback würde 6000 Zeichen überschreiten. Der eingegebene Text bleibt erhalten.",
+  "errors.REVIEW_ALREADY_PUBLISHED": "Das Feedback wurde bereits veröffentlicht und ist schreibgeschützt.",
+  "mentor33.certificates": "Zertifikate des Mitarbeiters"
 }

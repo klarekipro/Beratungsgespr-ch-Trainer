@@ -186,8 +186,11 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
         w.put('guidance',sid,value.model_dump());return {'guidance':value.model_dump()}
     @app.put('/api/mentor/learning/reviews/{sid}/draft',dependencies=mentor)
     async def draft(sid:str,value:DecisionDraft):
-        get_session(sid);r={**value.model_dump(),'saved_at':stamp(),'author':CURRENT_USER.get()['id']}
-        w.put('decision_draft',sid,r);return r
+        async with lock(sid):
+            s=get_session(sid)
+            if w.published(s,auth) or s.get('review_status')=='reviewed':reject('Published feedback is read-only.',409)
+            r={**value.model_dump(),'saved_at':stamp(),'author':CURRENT_USER.get()['id']}
+            w.put('decision_draft',sid,r);return r
 
     @app.get('/api/learning/materials')
     async def current_materials():return {'materials':w.get('materials','current')}

@@ -1253,5 +1253,13 @@
   "mentorNav.open_stages": "Open detailed three-phase evidence",
   "mentorNav.advanced": "Advanced / Administration",
   "mentorNav.saved_observations": "Previously saved observations (read-only)",
-  "mentorNav.retry_advanced": "Run the analysis again from Advanced / Administration."
+  "mentorNav.retry_advanced": "Run the analysis again from Advanced / Administration.",
+  "mentor33.reanalysis": "Run AI review again",
+  "mentor33.retry_here": "Run again using the secondary action below.",
+  "mentor33.open_conditions": "Open historical conversation conditions",
+  "mentor33.published": "Feedback published",
+  "mentor33.dictation_language": "Dictation language",
+  "mentor33.voice_too_long": "Dictation was not inserted: feedback would exceed 6000 characters. Your typed text is preserved.",
+  "errors.REVIEW_ALREADY_PUBLISHED": "Feedback is already published and is read-only.",
+  "mentor33.certificates": "Employee certificates"
 }

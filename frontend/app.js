@@ -78,7 +78,7 @@
     if(!canUseAI()) {state.mode="simple_actor";state.modeChoice=null;return;}
     state.mode="simple_actor";
   }
-  const statusPill = session => session.status==='finished'?`<span class="pill review22-status-pill ${session.review_status==='submitted'?'amber':session.review_status==='reviewed'?'green':'dark'}">${window.TrainerI18n.t('review22.status_'+session.review_status)}</span>`:`<span class="pill green">${window.TrainerI18n.t('dashboard.text_007')}</span>`;
+  const statusPill = session => session.status==='finished'?`<span class="pill review22-status-pill ${session.review_status==='submitted'?'amber':session.review_status==='reviewed'?'green':'dark'}">${window.TrainerI18n.t(session.review_status==='submitted'?'mentorNav.awaiting':session.review_status==='reviewed'?'mentorNav.reviewed':'review22.status_'+session.review_status)}</span>`:`<span class="pill green">${window.TrainerI18n.t('dashboard.text_007')}</span>`;
   const safeURL = (value) => { try {const u = new URL(value);return ["https:","http:"].includes(u.protocol) ? u.href : "";} catch (_) {return "";} };
   const studio=window.makeMentorStudio({api,esc,icon,toast,render,go});
   const draftFor = (id) => state.drafts[id] ||= {text:"",kind:"message",pending:null,error:null,sending:false};
@@ -218,7 +218,7 @@
       const close=document.createElement('button');close.className='btn conversation-drawer-close';close.dataset.action='menu-close';close.textContent=T('close');sidebar.prepend(close);
       controls.classList.add('conversation-drawer-controls');sidebar.append(controls);
     }
-    conversation.afterRender(isChat);observeFeedback();
+    conversation.afterRender(isChat);learning.mentorAfterRender();observeFeedback();
     document.title=`${navLabel()} · Klare KI`;
   }
   function readonlyTraining(s){return `${pageHead(window.TrainerI18n.t("dashboard.text_048"),window.TrainerI18n.t("dashboard.text_049"),window.TrainerI18n.t("dashboard.text_050"))}<div class="actions gap-bottom">${["pdf","json","txt"].map(f=>`<button class="btn" data-action="export" data-format="${f}">${window.TrainerI18n.t("dashboard.text_051")} ${f.toUpperCase()}</button>`).join("")}</div><div class="card mentor-readonly"><div class="transcript">${s.messages.map(m=>messageHTML(m,s,true)).join("")}</div></div>`;}
@@ -430,11 +430,13 @@
       draft.sending=false;draft.text="";draft.pending=null;draft.error=null;
       if(result.session.phase!==session.phase)draft.kind="message";
       if(state.session?.id===session.id)state.session=result.session;
+      state.reviews=state.reviews.map(x=>x.id===session.id?{...x,review_status:result.session.review_status,reviewed_at:result.session.reviewed_at}:x);
       if(state.route.role==="learner"&&state.route.view==="session"&&state.route.id===session.id){render();scrollChat();requestAnimationFrame(()=>$("#message-text")?.focus());}
     } catch(error) {
       draft.sending=false;draft.error=error.message;
       if(error.status===409) {
-        try {const result=await api(`/api/sessions/${encodeURIComponent(session.id)}`);if(state.session?.id===session.id)state.session=result.session;draft.pending=null;draft.error=`${error.message} ${window.TrainerI18n.t("dashboard.text_475")}`;} catch(_) {}
+        try {const result=await api(`/api/sessions/${encodeURIComponent(session.id)}`);if(state.session?.id===session.id)state.session=result.session;
+      state.reviews=state.reviews.map(x=>x.id===session.id?{...x,review_status:result.session.review_status,reviewed_at:result.session.reviewed_at}:x);draft.pending=null;draft.error=`${error.message} ${window.TrainerI18n.t("dashboard.text_475")}`;} catch(_) {}
       }
       if(state.route.role==="learner"&&state.route.view==="session"&&state.route.id===session.id){render();scrollChat();requestAnimationFrame(()=>$("#message-text")?.focus());} else toast(error.message,true);
     }
@@ -456,8 +458,9 @@
     catch(error){state.saving=false;render();toast(error.message,true);}
   }
   async function saveReview() {
-    if(state.saving)return;
+    if(state.saving||state.session?.published_review||state.session?.review_status==='reviewed'||learning.mentorVoiceBusy())return;
     const session=state.session;
+    learning.cancelMentorVoice();
     if(!$("#review-note")?.value.trim())return;
     state.saving=true;
     try {
@@ -467,11 +470,22 @@
       render();
       const body={note:draft.note,...(session.mode==="simple_actor"?{assessment:draft.assessment}:{})};
       const result=await api(`/api/mentor/reviews/${encodeURIComponent(session.id)}`,{method:"POST",body,mentor:true});
-      if(state.session?.id===session.id)state.session=result.session;
-      delete state.assessmentDrafts?.[session.id];delete state.learningDrafts?.[session.id];delete state.noteDrafts[session.id];
+      adoptPublishedReview(session.id,result.session);
       toast(window.TrainerI18n.t("dashboard.text_479"));
-    } catch(error) {toast(error.message,true);}
+    } catch(error) {
+      // A lost response must be reconciled by reading, never by auto-reposting feedback.
+      let published=false;
+      try{const fresh=await api(`/api/mentor/reviews/${encodeURIComponent(session.id)}`,{mentor:true});
+        if(fresh.session.published_review||fresh.session.review_status==='reviewed'){adoptPublishedReview(session.id,fresh.session);published=true;}
+      }catch(_){}
+      toast(published?window.TrainerI18n.t('mentor33.published'):error.message,!published);
+    }
     finally {state.saving=false;render();}
+  }
+  function adoptPublishedReview(id,session){
+    if(state.session?.id===id)state.session=session;
+    state.reviews=state.reviews.map(x=>x.id===id?{...x,review_status:session.review_status,reviewed_at:session.reviewed_at}:x);
+    delete state.assessmentDrafts?.[id];delete state.learningDrafts?.[id];delete state.noteDrafts[id];
   }
   async function exportSession(format) {
     if(!["pdf","txt","json"].includes(format)||state.exportBusy)return;
