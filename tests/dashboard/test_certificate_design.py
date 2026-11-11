@@ -20,7 +20,7 @@ class CertificateDesign(unittest.TestCase):
     def test_preview_issue_name_snapshot_access_and_legacy(self):
         sid=self.attempt();self.a.post('/api/sessions/'+sid+'/submit')
         # No AI review or published feedback is required; issuing is an independent decision.
-        body={'session_id':sid,'print_name':'Marta Müller-Шевченко','topic':'Strukturierte Kundenberatung','basis':[sid],'comment':'Klar und respektvoll.','language':'de'}
+        body={'session_id':sid,'print_name':'Marta Müller-Шевченко','topic':'Strukturierte Kundenberatung','basis':[sid],'comment':'Klar und respektvoll.','language':'de','issuer_full_name':'Sergii Mentor'}
         before=copy.deepcopy(self.app.state.workflow.store.get_session(sid))
         r=self.m.post('/api/mentor/learning/certificates/preview',json=body);self.assertEqual(r.status_code,200,r.text)
         draft=r.json()['certificate'];cid=draft['id'];url='/api/learning/certificates/'+cid+'.pdf'
@@ -57,13 +57,51 @@ class CertificateDesign(unittest.TestCase):
         self.assertEqual(self.app.state.workflow.store.get_session(sid),before)
 
     def test_unicode_layout_one_page_fonts_and_safe_failure(self):
-        base={'status':'draft','print_name':'Özlem Ірина Müller-Шевченко','recipient_full_name':'Özlem Ірина Müller-Шевченко','topic':'Strukturierte Kundenberatung','mentor_name':'Sergii Mentor','created_at':'2026-11-11T12:00:00+00:00','comment':'Індивідуальна відзнака · ÄÖÜ ß'}
+        base={'status':'draft','print_name':'Özlem Ірина Müller-Шевченко','recipient_full_name':'Özlem Ірина Müller-Шевченко','topic':'Strukturierte Kundenberatung','mentor_name':'AccountDisplayOnly','issuer_full_name':'Sérhii Іван Müller-Шевченко','created_at':'2026-11-11T12:00:00+00:00','comment':'Індивідуальна відзнака · ÄÖÜ ß'}
         for language in ['de','en','ru']:
             data=render_certificate({**base,'language':language});text=pdf_text(data)
-            self.assertIn(base['recipient_full_name'],text);self.assertIn(base['comment'],text)
+            self.assertIn(base['recipient_full_name'],text);self.assertIn(base['comment'],text);self.assertIn(base['issuer_full_name'],text);self.assertNotIn('AccountDisplayOnly',text)
             info=subprocess.check_output(['pdfinfo','-'],input=data).decode()
             self.assertRegex(info,r'Pages:\s+1');self.assertIn('841.89 x 595.276',info)
             fonts=subprocess.check_output(['pdffonts','-'],input=data).decode();self.assertIn('TrueType',fonts);self.assertRegex(fonts,r'yes\s+yes\s+yes')
-        long={**base,'print_name':('Müller Шевченко '*8)[:120],'recipient_full_name':('Müller Шевченко '*8)[:120],'topic':('Strukturierte Kundenberatung '*9)[:240],'mentor_name':('Sergii Mentor '*9)[:120]}
+        long={**base,'print_name':('Müller Шевченко '*8)[:120],'recipient_full_name':('Müller Шевченко '*8)[:120],'topic':('Strukturierte Kundenberatung '*9)[:240],'mentor_name':'AccountDisplayOnly','issuer_full_name':('Sergii Mentor '*9)[:120]}
         self.assertTrue(render_certificate(long).startswith(b'%PDF'))
         with self.assertRaises(CertificateLayoutError):render_certificate({**base,'comment':'X '*1500})
+
+    def test_issuer_required_editable_snapshot_and_account_unchanged(self):
+        import base64
+        sid=self.attempt();self.a.post('/api/sessions/'+sid+'/submit')
+        workflow=self.app.state.workflow
+        with workflow.store.connection() as c:
+            c.execute('UPDATE users SET display_name=? WHERE id=?',('AccountDisplayOnly',self.users[0]['id']))
+            account_before=c.execute('SELECT * FROM users WHERE id=?',(self.users[0]['id'],)).fetchone()
+            sessions_before=c.execute('SELECT * FROM auth_sessions ORDER BY token_hash').fetchall()
+        body={'session_id':sid,'print_name':'Alex Berger','topic':'Strukturierte Kundenberatung','basis':[sid],'language':'de'}
+        for name in ['', 'Sergii']:
+            draft=self.m.post('/api/mentor/learning/certificates/preview',json={**body,'issuer_full_name':name}).json()['certificate']
+            self.assertEqual(draft['issuer_full_name'],name)
+            self.assertNotIn('AccountDisplayOnly',pdf_text(self.m.get('/api/learning/certificates/'+draft['id']+'.pdf').content))
+            blocked=self.m.post('/api/mentor/learning/certificates/'+draft['id']+'/issue',json={'confirm':True})
+            self.assertEqual(blocked.status_code,422);self.assertEqual(blocked.json()['error']['code'],'CERTIFICATE_ISSUER_FULL_NAME_REQUIRED')
+        name='Sérhii Іван Müller-Шевченко'
+        draft=self.m.post('/api/mentor/learning/certificates/preview',json={**body,'issuer_full_name':name}).json()['certificate']
+        cid=draft['id'];url='/api/learning/certificates/'+cid+'.pdf'
+        self.assertIn(name,pdf_text(self.m.get(url).content))
+        issued=self.m.post('/api/mentor/learning/certificates/'+cid+'/issue',json={'confirm':True}).json()['certificate']
+        data=self.a.get(url).content;self.assertIn(name,pdf_text(data));self.assertEqual(issued['issuer_full_name'],name)
+        with workflow.store.connection() as c:
+            self.assertEqual(c.execute('SELECT * FROM users WHERE id=?',(self.users[0]['id'],)).fetchone(),account_before)
+            self.assertEqual(c.execute('SELECT * FROM auth_sessions ORDER BY token_hash').fetchall(),sessions_before)
+            c.execute('UPDATE users SET display_name=? WHERE id=?',('Changed account display name',self.users[0]['id']))
+        with patch('backend.app.dashboard.certificate_design.render_certificate',side_effect=AssertionError('Immutable issuer snapshot')):
+            self.assertEqual(self.a.get(url).content,data)
+        self.assertEqual(workflow.get('certificate',cid)['issuer_full_name'],name)
+        changed=self.m.post('/api/mentor/learning/certificates/preview',json={**body,'issuer_full_name':'Other Issuer'}).json()['certificate']
+        other=self.m.post('/api/mentor/learning/certificates/'+changed['id']+'/issue',json={'confirm':True}).json()['certificate']
+        self.assertNotEqual(other['id'],cid);self.assertEqual(other['issuer_full_name'],'Other Issuer')
+        # A pre-addendum issued v1 record must not acquire or infer a full name.
+        old={**workflow.get('certificate',cid),'id':'issued-before-issuer-addendum','design_version':'a39-v1','mentor_name':'Original historical name'}
+        old.pop('issuer_full_name');old['pdf_snapshots']={'issued':base64.b64encode(render_certificate(old)).decode()}
+        workflow.put('certificate',old['id'],old);old_bytes=certificate_pdf(old)
+        self.assertEqual(self.m.get('/api/learning/certificates/'+old['id']+'.pdf').content,old_bytes)
+        self.assertEqual(workflow.get('certificate',old['id']),old)

@@ -1286,5 +1286,8 @@
   "mentor33.certificate_name_hint": "Enter the first and last name manually, exactly as they should be printed. A login or account display name is not a confirmed full name.",
   "errors.CERTIFICATE_FULL_NAME_REQUIRED": "Enter the certificate recipient’s first and last name.",
   "learning.draft": "Draft — not issued",
-  "mentor33.certificate_edit": "Edit details"
+  "mentor33.certificate_edit": "Edit details",
+  "mentor33.certificate_issuer_name": "Issuer Full Name (first and last name)",
+  "mentor33.certificate_issuer_hint": "Enter the issuer’s first and last name manually. This is saved only in the certificate; the account name and sign-in details remain unchanged.",
+  "errors.CERTIFICATE_ISSUER_FULL_NAME_REQUIRED": "Enter the certificate issuer’s first and last name."
 }

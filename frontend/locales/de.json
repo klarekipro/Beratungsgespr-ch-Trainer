@@ -1286,5 +1286,8 @@
   "mentor33.certificate_name_hint": "Bitte den gewünschten Vor- und Nachnamen manuell eingeben. Ein Login oder Kontoname ist kein bestätigter vollständiger Name.",
   "errors.CERTIFICATE_FULL_NAME_REQUIRED": "Bitte Vor- und Nachnamen des Zertifikatsempfängers angeben.",
   "learning.draft": "Entwurf — nicht ausgestellt",
-  "mentor33.certificate_edit": "Angaben bearbeiten"
+  "mentor33.certificate_edit": "Angaben bearbeiten",
+  "mentor33.certificate_issuer_name": "Name des Ausstellers",
+  "mentor33.certificate_issuer_hint": "Vor- und Nachnamen manuell eingeben. Diese Angabe wird nur im Zertifikat gespeichert; Kontoname und Anmeldung bleiben unverändert.",
+  "errors.CERTIFICATE_ISSUER_FULL_NAME_REQUIRED": "Bitte Vor- und Nachnamen des Ausstellers angeben."
 }

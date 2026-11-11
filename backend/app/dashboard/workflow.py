@@ -51,6 +51,7 @@ class CertificateRequest(InputModel):
     comment: str = Field(default='',max_length=3000)
     replaces: str | None = None
     language: Literal['de','en','ru'] = 'de'
+    issuer_full_name: str = Field(default='',max_length=120)
 class IssueRequest(InputModel):
     confirm: bool
 class DecisionDraft(InputModel):
@@ -295,9 +296,11 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
             if r['mentor_id']!=CURRENT_USER.get()['id']:reject('Author mismatch',403)
             if len(r.get('recipient_full_name','').split())<2:
                 raise HTTPException(422,detail={'code':'CERTIFICATE_FULL_NAME_REQUIRED'})
+            if len(r.get('issuer_full_name','').split())<2:
+                raise HTTPException(422,detail={'code':'CERTIFICATE_ISSUER_FULL_NAME_REQUIRED'})
             # Content idempotency also covers accidentally opening a second preview.
             for existing in w.all('certificate'):
-                if existing['status']=='issued' and not r.get('replaces') and all(existing.get(k)==r.get(k) for k in ['employee_id','print_name','topic','basis','comment','mentor_id','language','design_version']):
+                if existing['status']=='issued' and not r.get('replaces') and all(existing.get(k)==r.get(k) for k in ['employee_id','print_name','topic','basis','comment','mentor_id','language','design_version','issuer_full_name']):
                     return {'certificate':certificate_public(existing)}
             r.update(status='issued',issued_at=stamp(),number='KKI-'+datetime.now().strftime('%Y')+'-'+r['id'][:12].upper())
             freeze_certificate(r)

@@ -9,7 +9,7 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import Paragraph
 from .exports import _fonts
 
-VERSION = 'a39-v1'
+VERSION = 'a39-v2'
 TEXT = {
  'de': {'title':'ZERTIFIKAT','subtitle':'für praxisorientierte Beratungskompetenz','badge':'KOMPETENZNACHWEIS','studio':'BERATUNGSSTUDIO','body':'hat im Rahmen eines begleiteten Beratungstrainings Kompetenzen in der strukturierten Kundenberatung nachgewiesen.','stages':'Bedarf klären · Möglichkeiten transparent erläutern · nächste Schritte begründen','decision':'Die Ausstellung beruht auf einer eigenständigen Gesamtbeurteilung durch den Mentor.','topic':'KOMPETENZBEREICH','date':'AUSSTELLUNGSDATUM','mentor':'MENTOR','signature':'Unterschrift','issuer':'KLARE KI · INTERNER KOMPETENZNACHWEIS','limit':'Keine staatlich anerkannte Qualifikation.','draft':'MUSTER','draft_footer':'ENTWURF · NICHT AUSGESTELLT','number':'Zertifikat-Nr.','revoked':'WIDERRUFEN','replaced':'ERSETZT'},
  'en': {'title':'CERTIFICATE','subtitle':'of practical consultation competence','badge':'COMPETENCE RECORD','studio':'CONSULTATION STUDIO','body':'has demonstrated competencies in structured customer consultations within a mentored consultation training programme.','stages':'Clarify needs · explain possibilities transparently · justify next steps','decision':'Issued on the basis of an independent overall assessment by the mentor.','topic':'COMPETENCE AREA','date':'ISSUE DATE','mentor':'MENTOR','signature':'Signature','issuer':'KLARE KI · INTERNAL COMPETENCE RECORD','limit':'Not a state-recognised qualification.','draft':'SAMPLE','draft_footer':'DRAFT · NOT ISSUED','number':'Certificate no.','revoked':'REVOKED','replaced':'REPLACED'},
@@ -60,8 +60,9 @@ def render_certificate(record):
     issued=record.get('issued_at') or record['created_at']
     date=datetime.fromisoformat(issued.replace('Z','+00:00')).strftime('%d.%m.%Y')
     box(date,407,88,130,22,12,10,True)
-    box(t['mentor'],550,103,221,12,8,8,True,color=green)
-    box(record['mentor_name'],550,94,221,30,12,8,True)
+    issuer_label={'de':'MENTOR / AUSSTELLER','en':'MENTOR / ISSUER','ru':'НАСТАВНИК / ВЫДАЮЩИЙ'}[language] if 'issuer_full_name' in record else t['mentor']
+    box(issuer_label,550,103,221,12,8,8,True,color=green)
+    box(record.get('issuer_full_name',record['mentor_name']),550,94,221,30,12,8,True)
     # A labelled empty line is a place for a real signature, never a simulated signature.
     c.setStrokeColor(gold);c.line(550,61,771,61)
     box(t['signature'],550,59,221,8,6.5,6.5,color=muted)

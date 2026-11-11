@@ -1286,5 +1286,8 @@
   "mentor33.certificate_name_hint": "Введите имя и фамилию вручную в нужном написании. Логин или имя аккаунта не считаются подтверждённым полным именем.",
   "errors.CERTIFICATE_FULL_NAME_REQUIRED": "Укажите имя и фамилию получателя сертификата.",
   "learning.draft": "Образец — не выдан",
-  "mentor33.certificate_edit": "Изменить данные"
+  "mentor33.certificate_edit": "Изменить данные",
+  "mentor33.certificate_issuer_name": "Имя и фамилия выдающего сертификат",
+  "mentor33.certificate_issuer_hint": "Введите имя и фамилию вручную. Они сохраняются только в сертификате; имя аккаунта и данные входа не меняются.",
+  "errors.CERTIFICATE_ISSUER_FULL_NAME_REQUIRED": "Укажите имя и фамилию выдающего сертификат."
 }

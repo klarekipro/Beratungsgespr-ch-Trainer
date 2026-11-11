@@ -36,7 +36,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.15.0-certificate-design"
+VERSION = "0.15.1-certificate-issuer"
 
 
 def now():

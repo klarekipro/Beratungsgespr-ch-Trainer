@@ -1,5 +1,7 @@
 # Продолжение проекта — A32 поверх checkpoint A30/A31
 
+**A34 Addendum 2 в той же A39:** редактируемое обязательное `issuer_full_name`, отдельно от аккаунта; оба ФИО доступны в форме. Ветка остаётся `codex/a39-certificate-design`. Тесты/ограничения/ручная приёмка — последний addendum `A39_CERTIFICATE_HANDOFF_RU.md`; установку см. в PROJECT_STATE.
+
 **A39 / дизайн A34 + Full Name активирован:** код `7c12ce5e8bcb58c0dabf5fec191ead66a92781c6`,0.15.0, PID35718, revision18b100d113c4c318. Backup/сверка данных и22 файлов — OK. `A39_CERTIFICATE_HANDOFF_RU.md`, ветка `codex/a39-certificate-design`. Новый PDF и preview, обязательные вручную введённые имя/фамилия, независимый снимок и immutable PDF новых выдач. Старые записи без backfill. Установку см. в последней секции PROJECT_STATE. Предыдущие состояния ниже исторические.
 
 **A38 активирован:** код `459eacec2225538434cb6d95b605cdc6f9518a17`, PID33674, revision2a76261750aed5d9. Backup/сверка данных и22 frontend-файлов — OK. компактные пропорции поля отзыва, автоматический рост по тексту, облегчённые controls. Ветка `codex/a38-mentor-composer-proportions`; проверки/активация/приёмка — последняя секция PROJECT_STATE.md. Предыдущие состояния ниже исторические.
