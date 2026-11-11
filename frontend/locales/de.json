@@ -1215,5 +1215,7 @@
   "review23.verdict_supported": "Durch gespeicherte Materialien belegt",
   "review23.verdict_unsupported": "Nicht durch gespeicherte Materialien belegt",
   "review23.verdict_contradicted": "Widerspricht gespeicherten Materialien",
-  "review23.verdict_uncertain": "Die Materialien reichen für eine Beurteilung nicht aus"
+  "review23.verdict_uncertain": "Die Materialien reichen für eine Beurteilung nicht aus",
+  "review25.no_gaps": "Keine wesentlichen Lernlücken festgestellt.",
+  "review25.no_required_changes": "Keine notwendigen Korrekturen für einen neuen Versuch angegeben."
 }

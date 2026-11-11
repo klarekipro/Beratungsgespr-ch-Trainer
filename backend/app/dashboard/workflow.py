@@ -96,14 +96,14 @@ class Workflow:
         return None
     def enrich(self,v,s,auth):
         v['learning_context']=self.context(s)
-        v['analysis']=review_service.public_analysis(self.get('analysis',s['id']+':learner'),CURRENT_USER.get() and CURRENT_USER.get()['role']=='mentor_admin')
+        v['analysis']=review_service.public_analysis(self.get('analysis',s['id']+':learner'),CURRENT_USER.get() and CURRENT_USER.get()['role']=='mentor_admin',s)
         v['review_heading']=review_service.heading(s,self.context(s))
         v['review_message_ids']=review_service.message_ids(s)
         v['published_review']=self.published(s,auth)
         u=auth.user(auth.owner(s['id']))
         v['employee_name']=u['display_name'] if u else 'Archiv'
         if CURRENT_USER.get() and CURRENT_USER.get()['role']=='mentor_admin':
-            v['mentor_analysis']=self.get('analysis',s['id']+':mentor') or {'status':'not_run'}
+            v['mentor_analysis']=review_service.public_analysis(self.get('analysis',s['id']+':mentor'),True,s)
             v['decision_draft']=self.get('decision_draft',s['id'])
         return v
 
@@ -125,7 +125,7 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
         async with lock('analysis:'+sid+':'+value.audience):
             key=sid+':'+value.audience;old=w.get('analysis',key)
             # A click waiting behind an in-flight request must reuse its outcome.
-            if old and (not value.restart or (old.get('completed_at') or '')>=arriving):return {'analysis':review_service.public_analysis(old,u['role']=='mentor_admin')}
+            if old and (not value.restart or (old.get('completed_at') or '')>=arriving):return {'analysis':review_service.public_analysis(old,u['role']=='mentor_admin',s)}
             started=stamp();ctx=w.context(s)
             record={'session_id':sid,'status':'running','started_at':started,'audience':value.audience,'language':u.get('locale','de'),'context_source':ctx.get('source','legacy_fallback_not_original')}
             if old and old.get('result'):record['result']=old['result']
@@ -152,7 +152,7 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
                 if category=='ai_timeout':stage='provider_timeout'
                 elif category=='ai_context_limit':stage='request_construction'
                 elif category=='ai_incomplete':stage='provider_incomplete'
-                record['diagnostics']={**transport,'stage':stage,'validation_reason':getattr(exc,'reason',None) or (str(exc) if isinstance(exc,ValueError) and str(exc) in {'structure','text type','list type','stage type','stage structure','evidence structure','review text','review list','stages','duplicate message IDs','observation','missing evidence','evidence','advice structure','advice text','advice evidence','material evidence','claim checks','claim verdict','advice action','advice priorities','advice findings'} else None),'validation_path':getattr(exc,'path',None),'category':category,'exception_type':type(exc).__name__,'payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1'}
+                record['diagnostics']={**transport,'stage':stage,'validation_reason':getattr(exc,'reason',None) or (str(exc) if isinstance(exc,ValueError) and str(exc) in {'structure','text type','list type','stage type','stage structure','evidence structure','review text','review list','stages','duplicate message IDs','observation','missing evidence','evidence','advice structure','advice text','advice evidence','material evidence','claim checks','claim verdict','advice action','advice priorities','advice findings','repeat requires demonstrated gap'} else None),'validation_path':getattr(exc,'path',None),'category':category,'exception_type':type(exc).__name__,'payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1'}
                 logging.getLogger(__name__).warning('review_failed session=%s audience=%s diagnostics=%s',sid,value.audience,json.dumps(record['diagnostics'],ensure_ascii=True,sort_keys=True))
             if record['status']=='ready':record['diagnostics']={**dict(getattr(provider,'review_diagnostics',{}) or {}),'stage':'persisted','payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1'}
             record['completed_at']=stamp()
@@ -160,7 +160,7 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
             if record['status']=='error' and old and old.get('result'):
                 record={**old,'status':'ready','attempt_status':'error','last_error':record['error'],'completed_at':record['completed_at'],'diagnostics':record['diagnostics']}
             w.put('analysis',key,record)
-            return {'analysis':review_service.public_analysis(record,u['role']=='mentor_admin')}
+            return {'analysis':review_service.public_analysis(record,u['role']=='mentor_admin',s)}
 
     @app.get('/api/mentor/learning/guidance/{sid}',dependencies=mentor)
     async def guidance(sid:str):return {'guidance':w.get('guidance',sid) or DEFAULT_GUIDANCE}

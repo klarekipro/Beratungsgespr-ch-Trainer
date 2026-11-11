@@ -44,7 +44,32 @@ another scenario generically from available choices, never assign/name one or ch
 Keep material_evidence quotes compact: only the exact source phrases needed to check the promise.
 Use one or two sentences for the recommendation explanation and brief learning priorities.
 All choices remain voluntary; final assessment belongs to the mentor. No separate action is
-performed by a recommendation. Never recommend automatic submission or certification.'''
+performed by a recommendation. Never recommend automatic submission or certification.
+CALIBRATION — apply these general criteria to successful and flawed consultations alike:
+Separate (1) demonstrated employee mistakes, (2) limits of available company information/tools,
+and (3) possible customer-simulation issues. Put only material EMPLOYEE learning gaps in gaps.
+In summary/stage observations, explicitly label source limitations or possible simulation issues
+where relevant; do not put them in gaps merely because the information is missing.
+Truthfully declining to invent repair prices/ranges, success rates, warranty terms, partners or
+appointment availability is correct behaviour when saved materials do not establish them.
+If that limitation is clearly explained, do not criticize not providing the unavailable detail.
+Do not require scheduling tools, statistics, partnerships or information the application does
+not supply. Improvements must identify a specific achievable alternative supported by the
+saved transcript and available conditions. Generic polishing is optional practice, not a gap.
+Do not fill gaps or next_attempt just to populate a section. Return gaps=[] when no material
+employee gaps are evidenced (the UI will say No material gaps identified), and next_attempt=[]
+when no specific corrective priority is warranted. Do not fabricate a problem to justify repeat.
+Recommend repeat_scenario only for a demonstrated material learning gap and reference that gap
+in finding_refs. Generic room for improvement, unavailable data, no sale or no booking are not
+sufficient. submit_to_mentor is appropriate when the training objective is substantially met,
+including a justified, voluntary next step without an order. try_another_scenario is optional
+transfer practice, not proof of failure. Do not hardcode a favourable outcome for any attempt.
+Repeated customer closing statements without new information can be a possible simulation
+issue. Describe the observable repetition and uncertainty; do not invent a customer motive,
+require endless re-closing or automatically blame the employee. The customer accepting that
+90 EUR is affordable/acceptable is NOT authorization to order the diagnosis. Check explicit
+consent to commission it separately from price acceptance, repair consent and appointment.
+Never print raw message IDs in generated prose; use evidence fields for references.'''
 
 def message_ids(s):
     # Legacy messages have no ID. Stable read-only IDs bind ordinal + exact saved text/role.
@@ -138,7 +163,7 @@ def validate(result,s,ctx=None):
             if not isinstance(item,dict) or set(item)!={'message_id','quote'} or not all(isinstance(x,str) for x in item.values()):raise ValueError('evidence structure')
     if any(not result[k].strip() or len(result[k])>4000 for k in ('summary','actual_outcome')):raise ValueError('review text')
     for key in ('strengths','gaps','next_attempt'):
-        if not 1<=len(result[key])<=8 or any(not x.strip() or len(x)>2000 for x in result[key]):raise ValueError('review list')
+        if not (1 if key=='strengths' else 0)<=len(result[key])<=8 or any(not x.strip() or len(x)>2000 for x in result[key]):raise ValueError('review list')
     if len(result['stages'])!=3 or {x['key'] for x in result['stages']}!=set(STAGES):raise ValueError('stages')
     ids=message_ids(s)
     if len(ids)!=len(set(ids)):raise ValueError('duplicate message IDs')
@@ -199,10 +224,38 @@ def validate_learning_advice(result,s,ctx):
     for ref in refs:
         obj(ref,['section','index'])
         if ref['section'] not in ('strengths','gaps','next_attempt','stages') or type(ref['index'])!=int or not 0<=ref['index']<len(result[ref['section']]):raise ValueError('advice findings')
+    if advice['action']=='repeat_scenario' and not any(ref['section']=='gaps' for ref in refs):raise ValueError('repeat requires demonstrated gap')
 
-def public_analysis(a,mentor=False):
+def display_review_result(result,s=None):
+    """Read-only prose projection. Evidence IDs, source quotes and stored analyses stay exact."""
+    value=deepcopy(result)
+    known={mid:i+1 for i,mid in enumerate(message_ids(s))} if s else {}
+    def prose(text):
+        if not isinstance(text,str):return text
+        for mid,index in sorted(known.items(),key=lambda item:len(item[0]),reverse=True):
+            if len(mid)>=8:text=re.sub(r'(?<![\w-])'+re.escape(mid)+r'(?![\w-])',f'[{index}]',text)
+        text=re.sub(r'\bmsg_[A-Za-z0-9_-]+\b','',text)
+        text=re.sub(r'\(\s*[,; ]*\)|\[\s*[,; ]*\]','',text)
+        return re.sub(r'[ \t]{2,}',' ',text).strip()
+    for key in ('summary','actual_outcome'):
+        if key in value:value[key]=prose(value[key])
+    for key in ('strengths','gaps','next_attempt'):
+        if isinstance(value.get(key),list):value[key]=[prose(x) for x in value[key]]
+    for section in value.get('sections',[]):
+        for key in ('title','text'):
+            if key in section:section[key]=prose(section[key])
+    for stage in value.get('stages',[]):stage['observation']=prose(stage['observation'])
+    for claim in value.get('claim_checks',[]):
+        for key in ('statement','observation'):claim[key]=prose(claim[key])
+    advice=value.get('recommendation')
+    if advice:
+        advice['explanation']=prose(advice['explanation']);advice['priorities']=[prose(x) for x in advice['priorities']]
+    return value
+
+def public_analysis(a,mentor=False,s=None):
     if not a:return {'status':'not_run'}
     value=deepcopy(a)
+    if isinstance(value.get('result'),dict):value['result']=display_review_result(value['result'],s)
     if value.get('status')=='running':
         from datetime import datetime,timezone
         try:stale=(datetime.now(timezone.utc)-datetime.fromisoformat(value['started_at'])).total_seconds()>90

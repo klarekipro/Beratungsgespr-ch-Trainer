@@ -1215,5 +1215,7 @@
   "review23.verdict_supported": "Supported by saved materials",
   "review23.verdict_unsupported": "Not supported by saved materials",
   "review23.verdict_contradicted": "Contradicts saved materials",
-  "review23.verdict_uncertain": "Insufficient materials for a conclusion"
+  "review23.verdict_uncertain": "Insufficient materials for a conclusion",
+  "review25.no_gaps": "No material gaps identified.",
+  "review25.no_required_changes": "No required corrections specified for a new attempt."
 }

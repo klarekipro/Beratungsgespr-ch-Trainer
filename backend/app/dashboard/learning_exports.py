@@ -32,7 +32,9 @@ def report_text(s,language='de'):
         for item in a['result']['sections']:
             title=labels.get('review22.'+item['title'],t[8] if item['title']=='summary' else item['title'])
             if item['title']=='next_attempt':title=labels['review23.training_priorities' if a['result'].get('recommendation') else 'review23.legacy_priorities']
-            lines += [title,item['text']]
+            text=item['text']
+            if not text and item['title'] in ('gaps','next_attempt'):text=labels['review25.no_gaps' if item['title']=='gaps' else 'review25.no_required_changes']
+            lines += [title,text]
         for claim in a['result'].get('claim_checks',[]):
             lines += [labels['review23.conditions'],claim['statement'],labels['review23.verdict_'+claim['verdict']],claim['observation']]
             lines += [ref['quote'] for ref in claim['material_evidence']]

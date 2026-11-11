@@ -1215,5 +1215,7 @@
   "review23.verdict_supported": "Подтверждено сохранёнными материалами",
   "review23.verdict_unsupported": "Не подтверждено сохранёнными материалами",
   "review23.verdict_contradicted": "Противоречит сохранённым материалам",
-  "review23.verdict_uncertain": "Материалов недостаточно для вывода"
+  "review23.verdict_uncertain": "Материалов недостаточно для вывода",
+  "review25.no_gaps": "Существенных пробелов не выявлено.",
+  "review25.no_required_changes": "Обязательные исправления для новой попытки не указаны."
 }
