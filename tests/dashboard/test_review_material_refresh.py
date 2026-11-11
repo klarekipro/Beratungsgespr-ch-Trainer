@@ -20,7 +20,7 @@ class MaterialRefresh(unittest.TestCase):
         current=self.store.get_company();current['limitations']='Today only: free repair and guaranteed appointment.';self.store.save_company(current)
         wire=self.wire(s);wire['claim_checks']=[{'statement':'Diagnose kostet 90 EUR.','verdict':'supported','observation':'Durch die gespeicherten Bedingungen belegt.','evidence':[{'message_id':review_service.message_ids(s)[5]}],'material_evidence':[{'path':'/company/limitations'}]}]
         def handler(request):
-            body=json.loads(request.content);field=body['text']['format']['schema']['properties']['claim_checks']['items']['properties']['material_evidence']['items']
+            body=json.loads(request.content);field=body['text']['format']['schema']['$defs']['historical_source']
             self.assertEqual(field['required'],['path']);self.assertIn('/company/limitations',field['properties']['path']['enum']);self.assertEqual(body['max_output_tokens'],3500)
             return httpx.Response(200,json=self.envelope(wire))
         p=self.provider(handler);endpoint='/api/learning/sessions/'+sid+'/analysis';good=self.a.post(endpoint,json={}).json()['analysis'];self.assertEqual(good['status'],'ready');self.assertEqual(p.request_count,1)
@@ -33,7 +33,7 @@ class MaterialRefresh(unittest.TestCase):
         bad=copy.deepcopy(wire);bad['claim_checks'][0]['material_evidence'][0]['path']='/SENSITIVE-invalid-source'
         self.provider(lambda request:httpx.Response(200,json=self.envelope(bad)))
         retained=self.a.post(endpoint,json={'restart':True}).json()['analysis'];self.assertEqual(retained['status'],'ready');self.assertEqual(retained['attempt_status'],'error');self.assertEqual(retained['result'],good['result']);self.assertNotIn('diagnostics',retained)
-        diagnostic=self.w.get('analysis',sid+':learner')['diagnostics'];self.assertEqual(diagnostic['stage'],'material_evidence_validation');self.assertEqual(diagnostic['validation_reason'],'material_unknown_path');self.assertEqual(diagnostic['validation_path'],'claim_checks/0/material_evidence/0');self.assertNotIn('SENSITIVE',json.dumps(diagnostic))
+        diagnostic=self.w.get('analysis',sid+':learner')['diagnostics'];self.assertEqual(diagnostic['stage'],'material_evidence_validation');self.assertEqual(diagnostic['validation_reason'],'material_unknown_path');self.assertEqual(diagnostic['validation_path'],'claim_checks/0/material_evidence/0/path');self.assertNotIn('SENSITIVE',json.dumps(diagnostic))
         self.assertEqual(self.store.get_session(sid),s);self.assertEqual(self.m.get('/api/mentor/reviews').json()['sessions'],[])
         # No unsolicited quote, transcript source, or missing proof is silently accepted.
         for ref in [{'path':'/company/limitations','quote':s['company_snapshot']['limitations']},{'path':'/transcript/5/text'}]:

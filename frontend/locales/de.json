@@ -1218,5 +1218,6 @@
   "review23.verdict_uncertain": "Die Materialien reichen für eine Beurteilung nicht aus",
   "review25.no_gaps": "Keine wesentlichen Lernlücken festgestellt.",
   "review25.no_required_changes": "Keine notwendigen Korrekturen für einen neuen Versuch angegeben.",
-  "review22.previous_analysis": "Vorherige Auswertung — die Aktualisierung ist fehlgeschlagen."
+  "review22.previous_analysis": "Vorherige Auswertung — die Aktualisierung ist fehlgeschlagen.",
+  "review23.source_missing": "Die historische Quelle ist nicht gespeichert oder unter diesem Verweis nicht verfügbar."
 }

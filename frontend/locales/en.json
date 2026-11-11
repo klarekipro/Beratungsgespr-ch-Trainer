@@ -1218,5 +1218,6 @@
   "review23.verdict_uncertain": "Insufficient materials for a conclusion",
   "review25.no_gaps": "No material gaps identified.",
   "review25.no_required_changes": "No required corrections specified for a new attempt.",
-  "review22.previous_analysis": "Previous analysis — the refresh failed."
+  "review22.previous_analysis": "Previous analysis — the refresh failed.",
+  "review23.source_missing": "The historical source was not saved or is unavailable at this reference."
 }

@@ -29,6 +29,7 @@ def report_text(s,language='de'):
         from pathlib import Path
         import json
         labels=json.loads((Path(__file__).resolve().parents[3]/'frontend/locales'/f'{language}.json').read_text())
+        if a.get('attempt_status')=='error':lines.append(labels['review22.previous_analysis'])
         for item in a['result']['sections']:
             title=labels.get('review22.'+item['title'],t[8] if item['title']=='summary' else item['title'])
             if item['title']=='next_attempt':title=labels['review23.training_priorities' if a['result'].get('recommendation') else 'review23.legacy_priorities']
@@ -37,7 +38,7 @@ def report_text(s,language='de'):
             lines += [title,text]
         for claim in a['result'].get('claim_checks',[]):
             lines += [labels['review23.conditions'],claim['statement'],labels['review23.verdict_'+claim['verdict']],claim['observation']]
-            lines += [ref['quote'] for ref in claim['material_evidence']]
+            lines += [ref.get('quote') or labels['review23.source_missing'] for ref in claim['material_evidence']]
         advice=a['result'].get('recommendation')
         if advice:lines += [labels['review23.title'],labels['review23.'+advice['action']],advice['explanation'],*advice['priorities'],labels['review23.advisory']]
         from .review_service import message_ids

@@ -35,7 +35,7 @@ class ReviewEvidenceFailure(unittest.TestCase):
         with self.assertRaises(review_service.ReviewValidationError):review_service.bind_evidence(wire_quote,session)
         def handler(request):
             payload=json.loads(request.content);data=json.loads(payload['input'][1]['content']);self.assertEqual(len(data['transcript']),17)
-            ev=payload['text']['format']['schema']['properties']['stages']['items']['properties']['evidence']['items'];self.assertEqual(ev['required'],['message_id']);self.assertEqual(ev['properties']['message_id']['enum'],review_service.message_ids(session));self.assertEqual(payload['max_output_tokens'],3500)
+            ev=payload['text']['format']['schema']['$defs']['transcript_reference'];self.assertEqual(ev['required'],['message_id']);self.assertEqual(ev['properties']['message_id']['enum'],review_service.message_ids(session));self.assertEqual(payload['max_output_tokens'],3500)
             return httpx.Response(200,json=self.envelope(wire))
         provider=self.provider(handler);response=self.a.post('/api/learning/sessions/'+sid+'/analysis',json={}).json()['analysis'];self.assertEqual(response['status'],'ready');self.assertEqual(provider.request_count,1)
         self.assertEqual(response['result']['stages'][0]['evidence'][0]['quote'],session['messages'][5]['text']);self.assertNotIn('diagnostics',response)

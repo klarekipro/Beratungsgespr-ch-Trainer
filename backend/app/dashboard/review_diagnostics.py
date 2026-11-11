@@ -11,6 +11,10 @@ MAX_BYTES=512*1024
 MAX_FILES=5
 MAX_AGE=7*24*60*60
 
+def processor_hash():
+    # The structural contract is part of the processor, not just review_service.py.
+    return hashlib.sha256(b''.join(Path(__file__).with_name(name).read_bytes() for name in ('review_service.py','review_contract.py'))).hexdigest()
+
 def retain_failure(database,session,context,instructions,schema,data,wire,model_text,diagnostics,secret=''):
     if wire is None and not model_text:return {'capture_status':'no_response'}
     def redact(value):
@@ -22,7 +26,7 @@ def retain_failure(database,session,context,instructions,schema,data,wire,model_
         bundle={'format':'review_failure_v1','captured_at':time.time(),'session':session,'context':context,
                 'instructions':instructions,'schema':schema,'payload':data,'wire_result':wire,
                 'model_text':model_text,'diagnostics':diagnostics,
-                'processor_sha256':hashlib.sha256(Path(__file__).with_name('review_service.py').read_bytes()).hexdigest()}
+                'processor_sha256':processor_hash()}
         content=json.dumps(redact(bundle),ensure_ascii=False).encode()
         if len(content)>MAX_BYTES:return {'capture_status':'oversize'}
         directory=Path(database).parent/'review_failures'
@@ -45,7 +49,7 @@ def replay(path):
     if not stat.S_ISREG(info.st_mode) or info.st_mode&0o077 or info.st_size>MAX_BYTES:raise ValueError('unsafe_bundle')
     bundle=json.loads(path.read_text())
     if bundle.get('format')!='review_failure_v1':raise ValueError('unknown_bundle')
-    if bundle.get('processor_sha256')!=hashlib.sha256(Path(__file__).with_name('review_service.py').read_bytes()).hexdigest():raise ValueError('processor_changed')
+    if bundle.get('processor_sha256')!=processor_hash():raise ValueError('processor_changed')
     wire=bundle.get('wire_result')
     if wire is None:wire=json.loads(bundle['model_text'])
     return review_service.validate(review_service.bind_evidence(wire,bundle['session'],bundle['context']),bundle['session'],bundle['context'])

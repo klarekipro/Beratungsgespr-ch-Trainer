@@ -18,6 +18,9 @@ class ObservedClient:
     def __init__(self,client,diagnostics,capture):self.client=client;self.diagnostics=diagnostics;self.capture=capture
     async def post(self,*args,**kwargs):
         d=self.diagnostics;d['stage']='provider_request'
+        request=kwargs.get('json') or {};fmt=(request.get('text') or {}).get('format') or {}
+        import hashlib
+        d.update(request_strict=fmt.get('strict') is True,request_format=fmt.get('type'),schema_sha256=hashlib.sha256(json.dumps(fmt.get('schema'),sort_keys=True).encode()).hexdigest())
         try:response=await self.client.post(*args,**kwargs)
         except httpx.TimeoutException as exc:d.update(stage='provider_timeout',transport_exception=type(exc).__name__);raise
         except httpx.RequestError as exc:d.update(stage='provider_transport',transport_exception=type(exc).__name__);raise

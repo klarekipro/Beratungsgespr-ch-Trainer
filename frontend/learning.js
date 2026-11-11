@@ -54,7 +54,7 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  }
  function companyClaimChecks(result){
   if(!result?.claim_checks?.length)return '';
-  return `<details><summary>${L('conditions')} · ${result.claim_checks.length}</summary>${result.claim_checks.map(c=>`<div class="review22-stage"><strong>${E(c.statement)}</strong><p class="caption">${L('verdict_'+c.verdict)}</p><p>${E(c.observation)}</p>${adviceEvidence(c.evidence)}${c.material_evidence.length?`<details><summary>${L('saved_basis')}</summary>${c.material_evidence.map(x=>`<blockquote>${E(x.quote)}</blockquote>`).join('')}</details>`:''}</div>`).join('')}</details>`;
+  return `<details><summary>${L('conditions')} · ${result.claim_checks.length}</summary>${result.claim_checks.map(c=>`<div class="review22-stage"><strong>${E(c.statement)}</strong><p class="caption">${L('verdict_'+c.verdict)}</p><p>${E(c.observation)}</p>${adviceEvidence(c.evidence)}${c.material_evidence.length?`<details><summary>${L('saved_basis')} · ${c.material_evidence.length}</summary>${c.material_evidence.map(x=>`<blockquote>${E(x.quote||L('source_missing'))}</blockquote>`).join('')}</details>`:''}</div>`).join('')}</details>`;
  }
 
  function employeeReport(s){

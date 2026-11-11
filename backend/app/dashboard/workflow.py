@@ -96,14 +96,14 @@ class Workflow:
         return None
     def enrich(self,v,s,auth):
         v['learning_context']=self.context(s)
-        v['analysis']=review_service.public_analysis(self.get('analysis',s['id']+':learner'),CURRENT_USER.get() and CURRENT_USER.get()['role']=='mentor_admin',s)
+        v['analysis']=review_service.public_analysis(self.get('analysis',s['id']+':learner'),CURRENT_USER.get() and CURRENT_USER.get()['role']=='mentor_admin',s,self.context(s))
         v['review_heading']=review_service.heading(s,self.context(s))
         v['review_message_ids']=review_service.message_ids(s)
         v['published_review']=self.published(s,auth)
         u=auth.user(auth.owner(s['id']))
         v['employee_name']=u['display_name'] if u else 'Archiv'
         if CURRENT_USER.get() and CURRENT_USER.get()['role']=='mentor_admin':
-            v['mentor_analysis']=review_service.public_analysis(self.get('analysis',s['id']+':mentor'),True,s)
+            v['mentor_analysis']=review_service.public_analysis(self.get('analysis',s['id']+':mentor'),True,s,self.context(s))
             v['decision_draft']=self.get('decision_draft',s['id'])
         return v
 
@@ -125,7 +125,7 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
         async with lock('analysis:'+sid+':'+value.audience):
             key=sid+':'+value.audience;old=w.get('analysis',key)
             # A click waiting behind an in-flight request must reuse its outcome.
-            if old and (not value.restart or (old.get('completed_at') or '')>=arriving):return {'analysis':review_service.public_analysis(old,u['role']=='mentor_admin',s)}
+            if old and (not value.restart or (old.get('completed_at') or '')>=arriving):return {'analysis':review_service.public_analysis(old,u['role']=='mentor_admin',s,w.context(s))}
             started=stamp();ctx=w.context(s)
             record={'session_id':sid,'status':'running','started_at':started,'audience':value.audience,'language':u.get('locale','de'),'context_source':ctx.get('source','legacy_fallback_not_original')}
             if old and old.get('result'):record['result']=old['result']
@@ -163,7 +163,7 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
             if record['status']=='error' and old and old.get('result'):
                 record={**old,'status':'ready','attempt_status':'error','last_error':record['error'],'completed_at':record['completed_at'],'diagnostics':record['diagnostics']}
             w.put('analysis',key,record)
-            return {'analysis':review_service.public_analysis(record,u['role']=='mentor_admin',s)}
+            return {'analysis':review_service.public_analysis(record,u['role']=='mentor_admin',s,w.context(s))}
 
     @app.get('/api/mentor/learning/guidance/{sid}',dependencies=mentor)
     async def guidance(sid:str):return {'guidance':w.get('guidance',sid) or DEFAULT_GUIDANCE}
