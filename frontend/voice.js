@@ -32,6 +32,16 @@ window.TrainerVoice=(()=>{
    context.resume()?.catch(()=>{});raf=requestAnimationFrame(read);
   }catch(_){try{context?.close()?.catch(()=>{});}catch(_){}context=analyser=null;state.meterAvailable=false;}
  }
+ // Read-only preflight: never send audio under another tab's account or retry a paid POST.
+ async function session(generation,identity){
+  const r=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'});
+  const data=await r.json();
+  if(generation!==sequence)return false;
+  if(!r.ok)throw new Error(t('session_required'));
+  if(data.user?.id!==identity.id||data.user?.role!==identity.role)throw new Error(t('session_changed'));
+  window.TRAINER_AUTH.csrf=data.csrf;
+  return true;
+ }
  async function start(options){
   if(busy())return;
   const generation=++sequence;callbacks=options;state={phase:'asking',status:'',elapsed:0,level:0,meterAvailable:false,language:options.language};
@@ -39,6 +49,8 @@ window.TrainerVoice=(()=>{
   if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){fail('unsupported',generation);return;}
   let mime;try{mime=['audio/webm;codecs=opus','audio/mp4','audio/webm'].find(x=>MediaRecorder.isTypeSupported(x));}catch(_){fail('unsupported',generation);return;}
   if(!mime){fail('format',generation);return;}
+  const identity={id:window.TRAINER_AUTH.user.id,role:window.TRAINER_AUTH.user.role};
+  try{if(!await session(generation,identity))return;}catch(e){if(generation===sequence){state.phase='error';state.status=e.message||t('transcription_error');options.error(state.status);emit();}return;}
   try{
    const media=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
    if(generation!==sequence){media.getTracks().forEach(track=>track.stop());return;}
@@ -51,11 +63,13 @@ window.TrainerVoice=(()=>{
     const blob=new Blob(parts,{type:mime});if(!blob.size||blob.size>4*1024*1024){fail('empty',generation);return;}
     const pending=new AbortController();controller=pending;
     try{
+     if(!await session(generation,identity))return;
      const format=mime.includes('mp4')?'mp4':'webm';
      const r=await fetch(`/api/transcriptions?format=${format}&language=${encodeURIComponent(state.language)}`,{method:'POST',credentials:'same-origin',headers:{'Content-Type':mime,'X-CSRF-Token':window.TRAINER_AUTH.csrf},body:blob,signal:pending.signal});
      const data=await r.json();if(generation!==sequence)return;
-     if(!r.ok)throw new Error(window.TrainerI18n.error(data.error)||t('transcription_error'));
+     if(!r.ok)throw new Error(['AUTH_REQUIRED','CSRF_FAILED'].includes(data.error?.code)?t('session_required'):window.TrainerI18n.error(data.error)||t('transcription_error'));
      if(typeof data.text!=='string'||!data.text.trim())throw new Error(t('empty_text'));
+     if(!await session(generation,identity))return;
      controller=null;options.text(data.text);status('ready','ready');
     }catch(e){if(generation===sequence&&e.name!=='AbortError'){controller=null;state.phase='error';state.status=e.message||t('transcription_error');options.error(state.status);emit();}}
     finally{if(controller===pending)controller=null;}

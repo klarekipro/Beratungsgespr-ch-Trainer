@@ -1270,5 +1270,8 @@
   "learner35.legacy_step": "This saved review has no separate recommendation. The available action appears below.",
   "learner35.no_ai_step": "The next step is available without a new AI review.",
   "learner35.feedback_waiting": "The conversation has been submitted. Feedback appears after the mentor publishes it.",
-  "learner35.feedback_private": "Feedback has not been published. You can explicitly submit this attempt to the mentor."
+  "learner35.feedback_private": "Feedback has not been published. You can explicitly submit this attempt to the mentor.",
+  "dictation18.session_required": "Your sign-in session is no longer valid. Typed text remains on this page. Sign in to the same account in another tab, then retry dictation.",
+  "dictation18.session_changed": "The account changed in another tab. Typed text remains on this page. Return to the original account before dictating.",
+  "learning.mentor33.dictation_hint": "Audio is sent to OpenAI for transcription · up to 60 seconds. Stop recording and check the text before publishing feedback."
 }

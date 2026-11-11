@@ -307,3 +307,8 @@ html[data-theme="dark"] .mentor32-status.reviewed { color:#cbeed6; background:#2
 .learner35-viewer [data-feedback-text] { font-size:1.05rem; }
 @media(max-width:650px){.learner35-page .btn{max-width:100%;white-space:normal}.learner35-page .mentor32-tabs [role="tab"]{overflow-wrap:anywhere}}
 .learner35-viewer [data-feedback-text] { background:var(--soft); border-color:var(--line); color:var(--ink); }
+
+/* Mentor dictation uses the same compact microphone controls as the learner. */
+.mentor33-voice .voice-mic,.mentor33-voice .voice-stop,.mentor33-voice .voice-cancel {width:44px;height:44px;padding:10px;justify-content:center}
+.mentor33-voice .employee-menu {width:auto;flex:0 0 auto}
+.mentor33-voice #mentor-voice-hint {flex-basis:100%;font-size:.8rem}

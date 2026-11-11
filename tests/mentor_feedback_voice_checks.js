@@ -2,6 +2,7 @@
 // Actual shared recorder + mentor adapter, with synthetic media/timers/network only.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const labels=JSON.parse(fs.readFileSync('frontend/locales/en.json','utf8'));
+let authStatus=200,authUser={id:'mentor',role:'mentor_admin'},csrf='synthetic-csrf';
 let clock=0,next=1,permission='granted',latePermission,fetchResolve,holdFetch=false,requests=[],micRequests=0,streams=[],recorders=[];
 const timeouts=new Map(),intervals=new Map(),docEvents={},windowEvents={};
 class Event {constructor(type){this.type=type;}}
@@ -20,12 +21,12 @@ const nodes={'review-note':field,'review-form':form,'mentor-feedback-language':l
 const state={route:{role:'mentor',view:'review'},session:{id:'qa',review_status:'submitted',mode:'simple_actor'},noteDrafts:{}};
 const context={console,Blob,AbortController,Event,Uint8Array,Date:{now:()=>clock},setTimeout:(fn,ms)=>{const id=next++;timeouts.set(id,{fn,ms});return id;},clearTimeout:id=>timeouts.delete(id),setInterval:(fn,ms)=>{const id=next++;intervals.set(id,{fn,ms});return id;},clearInterval:id=>intervals.delete(id),
  navigator:{mediaDevices:{getUserMedia:async()=>{micRequests++;if(permission==='late')return new Promise(r=>{latePermission=r;});if(permission!=='granted')throw {name:permission};return media();}}},MediaRecorder:Recorder,
- fetch:async(url,opts)=>{requests.push({url,opts});if(holdFetch)return new Promise(r=>{fetchResolve=r;});return {ok:true,json:async()=>({text:'Dictated continuation.'})};},
- window:{MediaRecorder:Recorder,TRAINER_AUTH:{user:{id:'mentor',locale:'en'},csrf:'synthetic-csrf'},TrainerI18n:{t:k=>labels[k]||k},TrainerUI:{t:k=>k},createCompanyReference:()=>({}),matchMedia:()=>({matches:false,addEventListener(){}}),addEventListener:(name,fn)=>(windowEvents[name]??=[]).push(fn),scrollY:0,scrollTo(){},confirm:()=>true},
+ fetch:async(url,opts)=>{if(url==='/api/auth/me')return {ok:authStatus===200,json:async()=>({user:authUser,csrf})};requests.push({url,opts});if(holdFetch)return new Promise(r=>{fetchResolve=r;});return {ok:true,json:async()=>({text:'Dictated continuation.'})};},
+ window:{MediaRecorder:Recorder,TRAINER_AUTH:{user:{id:'mentor',role:'mentor_admin',locale:'en'},csrf:'synthetic-csrf'},TrainerI18n:{t:k=>labels[k]||k},TrainerUI:{t:k=>k},createCompanyReference:()=>({}),matchMedia:()=>({matches:false,addEventListener(){}}),addEventListener:(name,fn)=>(windowEvents[name]??=[]).push(fn),scrollY:0,scrollTo(){},confirm:()=>true},
  document:{body:{dataset:{},style:{}},documentElement:{dataset:{},style:{}},getElementById:id=>nodes[id]||null,querySelector:s=>s==='.mentor32-page'?{querySelectorAll:()=>[]}:null,addEventListener:(name,fn)=>(docEvents[name]??=[]).push(fn)},localStorage:{getItem:()=>null}};
 vm.createContext(context);vm.runInContext(fs.readFileSync('frontend/voice.js','utf8'),context);vm.runInContext(fs.readFileSync('frontend/learning.js','utf8'),context);
 const learning=context.window.createLearning({state,esc:String,api:()=>{throw Error('No automatic persistence');},render(){},toast(){}}),voice=context.window.TrainerVoice;
-const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
+const flush=async()=>{for(let i=0;i<40;i++)await Promise.resolve();};
 (async()=>{
  learning.mentorAfterRender();assert.equal(micRequests,0);assert.equal(requests.length,0);
  await learning.startMentorVoice();assert.equal(voice.phase(),'recording');assert.equal(buttons['learning-voice-stop'].hidden,false);assert.equal(publish.disabled,true);
@@ -34,12 +35,18 @@ const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
  assert.equal(requests[0].url,'/api/transcriptions?format=webm&language=en');assert.equal(requests[0].opts.method,'POST');
  await learning.startMentorVoice();const limit=[...timeouts.values()].find(t=>t.ms===60000);assert.ok(limit);clock=65000;for(const {fn} of intervals.values())fn();assert.equal(timer.textContent,'01:00 / 01:00');limit.fn();await flush();assert.equal(recorders.at(-1).state,'inactive');assert.ok(streams.at(-1).track.stops>0);
  for(const name of ['NotAllowedError','NotFoundError','NotReadableError']){permission=name;const before=field.value;await learning.startMentorVoice();assert.equal(voice.phase(),'error');assert.equal(status.role,'alert');assert.equal(field.value,before);assert.ok(status.textContent);}
- permission='late';const asking=learning.startMentorVoice();assert.equal(voice.phase(),'asking');learning.cancelMentorVoice();const late=media();latePermission(late);await asking;assert.ok(late.track.stops>0);assert.equal(voice.phase(),'idle');
+ permission='late';const asking=learning.startMentorVoice();assert.equal(voice.phase(),'asking');await flush();learning.cancelMentorVoice();const late=media();latePermission(late);await asking;assert.ok(late.track.stops>0);assert.equal(voice.phase(),'idle');
  permission='granted';await learning.startMentorVoice();const beforeLeave=requests.length;learning.selectMentorTab('ai');await flush();assert.ok(streams.at(-1).track.stops>0);assert.equal(requests.length,beforeLeave);
  holdFetch=true;await learning.startMentorVoice();voice.stop();await flush();assert.equal(voice.phase(),'transcribing');const before=field.value;learning.cancelMentorVoice();assert.equal(requests.at(-1).opts.signal.aborted,true);fetchResolve({ok:true,json:async()=>({text:'Late result must not insert.'})});await flush();assert.equal(field.value,before);
  holdFetch=false;await learning.startMentorVoice();for(const fn of windowEvents.pagehide||[])fn();await flush();assert.ok(streams.at(-1).track.stops>0);assert.equal(voice.phase(),'idle');
  field.value='X'.repeat(5990);await learning.startMentorVoice();voice.stop();await flush();assert.equal(field.value,'X'.repeat(5990));
  context.window.MediaRecorder=null;const beforeUnsupported=micRequests;await learning.startMentorVoice();assert.equal(voice.phase(),'error');assert.equal(micRequests,beforeUnsupported);context.window.MediaRecorder=Recorder;
+ // Session loss and account switches must be blocked before any paid request.
+ field.value='Unsaved mentor feedback';let count=requests.length,mics=micRequests;
+ authStatus=401;await learning.startMentorVoice();assert.equal(micRequests,mics);assert.equal(requests.length,count);assert.equal(field.value,'Unsaved mentor feedback');
+ authStatus=200;authUser={id:'employee',role:'employee'};await learning.startMentorVoice();assert.equal(micRequests,mics);assert.equal(requests.length,count);
+ authUser={id:'mentor',role:'mentor_admin'};csrf='refreshed-csrf';await learning.startMentorVoice();authUser={id:'employee',role:'employee'};voice.stop();await flush();assert.equal(requests.length,count);assert.equal(field.value,'Unsaved mentor feedback');
+ authUser={id:'mentor',role:'mentor_admin'};await learning.startMentorVoice();voice.stop();await flush();assert.equal(requests.at(-1).opts.headers['X-CSRF-Token'],'refreshed-csrf');assert.equal(requests.length,count+1);
  state.session.review_status='reviewed';const beforePublished=micRequests;await learning.startMentorVoice();assert.equal(micRequests,beforePublished);assert.ok(requests.every(r=>r.url.startsWith('/api/transcriptions?')));
  console.log('A33 voice: no auto start; real shared recorder start/stop/60s, permission errors, append latest typed text, late permission/result cancellation, navigation cleanup, published guard — OK');
 })().catch(e=>{console.error(e);process.exitCode=1;});

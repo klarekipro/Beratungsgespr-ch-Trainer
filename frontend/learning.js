@@ -1,5 +1,5 @@
 "use strict";
-window.createLearning = ({state,api,esc,render,toast}) => {
+window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
  const t=k=>window.TrainerI18n.t('learning.'+k), E=esc;
  let results={reviews:[],certificates:[]},history=[],materials=null,guidance=null,preview=null,cert=null,busy=false;
  const locale=()=>window.TRAINER_AUTH.user.locale||'de';
@@ -203,8 +203,9 @@ window.createLearning = ({state,api,esc,render,toast}) => {
  }
  function mentorVoiceControls(s){
   const language=mentorView(s).voiceLanguage||locale();
-  return `<div class="mentor33-voice"><button type="button" class="btn small-btn" data-action="learning-voice-start">${V('start')}</button><button type="button" class="btn small-btn" data-action="learning-voice-stop" hidden>${V('stop')}</button><button type="button" class="btn small-btn" data-action="learning-voice-cancel" hidden>${V('cancel')}</button>
-   <label for="mentor-feedback-language">${P('dictation_language')}</label><select id="mentor-feedback-language">${['de','en','ru'].map(l=>`<option value="${l}" ${language===l?'selected':''}>${l.toUpperCase()}</option>`).join('')}</select>
+  return `<div class="mentor33-voice"><button type="button" class="btn voice-mic" data-action="learning-voice-start" title="${E(V('start'))}" aria-label="${E(V('start'))}">${icon('mic')}</button><button type="button" class="btn kc-btn--rec voice-stop" data-action="learning-voice-stop" hidden title="${E(V('stop'))}" aria-label="${E(V('stop'))}"><span aria-hidden="true">■</span></button><button type="button" class="btn voice-cancel" data-action="learning-voice-cancel" hidden title="${E(V('cancel'))}" aria-label="${E(V('cancel'))}"><span aria-hidden="true">×</span></button>
+   <label class="sr-only" for="mentor-feedback-language">${P('dictation_language')}</label><select id="mentor-feedback-language">${['de','en','ru'].map(l=>`<option value="${l}" ${language===l?'selected':''}>${{de:'Deutsch',en:'English',ru:'Русский'}[l]}</option>`).join('')}</select>
+   <span id="mentor-voice-meter" class="voice-meter" role="img" aria-label="${E(V('meter'))}" hidden>${'<i></i>'.repeat(7)}</span><span id="mentor-voice-hint" class="caption">${E(P('dictation_hint'))}</span>
    <span id="mentor-voice-timer" class="voice-timer" role="timer" aria-live="off" hidden></span><span id="mentor-voice-status" role="status" aria-live="polite"></span></div>`;
  }
  function mentorVoiceBusy(){return mentorVoiceOwner!==null&&!!window.TrainerVoice?.busy();}
@@ -219,6 +220,7 @@ window.createLearning = ({state,api,esc,render,toast}) => {
   }
   const status=document.getElementById('mentor-voice-status');if(status){status.textContent=active?v.status:'';status.setAttribute('role',phase==='error'?'alert':'status');}
   const timer=document.getElementById('mentor-voice-timer');if(timer){timer.hidden=phase!=='recording';timer.textContent=`${String(Math.floor(v.elapsed/60)).padStart(2,'0')}:${String(v.elapsed%60).padStart(2,'0')} / 01:00`;}
+  const meter=document.getElementById('mentor-voice-meter');if(meter){meter.hidden=phase!=='recording'||!v.meterAvailable;meter.querySelectorAll('i').forEach((bar,i)=>{bar.style.height=(3+v.level*[10,18,24,29,24,18,10][i])+'px';});}
   const language=document.getElementById('mentor-feedback-language');if(language)language.disabled=working||state.saving||state.draftSaving;
   form.querySelectorAll('[data-action="learning-save-draft"],[type="submit"]').forEach(b=>{b.disabled=!!(working||state.saving||state.draftSaving);});
  }
