@@ -165,6 +165,19 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
             w.put('analysis',key,record)
             return {'analysis':review_service.public_analysis(record,u['role']=='mentor_admin',s,w.context(s))}
 
+    @app.get('/api/mentor/learning/reviews/{sid}/analysis-export.{format}',dependencies=mentor)
+    async def export_mentor_analysis(sid:str,format:str,language:str='de'):
+        s=get_session(sid)
+        if format not in ('pdf','txt'):reject('Unknown format',404)
+        record=w.get('analysis',sid+':mentor')
+        if not record or not record.get('result'):reject('Saved mentor analysis not found',404)
+        analysis=review_service.public_analysis(record,True,s,w.context(s))
+        from .learning_exports import mentor_analysis_text,pdf_lines
+        text=mentor_analysis_text(s,analysis,language)
+        content=pdf_lines(text.splitlines()[0],text.splitlines()[1:]) if format=='pdf' else text
+        return Response(content,media_type='application/pdf' if format=='pdf' else 'text/plain; charset=utf-8',
+                        headers={'Content-Disposition':f'attachment; filename="mentor-review.{format}"','Cache-Control':'private, no-store'})
+
     @app.get('/api/mentor/learning/guidance/{sid}',dependencies=mentor)
     async def guidance(sid:str):return {'guidance':w.get('guidance',sid) or DEFAULT_GUIDANCE}
     @app.put('/api/mentor/learning/guidance/{sid}',dependencies=mentor)

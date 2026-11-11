@@ -41,3 +41,39 @@ class MentorReviewUX(unittest.TestCase):
         self.assertEqual(self.app.state.workflow.context(self.app.state.store.get_session(sid)),snapshot)
         self.assertEqual(len(self.analyst.calls),calls)
         self.assertEqual(self.app.state.workflow.all('certificate'),[])
+
+    def test_private_analysis_exports_are_read_only_and_mentor_only(self):
+        sid,private,missing=self.attempt(),self.attempt(),self.attempt()
+        self.a.post('/api/sessions/'+sid+'/submit');self.a.post('/api/sessions/'+missing+'/submit')
+        self.m.post('/api/learning/sessions/'+sid+'/analysis',json={'audience':'mentor'})
+        workflow=self.app.state.workflow
+        retained=workflow.get('analysis',sid+':mentor');retained['attempt_status']='error'
+        workflow.put('analysis',sid+':mentor',retained)
+        workflow.put('analysis',private+':mentor',copy.deepcopy(retained))
+        workflow.put('analysis',missing+':learner',copy.deepcopy(retained))
+        calls=len(self.analyst.calls)
+        before_session=copy.deepcopy(self.app.state.store.get_session(sid))
+        before_records=copy.deepcopy(workflow.all('analysis'))
+        before_context=copy.deepcopy(workflow.context(before_session))
+        for language in ('de','en','ru'):
+            for format in ('pdf','txt'):
+                url=f'/api/mentor/learning/reviews/{sid}/analysis-export.{format}?language={language}'
+                response=self.m.get(url);self.assertEqual(response.status_code,200,response.text if format=='txt' else '')
+                self.assertIn('no-store',response.headers['Cache-Control'])
+                self.assertIn('attachment',response.headers['Content-Disposition'])
+                if format=='pdf':self.assertTrue(response.content.startswith(b'%PDF'))
+                else:
+                    self.assertIn('No order confirmed.',response.text)
+                    self.assertIn('Customer supplied information.',response.text)
+                    self.assertNotIn('review22.summary',response.text)
+                self.assertEqual(self.a.get(url).status_code,403)
+                self.assertEqual(self.b.get(url).status_code,403)
+        for target in (private,missing):
+            self.assertEqual(self.m.get(f'/api/mentor/learning/reviews/{target}/analysis-export.txt').status_code,404)
+        self.assertEqual(self.m.get(f'/api/mentor/learning/reviews/{sid}/analysis-export.json').status_code,404)
+        self.assertEqual(self.app.state.store.get_session(sid),before_session)
+        self.assertEqual(workflow.all('analysis'),before_records)
+        self.assertEqual(workflow.context(self.app.state.store.get_session(sid)),before_context)
+        self.assertEqual(len(self.analyst.calls),calls)
+        learner=self.a.get('/api/sessions/'+sid).json()['session']
+        self.assertNotIn('mentor_analysis',learner);self.assertNotIn('decision_draft',learner)

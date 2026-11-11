@@ -72,6 +72,31 @@ def report_text(s,language='de'):
         for fact in sc['facts']:lines += [fact['label'],fact['value']]
     return '\n'.join(lines)
 
+def mentor_analysis_text(session,analysis,language='de'):
+    """Read-only private export; never substitute learner analysis or today's sources."""
+    import json
+    from pathlib import Path
+    language=lang(language)
+    labels=json.loads((Path(__file__).resolve().parents[3]/'frontend/locales'/f'{language}.json').read_text())
+    t=lambda key:labels.get(key,key)
+    r=analysis['result']
+    lines=[t('mentor32.ai'),t('mentor32.private_ai'),session['scenario_snapshot']['title'],analysis.get('completed_at','')]
+    if analysis.get('attempt_status')=='error':lines.append(t('review22.previous_analysis'))
+    sections=r.get('sections') or [{'title':k,'text':'\n'.join(r[k]) if isinstance(r[k],list) else r[k]} for k in ('summary','actual_outcome','strengths','gaps','next_attempt') if k in r]
+    for section in sections:
+        lines += ['',t('mentor32.summary') if section['title']=='summary' else labels.get('review22.'+section['title'],section['title']),section['text']]
+        for index in section.get('messages',[]):
+            if isinstance(index,int) and 0<=index<len(session['messages']):lines.append(f"[{index+1}] "+session['messages'][index]['text'])
+    def evidence(items):return [item.get('quote','') for item in items]
+    for stage in r.get('stages',[]):
+        lines += ['',t('review22.'+stage['key']),t('review22.'+stage['status']),stage['observation'],*evidence(stage.get('evidence',[]))]
+    for claim in r.get('claim_checks',[]):
+        lines += ['',t('review23.conditions'),claim['statement'],t('review23.verdict_'+claim['verdict']),claim['observation'],*evidence(claim.get('evidence',[]))]
+        lines += [item.get('quote') or t('review23.source_missing') for item in claim.get('material_evidence',[])]
+    advice=r.get('recommendation')
+    if advice:lines += ['',t('review23.title'),t('review23.'+advice['action']),advice['explanation'],*advice.get('priorities',[]),*evidence(advice.get('evidence',[])),t('review23.advisory')]
+    return '\n'.join(str(line) for line in lines)
+
 def pdf_lines(title, lines, headings=()):
     from reportlab.platypus import SimpleDocTemplate,Paragraph,Spacer
     from reportlab.lib.styles import ParagraphStyle

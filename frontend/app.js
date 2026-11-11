@@ -397,7 +397,9 @@
     const draft=state.learningDrafts?.[s.id]||s.decision_draft;
     const a=state.assessmentDrafts?.[s.id]||(draft?.assessment?.stages?draft.assessment:null)||report.assessment;
     const choices=(values,value,prefix)=>values.map(x=>`<option value="${x}" ${value===x?'selected':''}>${esc(reviewText(prefix+x))}</option>`).join("");
-    return `<div class="gap-bottom"><p class="caption">${reviewText("instructions")}</p>${REVIEW_STAGES.map((id,i)=>`<label for="review-${id}">${esc(window.TrainerI18n.systemText(report.stages[i].label))}</label><select id="review-${id}">${choices(REVIEW_RATINGS,a.stages[id],"rating.")}</select>`).join("")}<label for="review-commercial">${reviewText("commercial")}</label><select id="review-commercial"><option value="">${reviewText("unset")}</option>${choices(COMMERCIAL_OUTCOMES,a.commercial_outcome,"outcome.")}</select><label for="review-fit">${reviewText("company_fit")}</label><select id="review-fit">${choices(COMPANY_FIT,a.company_fit,"fit.")}</select></div>`;
+    return `<div class="mentor32-assessment">${REVIEW_STAGES.map((id,i)=>`<div><label for="review-${id}">${esc(window.TrainerI18n.systemText(report.stages[i].label))}</label><select id="review-${id}">${choices(REVIEW_RATINGS,a.stages[id],"rating.")}</select></div>`).join("")}
+      <div><label for="review-commercial">${reviewText("commercial")}</label><select id="review-commercial"><option value="">${reviewText("unset")}</option>${choices(COMMERCIAL_OUTCOMES,a.commercial_outcome,"outcome.")}</select></div>
+      <div><label for="review-fit">${reviewText("company_fit")}</label><select id="review-fit">${choices(COMPANY_FIT,a.company_fit,"fit.")}</select></div></div>`;
   }
   function reportPage(s, mentor) {
     if(!mentor)return learning.employeeReport(s);

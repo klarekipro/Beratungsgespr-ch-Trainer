@@ -1244,5 +1244,14 @@
   "mentor32.goal_outcome": "Итог по учебной цели",
   "mentor32.save_draft": "Сохранить черновик",
   "mentor32.summary": "Краткий итог",
-  "mentor32.draft_changed": "Есть несохранённые изменения."
+  "mentor32.draft_changed": "Есть несохранённые изменения.",
+  "mentorNav.evidence_tab": "Беседа и доказательства",
+  "mentorNav.awaiting": "Ожидает проверки",
+  "mentorNav.reviewed": "Проверено",
+  "mentorNav.open_ai": "Открыть полный ИИ-разбор",
+  "mentorNav.open_transcript": "Открыть транскрипт",
+  "mentorNav.open_stages": "Открыть доказательства по трём этапам",
+  "mentorNav.advanced": "Дополнительно / администрирование",
+  "mentorNav.saved_observations": "Ранее сохранённые наблюдения (только чтение)",
+  "mentorNav.retry_advanced": "Повторный запуск доступен в разделе «Дополнительно / администрирование»."
 }

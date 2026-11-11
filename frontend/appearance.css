@@ -231,3 +231,48 @@ body:has(.review22-page) .menu-btn{background:var(--surface);color:var(--ink);bo
  .mentor32-page .actions { flex-wrap: wrap; }
  .mentor32-page .actions > .btn { max-width: 100%; white-space: normal; }
 }
+
+/* A32 follow-up: tabs retain the original form nodes and their values. */
+.mentor32-page [hidden] { display:none !important; }
+.mentor32-heading { margin-block:12px 16px; }
+.mentor32-heading h1 { font-size:clamp(1.2rem,2.5vw,1.8rem); line-height:1.25; margin-bottom:10px; }
+.mentor32-objective { font-size:.95rem; margin-block:8px; }
+.mentor32-status { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid; border-radius:20px; font-size:.85rem; font-weight:650; }
+.mentor32-status.awaiting { color:#614000; background:#fff0cf; border-color:#9b6f13; }
+.mentor32-status.reviewed { color:#17452c; background:#e5f3e8; border-color:#4e7b5b; }
+html[data-theme="dark"] .mentor32-status.awaiting { color:#ffe4a0; background:#42341b; border-color:#b48d43; }
+html[data-theme="dark"] .mentor32-status.reviewed { color:#cbeed6; background:#203c2e; border-color:#709c80; }
+.mentor32-tabs { display:flex; gap:4px; padding:4px; margin-bottom:16px; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
+.mentor32-tabs [role="tab"] { flex:1; min-width:0; padding:10px 12px; border:2px solid transparent; border-radius:9px; background:transparent; color:var(--ink); font:inherit; font-weight:600; cursor:pointer; }
+.mentor32-tabs [aria-selected="true"] { border-color:var(--ink); background:var(--surface-soft,var(--surface)); text-decoration:underline; text-underline-offset:5px; }
+.mentor32-page [role="tabpanel"] > .card + .card { margin-top:16px; }
+.mentor32-summary { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-block:16px; }
+.mentor32-documents { display:grid; gap:12px; justify-items:start; }
+.mentor32-history { margin-top:16px; }
+.mentor32-history h3 { font-size:1rem; }
+.mentor32-history ul { list-style:none; margin:10px 0 0; padding:0; max-height:160px; overflow:auto; }
+.mentor32-history li { display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px; padding:8px 0; border-bottom:1px solid var(--line); }
+.mentor32-history li span { font-size:.8rem; color:var(--muted); }
+.mentor32-assessment { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 16px; margin-top:14px; }
+.mentor32-assessment label { display:block; margin-bottom:4px; font-size:.9rem; }
+.mentor32-page #review-note { min-height:110px; }
+.mentor32-secondary { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:12px; margin-top:16px; }
+.mentor32-secondary .mentor32-certificates { margin-top:0; }
+.mentor32-secondary > details { font-size:.9rem; padding:14px 18px; }
+.mentor32-viewer { position:fixed; inset:0; margin:0; width:100vw; height:100dvh; max-width:none; max-height:none; padding:0; border:0; background:var(--surface); color:var(--ink); }
+.mentor32-viewer[open] { display:flex; flex-direction:column; }
+.mentor32-viewer > header { display:flex; align-items:center; flex-wrap:wrap; gap:10px 18px; padding:16px 24px; border-bottom:1px solid var(--line); background:var(--surface); flex:none; }
+.mentor32-viewer > header h2 { flex:1; margin:0; font-size:1.2rem; }
+.mentor32-viewer > header .actions { flex-wrap:wrap; }
+.mentor32-viewer-body { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:24px max(20px,calc((100vw - 1000px)/2)); }
+.mentor32-viewer-body p,.mentor32-viewer-body blockquote { white-space:pre-wrap; overflow-wrap:anywhere; }
+.mentor32-viewer-body blockquote { margin:12px 0; padding:12px 16px; border-left:3px solid var(--line); }
+.mentor32-viewer-body blockquote .text-link { display:block; }
+.mentor32-viewer-body .transcript { max-height:none; overflow:visible; }
+@media (max-width:650px) {
+ .mentor32-tabs [role="tab"] { font-size:.82rem; padding:8px 4px; }
+ .mentor32-assessment,.mentor32-secondary { grid-template-columns:1fr; }
+ .mentor32-viewer > header { padding:12px; }
+ .mentor32-viewer > header h2 { flex-basis:100%; }
+ .mentor32-viewer-body { padding:16px; }
+}

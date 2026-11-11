@@ -1244,5 +1244,14 @@
   "mentor32.goal_outcome": "Learning-goal outcome",
   "mentor32.save_draft": "Save draft",
   "mentor32.summary": "Summary",
-  "mentor32.draft_changed": "There are unsaved changes."
+  "mentor32.draft_changed": "There are unsaved changes.",
+  "mentorNav.evidence_tab": "Conversation & Evidence",
+  "mentorNav.awaiting": "Awaiting review",
+  "mentorNav.reviewed": "Reviewed",
+  "mentorNav.open_ai": "Open full AI review",
+  "mentorNav.open_transcript": "Open transcript",
+  "mentorNav.open_stages": "Open detailed three-phase evidence",
+  "mentorNav.advanced": "Advanced / Administration",
+  "mentorNav.saved_observations": "Previously saved observations (read-only)",
+  "mentorNav.retry_advanced": "Run the analysis again from Advanced / Administration."
 }

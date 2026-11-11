@@ -1244,5 +1244,14 @@
   "mentor32.goal_outcome": "Erreichen des Lernziels",
   "mentor32.save_draft": "Entwurf speichern",
   "mentor32.summary": "Zusammenfassung",
-  "mentor32.draft_changed": "Es gibt ungespeicherte Änderungen."
+  "mentor32.draft_changed": "Es gibt ungespeicherte Änderungen.",
+  "mentorNav.evidence_tab": "Gespräch und Belege",
+  "mentorNav.awaiting": "Prüfung ausstehend",
+  "mentorNav.reviewed": "Geprüft",
+  "mentorNav.open_ai": "Vollständige KI-Analyse öffnen",
+  "mentorNav.open_transcript": "Transkript öffnen",
+  "mentorNav.open_stages": "Belege zu den drei Phasen öffnen",
+  "mentorNav.advanced": "Erweitert / Administration",
+  "mentorNav.saved_observations": "Bereits gespeicherte Beobachtungen (nur lesen)",
+  "mentorNav.retry_advanced": "Ein erneuter Start ist unter „Erweitert / Administration“ verfügbar."
 }
