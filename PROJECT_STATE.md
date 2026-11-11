@@ -7,12 +7,12 @@
 | Параметр | Проверенное состояние |
 |---|---|
 | Рабочая папка | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech` |
-| Рабочая ветка | `codex/a36-mentor-dictation` (от A35 `495407e`) |
-| Версия приложения | `0.14.1-mentor-dictation` — A36 активирован на8100; реальная диктовка остаётся в приёмке |
-| Коммит установленного кода A36 | `1ece918706754e8eb9dec4202bd04b99e49107ad` |
-| Git | A36 `1ece918` установлен; последующая фиксация только документирует активацию. Main не менялся |
+| Рабочая ветка | `codex/a37-mentor-feedback-composer` (от A36 `81eb907`) |
+| Версия приложения | `0.14.1-mentor-dictation` — frontend A37 активирован на8100 |
+| Коммит установленного кода A37 | `fe28682f90b1833b6ceebd70217cd63770a3f325` |
+| Git | A37 `fe28682` установлен; последующая фиксация только документирует активацию. Main не менялся |
 | Адрес | `http://127.0.0.1:8100` |
-| Процесс на 8100 | Python, PID `31755`, штатный запуск A36 11.11.2026 |
+| Процесс на 8100 | Python, PID `32743`, штатный запуск A37 11.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |
 | cwd процесса | Основная рабочая папка, указанная выше |
 | База | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard/trainer.sqlite3` |
@@ -466,3 +466,5 @@ Textarea и прежние voice controls теперь в одной рамке:
 Два существующих целевых JS-checks mentor_feedback_voice_checks/mentor_review_ux_checks, node syntax, git diff --check — OK. Chrome на synthetic8101: запись→stop→добавление к typed text, кнопки внутри рамки, правильная RU-подсказка, light/dark; снимки runtime/a37/composer-{light,dark}.png вне Git. Реальный микрофон/платные вызовы не запускались. Рабочие отзывы/беседы не редактировались. Версия backend остаётся0.14.1; frontend A37 активируется штатно с backup/сверкой. Main/merge/push не затронуты.
 
 Ручная проверка: сохранить имеющийся несохранённый отзыв перед обновлением страницы; открыть проверку → Решение наставника. Микрофон и язык должны находиться внутри рамки поля. Проверить ввод/смену вкладки/возврат, light/dark и нужный язык диктовки. Реальный явный stop/transcribe может быть платным; без него достаточно визуальной приёмки. Safari и узкое мобильное окно отдельно не проверены.
+
+Активация A37: код `fe28682f90b1833b6ceebd70217cd63770a3f325`, backend0.14.1, PID32743, frontend revision `d6a451279d31296e`. Backup API `runtime/a37/before-install.sqlite3`; все строки7 защищённых таблиц совпали после штатного запуска,22 frontend-файла побайтно совпали с диском. Квитанция runtime/a37/final-verification.json вне Git.8101 остановлен. Изменены frontend/learning.js, frontend/appearance.css, frontend/locales/{de,en,ru}.json, PROJECT_STATE.md, CONTINUE_FROM_HERE_RU.md. Последующая фиксация только документационная, новый restart не нужен.
