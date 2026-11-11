@@ -44,7 +44,9 @@ another scenario generically from available choices, never assign/name one or ch
 Material_evidence wire objects contain only path, never quote. Select the most specific relevant
 string field in company or saved_materials. Do not cite an absent source: use unsupported/uncertain
 with material_evidence=[] where appropriate. The server preserves exact source text.
-Use one or two sentences for the recommendation explanation and brief learning priorities.
+Use one or two sentences for the recommendation explanation. Return priorities as an array of
+zero, one or two brief strings (maximum 300 characters each), never three. Do not fill optional
+priorities to populate the section. Follow the schema count/text limits for every field.
 All choices remain voluntary; final assessment belongs to the mentor. No separate action is
 performed by a recommendation. Never recommend automatic submission or certification.
 CALIBRATION — apply these general criteria to successful and flawed consultations alike:
@@ -107,16 +109,33 @@ def payload(s,ctx,audience,language):
     if audience=='mentor':data['hidden_dossier']=s['scenario_snapshot']
     return data
 
+# Provider-facing bounds mirror canonical validation; cross-field/source checks stay server-side.
+PRIORITY_MAX_ITEMS=2
+PRIORITY_MAX_LENGTH=300
+
 def schema():
-    text={'type':'string'}
-    evidence={'type':'object','additionalProperties':False,'required':['message_id','quote'],'properties':{'message_id':text,'quote':text}}
-    stage={'type':'object','additionalProperties':False,'required':['key','status','observation','evidence'],'properties':{'key':{'type':'string','enum':list(STAGES)},'status':{'type':'string','enum':['evidence_found','no_clear_evidence','insufficient_evidence']},'observation':text,'evidence':{'type':'array','items':evidence}}}
-    props={k:text for k in ('summary','actual_outcome')}
-    props.update({k:{'type':'array','items':text} for k in ('strengths','gaps','next_attempt')});props['stages']={'type':'array','items':stage}
-    material={'type':'object','additionalProperties':False,'required':['path','quote'],'properties':{'path':text,'quote':text}}
-    reference={'type':'object','additionalProperties':False,'required':['section','index'],'properties':{'section':{'type':'string','enum':['strengths','gaps','next_attempt','stages']},'index':{'type':'integer'}}}
-    props['claim_checks']={'type':'array','items':{'type':'object','additionalProperties':False,'required':['statement','verdict','observation','evidence','material_evidence'],'properties':{'statement':text,'verdict':{'type':'string','enum':['communicated','supported','unsupported','contradicted','uncertain']},'observation':text,'evidence':{'type':'array','items':evidence},'material_evidence':{'type':'array','items':material}}}}
-    props['recommendation']={'type':'object','additionalProperties':False,'required':['action','explanation','priorities','finding_refs','evidence'],'properties':{'action':{'type':'string','enum':['submit_to_mentor','repeat_scenario','try_another_scenario']},'explanation':text,'priorities':{'type':'array','items':text},'finding_refs':{'type':'array','items':reference},'evidence':{'type':'array','items':evidence}}}
+    def text(limit=None):
+        value={'type':'string','minLength':1}
+        if limit is not None:value['maxLength']=limit
+        return value
+    def array(items,minimum,maximum):return {'type':'array','items':items,'minItems':minimum,'maxItems':maximum}
+    evidence={'type':'object','additionalProperties':False,'required':['message_id','quote'],'properties':{'message_id':text(120),'quote':text()}}
+    stage={'type':'object','additionalProperties':False,'required':['key','status','observation','evidence'],'properties':{
+        'key':{'type':'string','enum':list(STAGES)},'status':{'type':'string','enum':['evidence_found','no_clear_evidence','insufficient_evidence']},
+        'observation':text(3000),'evidence':array(evidence,0,12)}}
+    props={k:text(4000) for k in ('summary','actual_outcome')}
+    props.update({k:array(text(2000),1 if k=='strengths' else 0,8) for k in ('strengths','gaps','next_attempt')})
+    props['stages']=array(stage,3,3)
+    material={'type':'object','additionalProperties':False,'required':['path','quote'],'properties':{'path':text(),'quote':text()}}
+    reference={'type':'object','additionalProperties':False,'required':['section','index'],'properties':{
+        'section':{'type':'string','enum':['strengths','gaps','next_attempt','stages']},'index':{'type':'integer','minimum':0,'maximum':7}}}
+    claim={'type':'object','additionalProperties':False,'required':['statement','verdict','observation','evidence','material_evidence'],'properties':{
+        'statement':text(600),'verdict':{'type':'string','enum':['communicated','supported','unsupported','contradicted','uncertain']},
+        'observation':text(1200),'evidence':array(evidence,1,4),'material_evidence':array(material,0,3)}}
+    props['claim_checks']=array(claim,0,8)
+    props['recommendation']={'type':'object','additionalProperties':False,'required':['action','explanation','priorities','finding_refs','evidence'],'properties':{
+        'action':{'type':'string','enum':['submit_to_mentor','repeat_scenario','try_another_scenario']},'explanation':text(600),
+        'priorities':array(text(PRIORITY_MAX_LENGTH),0,PRIORITY_MAX_ITEMS),'finding_refs':array(reference,1,4),'evidence':array(evidence,1,4)}}
     return {'type':'object','additionalProperties':False,'required':list(props),'properties':props}
 
 class ReviewValidationError(ValueError):
@@ -248,8 +267,9 @@ def validate_learning_advice(result,s,ctx):
     advice=result['recommendation'];obj(advice,['action','explanation','priorities','finding_refs','evidence'])
     if advice['action'] not in ('submit_to_mentor','repeat_scenario','try_another_scenario'):raise ValueError('advice action')
     text(advice['explanation'],600)
-    if not isinstance(advice['priorities'],list) or len(advice['priorities'])>2:raise ValueError('advice priorities')
-    for priority in advice['priorities']:text(priority,300)
+    if not isinstance(advice['priorities'],list) or len(advice['priorities'])>PRIORITY_MAX_ITEMS:raise ReviewValidationError('advice priorities','recommendation/priorities','recommendation_validation')
+    for i,priority in enumerate(advice['priorities']):
+        if not isinstance(priority,str) or not priority.strip() or len(priority)>PRIORITY_MAX_LENGTH:raise ReviewValidationError('advice text',f'recommendation/priorities/{i}','recommendation_validation')
     evidence(advice['evidence'])
     refs=advice['finding_refs']
     if not isinstance(refs,list) or not 1<=len(refs)<=4:raise ValueError('advice findings')

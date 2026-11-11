@@ -1,0 +1,10 @@
+{
+  "action": "submit_to_mentor",
+  "explanation": "Die freiwillige nächste Lernhandlung bleibt beim Mitarbeiter; der Mentor beurteilt abschließend.",
+  "priorities": [
+    "In einer neuen Übung klar zwischen bekannten Bedingungen und fehlenden Angaben unterscheiden.",
+    "Preisakzeptanz und Zustimmung zu einem Auftrag weiterhin getrennt bestätigen.",
+    "Den begründeten nächsten Schritt zum Gesprächsende knapp zusammenfassen."
+  ],
+  "finding_refs": [{"section": "strengths", "index": 0}]
+}
