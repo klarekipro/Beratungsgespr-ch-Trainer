@@ -1273,5 +1273,5 @@
   "learner35.feedback_private": "Noch kein Feedback veröffentlicht. Sie können diesen Versuch beim Mentor einreichen.",
   "dictation18.session_required": "Die Anmeldung ist nicht mehr gültig. Der eingegebene Text bleibt auf dieser Seite erhalten. Melden Sie sich in einem anderen Tab mit demselben Konto an und starten Sie die Diktierfunktion erneut.",
   "dictation18.session_changed": "Das Konto wurde in einem anderen Tab gewechselt. Der eingegebene Text bleibt auf dieser Seite erhalten. Melden Sie sich vor dem Diktieren wieder mit dem ursprünglichen Konto an.",
-  "learning.mentor33.dictation_hint": "Audio wird zur Transkription an OpenAI gesendet · bis zu 60 Sekunden. Stoppen Sie die Aufnahme und prüfen Sie den Text vor der Veröffentlichung des Feedbacks."
+  "mentor33.dictation_hint": "Audio wird zur Transkription an OpenAI gesendet · bis zu 60 Sekunden. Stoppen Sie die Aufnahme und prüfen Sie den Text vor der Veröffentlichung des Feedbacks."
 }

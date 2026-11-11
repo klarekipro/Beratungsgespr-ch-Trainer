@@ -312,3 +312,12 @@ html[data-theme="dark"] .mentor32-status.reviewed { color:#cbeed6; background:#2
 .mentor33-voice .voice-mic,.mentor33-voice .voice-stop,.mentor33-voice .voice-cancel {width:44px;height:44px;padding:10px;justify-content:center}
 .mentor33-voice .employee-menu {width:auto;flex:0 0 auto}
 .mentor33-voice #mentor-voice-hint {flex-basis:100%;font-size:.8rem}
+
+/* One input frame: editable feedback above its microphone and language tools. */
+.mentor37-field {border:1px solid var(--line);border-radius:12px;background:var(--surface,#fff);overflow:visible}
+.mentor37-field:focus-within {outline:2px solid var(--green);outline-offset:2px}
+.mentor37-field #review-note {display:block;width:100%;border:0;border-radius:12px 12px 0 0;background:transparent;box-shadow:none;outline:none;margin:0;min-height:100px;resize:vertical}
+.mentor37-field .mentor33-voice {margin:0;padding:8px 12px 12px;gap:8px}
+#mentor-voice-hint {font-size:.8rem;margin:8px 0 0}
+#mentor-voice-status {font-size:.85rem;margin:6px 0 0}
+#mentor-voice-status:empty {display:none}

@@ -182,8 +182,9 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
    ${s.review_status==='not_submitted'?`<p>${t('history_readonly')}</p>`:''}
    <form id="review-form"><fieldset ${disabled?'disabled':''}><label for="learning-goal">${M('goal_outcome')}</label><select id="learning-goal">${options(['not_reviewed','achieved','partly','not_achieved'],d.goal||'not_reviewed')}</select>
    ${s.mode==='simple_actor'?reviewControls(s,report):''}
-   <label for="review-note">${M('feedback')}</label><textarea id="review-note" class="review-textarea" rows="4" maxlength="6000" required>${E(state.noteDrafts[s.id]??d.note??s.review_note??'')}</textarea>
-   ${mentorVoiceControls(s)}
+   <label for="review-note">${M('feedback')}</label><div class="mentor37-field"><textarea id="review-note" class="review-textarea" rows="4" maxlength="6000" required>${E(state.noteDrafts[s.id]??d.note??s.review_note??'')}</textarea>
+   ${mentorVoiceControls(s)}</div>
+   <p id="mentor-voice-hint" class="caption">${E(P('dictation_hint'))}</p><p id="mentor-voice-status" role="status" aria-live="polite"></p>
    <div class="actions gap-top"><button type="button" class="btn" data-action="learning-save-draft">${state.draftSaving?M('saving'):M('save_draft')}</button><button type="submit" class="btn primary">${state.saving?M('saving'):M('publish')}</button></div>
    <p id="learning-draft-status" role="status" aria-live="polite">${state.draftSavedFor===s.id||d.saved_at&&(!r||d.saved_at>r.published_at)?M('draft_saved'):''}</p></fieldset></form></section>
    `;
@@ -205,8 +206,8 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
   const language=mentorView(s).voiceLanguage||locale();
   return `<div class="mentor33-voice"><button type="button" class="btn voice-mic" data-action="learning-voice-start" title="${E(V('start'))}" aria-label="${E(V('start'))}">${icon('mic')}</button><button type="button" class="btn kc-btn--rec voice-stop" data-action="learning-voice-stop" hidden title="${E(V('stop'))}" aria-label="${E(V('stop'))}"><span aria-hidden="true">■</span></button><button type="button" class="btn voice-cancel" data-action="learning-voice-cancel" hidden title="${E(V('cancel'))}" aria-label="${E(V('cancel'))}"><span aria-hidden="true">×</span></button>
    <label class="sr-only" for="mentor-feedback-language">${P('dictation_language')}</label><select id="mentor-feedback-language">${['de','en','ru'].map(l=>`<option value="${l}" ${language===l?'selected':''}>${{de:'Deutsch',en:'English',ru:'Русский'}[l]}</option>`).join('')}</select>
-   <span id="mentor-voice-meter" class="voice-meter" role="img" aria-label="${E(V('meter'))}" hidden>${'<i></i>'.repeat(7)}</span><span id="mentor-voice-hint" class="caption">${E(P('dictation_hint'))}</span>
-   <span id="mentor-voice-timer" class="voice-timer" role="timer" aria-live="off" hidden></span><span id="mentor-voice-status" role="status" aria-live="polite"></span></div>`;
+   <span id="mentor-voice-meter" class="voice-meter" role="img" aria-label="${E(V('meter'))}" hidden>${'<i></i>'.repeat(7)}</span>
+   <span id="mentor-voice-timer" class="voice-timer" role="timer" aria-live="off" hidden></span></div>`;
  }
  function mentorVoiceBusy(){return mentorVoiceOwner!==null&&!!window.TrainerVoice?.busy();}
  function cancelMentorVoice(){if(mentorVoiceOwner===null)return;mentorVoiceOwner=null;window.TrainerVoice.cancel();}
