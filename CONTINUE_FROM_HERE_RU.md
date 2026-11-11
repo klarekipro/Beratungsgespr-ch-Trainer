@@ -1,6 +1,6 @@
 # Продолжение проекта — A32 поверх checkpoint A30/A31
 
-**A34 Addendum 2 в той же A39:** редактируемое обязательное `issuer_full_name`, отдельно от аккаунта; оба ФИО доступны в форме. Ветка остаётся `codex/a39-certificate-design`. Тесты/ограничения/ручная приёмка — последний addendum `A39_CERTIFICATE_HANDOFF_RU.md`; установку см. в PROJECT_STATE.
+**A34 Addendum 2 активирован в той же A39:**0.15.1, код `bdc5ef9692d709e1827326647d7d240ebabaeb39`, PID36973, revisionc47616a39bda842e; backup/сверка7 таблиц и22 файлов — OK. редактируемое обязательное `issuer_full_name`, отдельно от аккаунта; оба ФИО доступны в форме. Ветка остаётся `codex/a39-certificate-design`. Тесты/ограничения/ручная приёмка — последний addendum `A39_CERTIFICATE_HANDOFF_RU.md`; установку см. в PROJECT_STATE.
 
 **A39 / дизайн A34 + Full Name активирован:** код `7c12ce5e8bcb58c0dabf5fec191ead66a92781c6`,0.15.0, PID35718, revision18b100d113c4c318. Backup/сверка данных и22 файлов — OK. `A39_CERTIFICATE_HANDOFF_RU.md`, ветка `codex/a39-certificate-design`. Новый PDF и preview, обязательные вручную введённые имя/фамилия, независимый снимок и immutable PDF новых выдач. Старые записи без backfill. Установку см. в последней секции PROJECT_STATE. Предыдущие состояния ниже исторические.
 

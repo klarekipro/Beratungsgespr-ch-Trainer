@@ -71,3 +71,5 @@ PDF образца и предельные120-символьные имена о
 5. Старые выданные сертификаты не получают новое имя автоматически. Для исправления исторического выданного документа использовать прежний явный процесс замены, не перезапись.
 
 Изменённые файлы дополнения: backend/app/dashboard/{certificate_design.py,workflow.py,server.py}; frontend/{learning.js,locales/de.json,locales/en.json,locales/ru.json}; tests/dashboard/{test_certificate_design.py,test_learning_workflow.py}; PROJECT_STATE.md; CONTINUE_FROM_HERE_RU.md; этот отчёт. Main/merge/push не выполняются; данные/runtime/экспорты не коммитятся. Активация фиксируется ниже.
+
+Активация Addendum 2 подтверждена:0.15.1-certificate-issuer, код `bdc5ef9692d709e1827326647d7d240ebabaeb39`, PID36973, revisionc47616a39bda842e. Backup API runtime/a39-issuer/before-install.sqlite3;7 защищённых таблиц/22 frontend-файла сверены — OK. Квитанция вне Git runtime/a39-issuer/final-verification.json.8101 остановлен. Ветка прежняя codex/a39-certificate-design; последующая фиксация только документационная. Реальных сертификатов агентом не выдавалось.

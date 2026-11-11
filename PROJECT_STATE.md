@@ -8,11 +8,11 @@
 |---|---|
 | Рабочая папка | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech` |
 | Рабочая ветка | `codex/a39-certificate-design` (от A38 `ebcf40a`) |
-| Версия приложения | `0.15.0-certificate-design` — A39 / дизайн A34 + Full Name активирован на8100 |
-| Коммит установленного кода A39 | `7c12ce5e8bcb58c0dabf5fec191ead66a92781c6` |
-| Git | A39 `7c12ce5` установлен; последующая фиксация только документирует активацию. Main не менялся |
+| Версия приложения | `0.15.1-certificate-issuer` — A39 / A34 Addendum 2 активирован на8100 |
+| Коммит установленного кода A39 | `bdc5ef9692d709e1827326647d7d240ebabaeb39` |
+| Git | A39 Addendum 2 `bdc5ef9` установлен; последующая фиксация только документирует активацию. Main не менялся |
 | Адрес | `http://127.0.0.1:8100` |
-| Процесс на 8100 | Python, PID `35718`, штатный запуск A39 11.11.2026 |
+| Процесс на 8100 | Python, PID `36973`, штатный запуск A39 Addendum 2 11.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |
 | cwd процесса | Основная рабочая папка, указанная выше |
 | База | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard/trainer.sqlite3` |
@@ -501,3 +501,5 @@ Textarea и прежние voice controls теперь в одной рамке:
 Продолжение той же ветки `codex/a39-certificate-design` по явному поручению, без новой ветки/проекта. До работы HEAD6169e0b023b5e3997cb15e5af85cbc7ef5842e8c, tracked чистые,8100 PID35718. Новое редактируемое поле «Имя и фамилия выдающего сертификат» / Name des Ausstellers. В профиле нет надёжного отдельного ФИО — новая форма не подставляет login/display_name. Обязательное ФИО выдающего хранится в issuer_full_name независимо от mentor_id/mentor_name; PDF a39-v2 печатает его в MENTOR / AUSSTELLER, фиксирует в прежнем immutable snapshot. Получатель и выдающий редактируются до issue; минимум две непустые части каждого имени перед выдачей, без заявления о юридической проверке личности. Старые записи/issued PDF не дополняются/не меняются. Учётная запись и аутентификация не редактируются этой формой.
 
 Четыре focused unittest и mentor JS-check — OK; AST/JSON/syntax/diff — OK. Проверены обязательность обоих имён, Unicode/long names, preview, rename наставника после issue, отсутствие записи в users/auth_sessions при вводе/выдаче, идемпотентность с учётом issuer, неизменность прежнего issued a39-v1. Все server imports/действия изолированы TRAINER_DATA_DIR и временной SQLite. Chrome synthetic8101: оба поля пусты, ввод/preview/возврат к правке сохраняют оба имени. Sample/long-name PDF визуально проверены. Рабочие сертификаты не выдавались, provider0; Safari/печать не повторялись. Подробности/файлы/ручная приёмка дописаны в `A39_CERTIFICATE_HANDOFF_RU.md`. Backend0.15.1-certificate-issuer готов к штатной активации с backup/сверкой.
+
+Активация A34 Addendum 2:0.15.1-certificate-issuer, код `bdc5ef9692d709e1827326647d7d240ebabaeb39`, PID36973, frontend revision `c47616a39bda842e`. Backup API runtime/a39-issuer/before-install.sqlite3 (0700/0600), штатный start --no-browser; все строки7 защищённых таблиц совпали с backup,22 frontend-файла совпали с диском. Квитанция runtime/a39-issuer/final-verification.json вне Git.8101 остановлен. Сертификаты/аккаунты/беседы рабочей базы агентом не редактировались/не выдавались; платных вызовов0. Последующий коммит только фиксирует установку, новый restart не нужен.
