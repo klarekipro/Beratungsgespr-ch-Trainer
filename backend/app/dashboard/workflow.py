@@ -7,7 +7,7 @@ import io
 import json
 import hashlib
 import logging
-from . import review_service
+from . import review_service, review_diagnostics
 from datetime import datetime, timezone
 from uuid import uuid4
 from typing import Literal
@@ -130,16 +130,17 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
             record={'session_id':sid,'status':'running','started_at':started,'audience':value.audience,'language':u.get('locale','de'),'context_source':ctx.get('source','legacy_fallback_not_original')}
             if old and old.get('result'):record['result']=old['result']
             w.put('analysis',key,record)
-            provider=None;phase='request_construction';data=None
+            provider=None;phase='request_construction';data=None;wire=None;response_schema=None
             try:
                 data=review_service.payload(s,ctx,value.audience,u.get('locale','de'))
                 custom=getattr(app.state,'analysis_provider',None)
                 if not api_key and not custom:raise RuntimeError('AI unavailable')
                 provider=custom or ReviewProvider(api_key,model,timeout=45)
+                response_schema=review_service.request_schema(s,ctx)
                 phase='provider_request'
-                result=await provider._request_json(review_service.SYSTEM,data,review_service.request_schema(s,ctx),'consultation_review',max_output_tokens=3500)
+                wire=await provider._request_json(review_service.SYSTEM,data,response_schema,'consultation_review',max_output_tokens=3500)
                 phase='schema_validation'
-                result=review_service.bind_evidence(result,s,ctx)
+                result=review_service.bind_evidence(wire,s,ctx)
                 phase='semantic_validation'
                 record.update(status='ready',result=review_service.validate(result,s,ctx))
             except Exception as exc:
@@ -153,6 +154,8 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
                 elif category=='ai_context_limit':stage='request_construction'
                 elif category=='ai_incomplete':stage='provider_incomplete'
                 record['diagnostics']={**transport,'stage':stage,'validation_reason':getattr(exc,'reason',None) or (str(exc) if isinstance(exc,ValueError) and str(exc) in {'structure','text type','list type','stage type','stage structure','evidence structure','review text','review list','stages','duplicate message IDs','observation','missing evidence','evidence','advice structure','advice text','advice evidence','material evidence','claim checks','claim verdict','advice action','advice priorities','advice findings','repeat requires demonstrated gap'} else None),'validation_path':getattr(exc,'path',None),'category':category,'exception_type':type(exc).__name__,'payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1','material_contract':'historical_path_selection_v1'}
+                record['diagnostics']['request_started_at']=started
+                record['diagnostics'].update(review_diagnostics.retain_failure(w.store.path,s,ctx,review_service.SYSTEM,response_schema,data,wire,(getattr(provider,'review_capture',{}) or {}).get('model_text'),record['diagnostics'],api_key or ''))
                 logging.getLogger(__name__).warning('review_failed session=%s audience=%s diagnostics=%s',sid,value.audience,json.dumps(record['diagnostics'],ensure_ascii=True,sort_keys=True))
             if record['status']=='ready':record['diagnostics']={**dict(getattr(provider,'review_diagnostics',{}) or {}),'stage':'persisted','payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1','material_contract':'historical_path_selection_v1'}
             record['completed_at']=stamp()

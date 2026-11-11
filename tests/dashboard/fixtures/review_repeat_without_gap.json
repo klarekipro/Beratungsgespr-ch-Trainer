@@ -1,0 +1,11 @@
+{
+  "gaps": [],
+  "next_attempt": [],
+  "recommendation": {
+    "action": "repeat_scenario",
+    "explanation": "Weiter üben, obwohl keine konkrete Lernlücke belegt ist.",
+    "priorities": [],
+    "finding_refs": [{"section": "strengths", "index": 0}],
+    "evidence": [{"message_id": "MESSAGE_6"}]
+  }
+}

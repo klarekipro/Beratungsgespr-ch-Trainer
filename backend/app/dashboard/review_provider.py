@@ -1,4 +1,4 @@
-"""Review-only transport diagnostics. Never persist provider bodies or credentials."""
+"""Review-only transport diagnostics. No HTTP bodies/credentials; bounded model text is held only for private failure capture."""
 import json
 import httpx
 from .providers import OpenAIProvider
@@ -15,7 +15,7 @@ def error_tags(body):
     return tags
 
 class ObservedClient:
-    def __init__(self,client,diagnostics):self.client=client;self.diagnostics=diagnostics
+    def __init__(self,client,diagnostics,capture):self.client=client;self.diagnostics=diagnostics;self.capture=capture
     async def post(self,*args,**kwargs):
         d=self.diagnostics;d['stage']='provider_request'
         try:response=await self.client.post(*args,**kwargs)
@@ -49,7 +49,9 @@ class ObservedClient:
                 if not isinstance(block,dict):d['stage']='provider_envelope_parse';return response
                 if block.get('type')=='refusal':d['stage']='provider_refusal';return response
                 if block.get('type')=='output_text' and isinstance(block.get('text'),str):chunks.append(block['text'])
-        text=''.join(chunks);d['output_characters']=len(text);d['stage']='model_json_parse'
+        text=''.join(chunks)
+        if len(text.encode())<=128*1024:self.capture['model_text']=text
+        d['output_characters']=len(text);d['stage']='model_json_parse'
         try:d['model_json_object']=isinstance(json.loads(text),dict)
         except (ValueError,TypeError):d['model_json_object']=False
         return response
@@ -57,9 +59,10 @@ class ObservedClient:
 class ReviewProvider(OpenAIProvider):
     async def _request_json(self,instructions,data,schema,name,max_output_tokens=3500):
         self.review_diagnostics={'stage':'request_construction','output_limit':max_output_tokens}
+        self.review_capture={}
         original=self._client
         async def request(client):
-            self._client=ObservedClient(client,self.review_diagnostics)
+            self._client=ObservedClient(client,self.review_diagnostics,self.review_capture)
             try:return await super(ReviewProvider,self)._request_json(instructions,data,schema,name,max_output_tokens)
             finally:self._client=original
         if original is not None:return await request(original)

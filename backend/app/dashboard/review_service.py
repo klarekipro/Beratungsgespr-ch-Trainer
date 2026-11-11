@@ -62,7 +62,7 @@ Do not fill gaps or next_attempt just to populate a section. Return gaps=[] when
 employee gaps are evidenced (the UI will say No material gaps identified), and next_attempt=[]
 when no specific corrective priority is warranted. Do not fabricate a problem to justify repeat.
 Recommend repeat_scenario only for a demonstrated material learning gap and reference that gap
-in finding_refs. Generic room for improvement, unavailable data, no sale or no booking are not
+in finding_refs; for repeat_scenario ALL finding_refs must point to gaps. Generic room for improvement, unavailable data, no sale or no booking are not
 sufficient. submit_to_mentor is appropriate when the training objective is substantially met,
 including a justified, voluntary next step without an order. try_another_scenario is optional
 transfer practice, not proof of failure. Do not hardcode a favourable outcome for any attempt.
@@ -151,6 +151,13 @@ def request_schema(s,ctx=None):
     props['claim_checks']['items']['properties']['material_evidence']['items']={
         'type':'object','additionalProperties':False,'required':['path'],
         'properties':{'path':{'type':'string','enum':paths or ['__no_saved_source__']}}}
+    # Disjoint nested branches express the same repeat invariant as the server.
+    repeat=deepcopy(props['recommendation']);other=deepcopy(props['recommendation'])
+    repeat['properties']['action']['enum']=['repeat_scenario']
+    repeat['properties']['finding_refs']['minItems']=1
+    repeat['properties']['finding_refs']['items']['properties']['section']['enum']=['gaps']
+    other['properties']['action']['enum']=['submit_to_mentor','try_another_scenario']
+    props['recommendation']={'anyOf':[repeat,other]}
     return result
 
 def bind_evidence(result,s,ctx=None):
@@ -249,7 +256,7 @@ def validate_learning_advice(result,s,ctx):
     for ref in refs:
         obj(ref,['section','index'])
         if ref['section'] not in ('strengths','gaps','next_attempt','stages') or type(ref['index'])!=int or not 0<=ref['index']<len(result[ref['section']]):raise ValueError('advice findings')
-    if advice['action']=='repeat_scenario' and not any(ref['section']=='gaps' for ref in refs):raise ValueError('repeat requires demonstrated gap')
+    if advice['action']=='repeat_scenario' and not any(ref['section']=='gaps' for ref in refs):raise ReviewValidationError('repeat requires demonstrated gap','recommendation/finding_refs','recommendation_validation')
 
 def display_review_result(result,s=None):
     """Read-only prose projection. Evidence IDs, source quotes and stored analyses stay exact."""
