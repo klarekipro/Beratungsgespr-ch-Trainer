@@ -191,3 +191,21 @@ html[data-input-modality="keyboard"] .reference-snapshot>summary:focus-visible{o
  .mentor-screen .employees-table td:last-child .actions{justify-content:flex-start}
  .mentor-screen .employee-filters{padding:14px;gap:12px}
 }
+/* Completed employee attempts: one decision page and one opaque transcript viewer. */
+.review22-page{max-width:1120px;margin:0 auto;display:grid;gap:18px}
+.review22-heading .eyebrow{margin-bottom:10px}.review22-heading h1{font-size:28px}.review22-objective{max-width:85ch;font-size:14px}
+.review22-status{display:block}.review22-stage{padding:16px 0;border-bottom:1px solid var(--line)}.review22-stage:last-child{border:0}
+.review22-stage-heading{display:flex;justify-content:space-between;align-items:start;gap:14px;flex-wrap:wrap}.review22-stage h3{font-size:16px}
+.review22-actions .actions{flex-wrap:wrap;gap:10px}.review22-page li{margin:8px 0}.review22-page p,.review22-page li{overflow-wrap:anywhere;white-space:pre-line}
+.review22-viewer{padding:0;border:1px solid var(--line);border-radius:14px;width:min(1060px,calc(100vw - 24px));max-width:none;height:calc(100dvh - 32px);max-height:calc(100dvh - 32px);color:var(--ink);background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+.review22-viewer[open]{display:flex;flex-direction:column}.review22-viewer::backdrop{background:#071e18a6}
+.review22-viewer>header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 20px;flex:none;border-bottom:1px solid var(--line);background:var(--surface)}
+.review22-viewer h2{font-size:20px;margin:0;flex:1}.review22-viewer header nav{display:flex;gap:6px}.review22-viewer-body{overflow:auto;min-height:0;padding:18px 22px;overscroll-behavior:contain;background:var(--surface)}
+.review22-message{padding:14px 16px;border:1px solid var(--line);border-radius:10px;margin:12px 0;max-width:90%;background:var(--soft);color:var(--ink);scroll-margin:24px}
+.review22-message.learner{margin-left:auto;background:var(--green-soft)}.review22-message strong{font-size:12px;color:var(--muted)}.review22-message p{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0 0}
+.review22-message.learning-highlight{outline:3px solid var(--green);outline-offset:2px}.review22-evidence-nav{display:flex;flex-wrap:wrap;gap:6px}.review22-evidence-nav[hidden]{display:none}.review22-historical{margin:22px 0;padding:14px;border:1px solid var(--line);border-radius:10px}.review22-historical summary{cursor:pointer;font-weight:600}
+@media(max-width:600px){.review22-heading h1{font-size:23px}.review22-page>.card{padding:18px}.review22-stage-heading .pill{white-space:normal}.review22-actions .actions>*{flex:1 1 150px}.review22-viewer{width:calc(100vw - 12px);height:calc(100dvh - 12px);max-height:calc(100dvh - 12px)}.review22-viewer>header{padding:12px;gap:8px}.review22-viewer h2{font-size:17px;flex-basis:100%}.review22-viewer-body{padding:12px}.review22-message{max-width:96%;padding:12px}}
+.review22-actions{position:sticky;bottom:12px;z-index:12;box-shadow:0 5px 20px #0002;background:var(--surface)}
+body:has(.review22-page) .menu-btn{background:var(--surface);color:var(--ink);border-color:var(--line)}
+@media(max-width:600px){.review22-actions{padding:12px!important}.review22-actions .actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.review22-actions .actions>*{font-size:11px;padding:6px;min-height:48px}}
+.review22-status-pill{white-space:normal;max-width:245px}

@@ -19,12 +19,26 @@ GOALS=['achieved','partly','not_achieved','not_reviewed']
 def lang(value):return value if value in LABELS else 'de'
 def report_text(s,language='de'):
     language=lang(language);t=LABELS[language];e=EXTRA[language];v=s.get('learning',{});ctx=v.get('learning_context',{});r=v.get('published_review');sc=s['scenario_snapshot']
-    lines=[t[0],f"{t[1]}: {s['id']}",f"{t[2]}: {sc['title']}",f"{t[3]}: {dict(de='Deutsch',en='English',ru='Русский').get(sc['language'],sc['language'])}",f"{t[4]}: {t[{'not_submitted':5,'submitted':6,'reviewed':7}.get(s['review_status'],5)]}",f"{t[16]}: {s['company_snapshot']['revision']}",f"{t[17]}: {(ctx.get('materials') or {}).get('id',t[18])}",f"{t[26]}: {ctx.get('guidance',{}).get('goal',t[18])}",f"{t[11]}: {s['created_at']}"]
+    from .review_service import heading
+    h=heading(s,ctx or {'source':'legacy_fallback_not_original'})
+    lines=[t[0],f"{t[1]}: {s['id']}",f"{t[2]}: {h['title']}",f"{t[3]}: {dict(de='Deutsch',en='English',ru='Русский').get(sc['language'],sc['language'])}",f"{t[4]}: {t[{'not_submitted':5,'submitted':6,'reviewed':7}.get(s['review_status'],5)]}",f"{t[16]}: {s['company_snapshot']['revision']}",f"{t[17]}: {(ctx.get('materials') or {}).get('id',t[18])}",f"{t[26]}: {h['objective'] or t[18]}",f"{t[11]}: {s['created_at']}"]
     if ctx.get('source')=='legacy_fallback_not_original':lines.append({'de':'Diese Orientierungen wurden nachträglich angewendet; kein ursprünglicher Aufgabenschnappschuss.','en':'This guidance was applied after the attempt; it is not an original assignment snapshot.','ru':'Эти ориентиры применены после попытки; это не исходный снимок задания.'}[language])
     a=v.get('analysis',{})
     if a.get('status')=='ready':
         lines+=['',t[8]]
-        for item in a['result']['sections']:lines += [item['title'],item['text']]
+        from pathlib import Path
+        import json
+        labels=json.loads((Path(__file__).resolve().parents[3]/'frontend/locales'/f'{language}.json').read_text())
+        for item in a['result']['sections']:
+            title=labels.get('review22.'+item['title'],t[8] if item['title']=='summary' else item['title'])
+            lines += [title,item['text']]
+        from .review_service import message_ids
+        ids=message_ids(s)
+        for stage in a['result'].get('stages',[]):
+            lines += [labels['review22.'+stage['key']],labels['review22.'+stage['status']],stage['observation']]
+            for evidence in stage['evidence']:
+                if evidence['message_id'] in ids:lines += [f"[{ids.index(evidence['message_id'])+1}] "+evidence['quote']]
+
     if r:
         outcome=(r.get('assessment') or {}).get('commercial_outcome');label=OUTCOMES[language][OUTCOME_KEYS.index(outcome)] if outcome in OUTCOME_KEYS else t[18]
         lines+=['',t[9],f"{t[10]}: {r['mentor_name']}",f"{t[11]}: {r['published_at']}",f"{t[12]}: {label}",f"{t[26]}: {e[4+GOALS.index(r.get('goal'))] if r.get('goal') in GOALS else t[18]}",f"{t[27]}: {r.get('observations','')}",r['note']]

@@ -24,7 +24,7 @@ class Analyst:
     async def _request_json(self,instructions,data,*args,**kwargs):
         self.calls.append(copy.deepcopy(data))
         if self.fail:raise RuntimeError('provider offline')
-        return {'sections':[{'title':'Result','text':'No order confirmed.','messages':[0]}]}
+        return {'summary':'No order confirmed.','actual_outcome':'A next step is open.','strengths':['Customer need acknowledged.'],'gaps':['Conditions still open.'],'next_attempt':['Clarify conditions.'],'stages':[{'key':key,'status':'evidence_found','observation':'Customer supplied information.','evidence':[{'message_id':data['transcript'][0]['message_id'],'quote':data['transcript'][0]['text']}]} for key in ['needs','capabilities','proposal']]}
 
 class WorkflowChecks(unittest.TestCase):
     def setUp(self):
@@ -49,11 +49,12 @@ class WorkflowChecks(unittest.TestCase):
         queue=self.m.get('/api/mentor/reviews').json()['sessions'];self.assertEqual([s['id'] for s in queue if s['review_status']=='submitted'],[one])
         review={'note':'Good clarification; price still needs confirmation.','assessment':{'stages':{'needs':'completed','capabilities':'partial','proposal':'partial'},'commercial_outcome':'deferred_decision','company_fit':'uncertain'}}
         self.assertEqual(self.m.post('/api/mentor/reviews/'+two,json=review).status_code,404)
-        self.assertEqual(len(self.m.get('/api/mentor/employees/'+self.users[1]['id']+'/sessions').json()['sessions']),2)
+        self.assertEqual(len(self.m.get('/api/mentor/employees/'+self.users[1]['id']+'/sessions').json()['sessions']),1)
         draft={'note':review['note'],'goal':'partly','observations':'Needs clear; installation open.'}
         self.assertEqual(self.m.put('/api/mentor/learning/reviews/'+one+'/draft',json=draft).status_code,200)
         self.assertEqual(self.m.post('/api/mentor/reviews/'+one,json=review).status_code,200)
         other=self.client(self.users[1]);r=other.get('/api/sessions/'+one).json()['session'];self.assertEqual(r['published_review']['note'],review['note']);self.assertNotIn('decision_draft',r)
+        self.assertEqual(self.a.post('/api/sessions/'+two+'/submit').status_code,200)  # Private attempts require explicit sharing before inclusion in mentor certificate basis.
         body={'session_id':one,'print_name':'Alice','topic':'Beratung','basis':[one,two],'comment':'Two attempts considered.'}
         r=self.m.post('/api/mentor/learning/certificates/preview',json=body);self.assertEqual(r.status_code,200,r.text);cid=r.json()['certificate']['id']
         self.assertEqual(other.get('/api/learning/certificates/'+cid+'.pdf').status_code,404)
@@ -74,6 +75,7 @@ class WorkflowChecks(unittest.TestCase):
         sid=self.attempt();r=self.a.post('/api/learning/sessions/'+sid+'/analysis',json={});self.assertEqual(r.json()['analysis']['status'],'ready')
         data=self.analyst.calls[0];self.assertNotIn('hidden_dossier',data);self.assertNotIn('facts',data);self.assertNotIn('facts',data['guidance'])
         self.a.get('/api/sessions/'+sid);self.a.get('/api/sessions/'+sid);self.assertEqual(len(self.analyst.calls),1)
+        self.a.post('/api/sessions/'+sid+'/submit')
         self.m.post('/api/learning/sessions/'+sid+'/analysis',json={'audience':'mentor'});self.assertIn('hidden_dossier',self.analyst.calls[1])
         self.assertNotIn('mentor_analysis',self.a.get('/api/sessions/'+sid).json()['session'])
     def test_preview_snapshot_and_no_document_rewrites_on_reopen(self):

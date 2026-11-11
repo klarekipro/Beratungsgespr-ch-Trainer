@@ -78,7 +78,7 @@
     if(!canUseAI()) {state.mode="simple_actor";state.modeChoice=null;return;}
     state.mode="simple_actor";
   }
-  const statusPill = (session) => session.review_status === "reviewed" ? ("<span class=\"pill green\">"+window.TrainerI18n.t("dashboard.text_004")+"</span>") : session.review_status === "submitted" ? ("<span class=\"pill amber\">"+window.TrainerI18n.t("dashboard.text_005")+"</span>") : session.status === "finished" ? ("<span class=\"pill dark\">"+window.TrainerI18n.t("dashboard.text_006")+"</span>") : ("<span class=\"pill green\">"+window.TrainerI18n.t("dashboard.text_007")+"</span>");
+  const statusPill = session => session.status==='finished'?`<span class="pill review22-status-pill ${session.review_status==='submitted'?'amber':session.review_status==='reviewed'?'green':'dark'}">${window.TrainerI18n.t('review22.status_'+session.review_status)}</span>`:`<span class="pill green">${window.TrainerI18n.t('dashboard.text_007')}</span>`;
   const safeURL = (value) => { try {const u = new URL(value);return ["https:","http:"].includes(u.protocol) ? u.href : "";} catch (_) {return "";} };
   const studio=window.makeMentorStudio({api,esc,icon,toast,render,go});
   const draftFor = (id) => state.drafts[id] ||= {text:"",kind:"message",pending:null,error:null,sending:false};
@@ -402,6 +402,7 @@
     return `<details class="card card-pad report-section"><summary>${reviewText("company_snapshot")}</summary><p>${esc(s.company.description)}</p>${s.company.services.map(x=>`<h3>${esc(x.title)}</h3><p>${esc(x.description)}</p><p>${esc(x.conditions)}</p>`).join("")}<div class="notice neutral"><p>${esc(s.company.limitations)}</p></div><p class="caption">${reviewText("company_hint")}</p></details>`;
   }
   function reportPage(s, mentor) {
+    if(!mentor)return learning.employeeReport(s);
     const report=s.report||{status:"incomplete",summary:window.TrainerI18n.t("dashboard.text_665"),stages:[],findings:[],facts:[],outcome:null,limitations:[]};
     const completed=report.status==="complete";
     const simple=s.mode==="simple_actor";

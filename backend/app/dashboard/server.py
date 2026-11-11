@@ -36,7 +36,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.12.1-employee-participation"
+VERSION = "0.13.0-private-review"
 
 
 def now():
@@ -229,9 +229,12 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     async def storage_error(request, error):
         return JSONResponse({"error": {"code": "STORAGE_UNAVAILABLE", "message": ui_error(request,"STORAGE_UNAVAILABLE")}}, status_code=503)
 
+    def shared_with_mentor(session):
+        return session.get('review_status') in ('submitted','reviewed') or workflow.get('published_review',session['id']) is not None
+
     def get_session(sid):
         session = store.get_session(sid)
-        if not session or not auth.visible(sid,CURRENT_USER.get()):
+        if not session or not auth.visible(sid,CURRENT_USER.get()) or (CURRENT_USER.get()['role']=='mentor_admin' and not shared_with_mentor(session)):
             fail("SESSION_NOT_FOUND", "Беседа не найдена.", 404)
         return session
 
@@ -357,7 +360,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
 
     @app.get("/api/sessions")
     async def sessions():
-        return {"sessions": [{**summary(s),"analysis_status":(workflow.get("analysis",s["id"]+":learner") or {}).get("status","not_run")} for s in store.list_sessions() if auth.visible(s["id"],CURRENT_USER.get())]}
+        return {"sessions": [{**summary(s),"analysis_status":(workflow.get("analysis",s["id"]+":learner") or {}).get("status","not_run")} for s in store.list_sessions() if auth.visible(s["id"],CURRENT_USER.get()) and (CURRENT_USER.get()["role"]!="mentor_admin" or shared_with_mentor(s))]}
 
     @app.post("/api/sessions")
     async def start(value: SessionStart):
@@ -544,7 +547,9 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     @app.get("/api/sessions/{sid}/export.txt")
     async def text_export(sid: str, language: str = "de"):
         from .learning_exports import report_text
-        return download(report_text(exportable(sid), language), "txt", sid, "text/plain; charset=utf-8")
+        session=exportable(sid)
+        if CURRENT_USER.get()["role"]!="mentor_admin":language=session["scenario_snapshot"]["language"]
+        return download(report_text(session, language), "txt", sid, "text/plain; charset=utf-8")
 
     @app.get("/api/sessions/{sid}/export.json")
     async def json_export(sid: str):
@@ -555,6 +560,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     @app.get("/api/sessions/{sid}/export.pdf")
     async def pdf_export(sid: str, language: str = "de"):
         session = exportable(sid)
+        if CURRENT_USER.get()["role"]!="mentor_admin":language=session["scenario_snapshot"]["language"]
         try:
             from .learning_exports import report_pdf
             pdf = await asyncio.to_thread(report_pdf, session, language)
@@ -566,6 +572,7 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     async def reviews():
         result=[]
         for record in store.list_sessions():
+            if not shared_with_mentor(record):continue
             owner=auth.owner(record["id"]);u=auth.user(owner) if owner else None
             result.append({**summary(record),"employee_name":u["display_name"] if u else "Архив A09 без владельца","employee_id":owner,"archived":owner is None})
         return {"sessions":result}
@@ -617,11 +624,11 @@ def create_app(data_path: Path | None = None, provider_factory=None):
     @app.get("/api/mentor/employees/{uid}/sessions",dependencies=[Depends(mentor)])
     async def employee_history(uid:str):
         if not auth.user(uid):fail("NOT_FOUND","Сотрудник не найден.",404)
-        return {"sessions":[summary(s) for s in store.list_sessions() if auth.owner(s["id"])==uid]}
+        return {"sessions":[summary(s) for s in store.list_sessions() if auth.owner(s["id"])==uid and shared_with_mentor(s)]}
 
     @app.get("/api/mentor/overview",dependencies=[Depends(mentor)])
     async def overview():
-        all_sessions=store.list_sessions()
+        all_sessions=[s for s in store.list_sessions() if shared_with_mentor(s)]
         return {"employees":len(auth.users()),"trainings":len(all_sessions),"pending":sum(s["review_status"]=="submitted" for s in all_sessions),"recent":[summary(s) for s in all_sessions if s["status"]=="finished"][:6]}
 
     @app.post("/api/mentor/client-profiles/validate",dependencies=[Depends(mentor)])
