@@ -24,6 +24,9 @@ DEFAULT_GUIDANCE = {
     'outcomes': 'Auftrag bestätigt; vorläufig vereinbart; Angebot zur Prüfung; Entscheidung vertagt; begründete Absage; kein nächster Schritt.',
     'review_notes': 'Lernqualität und Geschäftsergebnis getrennt beurteilen. Zusagen anhand der gespeicherten Materialien prüfen.'}
 
+def certificate_public(record):
+    return {key:value for key,value in record.items() if key!='pdf_snapshots'}
+
 def stamp(): return datetime.now(timezone.utc).isoformat()
 def reject(message, code=422): raise HTTPException(code, detail={'code':'INVALID_INPUT','message':message})
 
@@ -47,6 +50,7 @@ class CertificateRequest(InputModel):
     basis: list[str] = Field(min_length=1,max_length=30)
     comment: str = Field(default='',max_length=3000)
     replaces: str | None = None
+    language: Literal['de','en','ru'] = 'de'
 class IssueRequest(InputModel):
     confirm: bool
 class DecisionDraft(InputModel):
@@ -114,7 +118,7 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
     async def results():
         u=CURRENT_USER.get()
         return {'reviews':[r for s in w.store.list_sessions() if (u['role']=='mentor_admin' or auth.owner(s['id'])==u['id']) and (r:=w.published(s,auth))],
-                'certificates':[r for r in w.all('certificate') if (u['role']=='mentor_admin' or r['employee_id']==u['id']) and r['status']!='draft']}
+                'certificates':[certificate_public(r) for r in w.all('certificate') if (u['role']=='mentor_admin' or r['employee_id']==u['id']) and r['status']!='draft']}
 
     @app.post('/api/learning/sessions/{sid}/analysis')
     async def analyze(sid:str,value:AnalysisRequest):
@@ -255,6 +259,13 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
             w.put('material_version',r['id'],r);w.put('materials','current',r);w.put('import_preview',r['id'],r)
             return {'materials':r}
 
+    def freeze_certificate(record):
+        if not record.get('design_version'):return
+        import base64
+        from .certificate_design import render_certificate
+        snapshots=record.setdefault('pdf_snapshots',{})
+        snapshots.setdefault(record['status'],base64.b64encode(render_certificate(record)).decode('ascii'))
+
     def certificate(cid):
         r=w.get('certificate',cid);u=CURRENT_USER.get()
         if not r or (u['role']!='mentor_admin' and (r['employee_id']!=u['id'] or r['status']=='draft')):reject('Not found',404)
@@ -269,33 +280,41 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
             if auth.owner(sid)!=owner or b['status']!='finished':reject('Basis must belong to this employee')
         if value.replaces and certificate(value.replaces)['employee_id']!=owner:reject('Recipient mismatch')
         u=CURRENT_USER.get();r={**value.model_dump(),'id':uuid4().hex,'employee_id':owner,'status':'draft','created_at':stamp(),'mentor_id':u['id'],'mentor_name':u['display_name']}
-        w.put('certificate',r['id'],r);return {'certificate':r}
+        from .certificate_design import VERSION,render_certificate,CertificateLayoutError
+        r['design_version']=VERSION
+        r['recipient_full_name']=value.print_name
+        try:render_certificate(r)
+        except CertificateLayoutError:raise HTTPException(422,detail={'code':'CERTIFICATE_TEXT_TOO_LONG'})
+        w.put('certificate',r['id'],r);return {'certificate':certificate_public(r)}
     @app.post('/api/mentor/learning/certificates/{cid}/issue',dependencies=mentor)
     async def issue(cid:str,value:IssueRequest):
         async with lock('certificates'):
             r=certificate(cid)
             if not value.confirm:reject('Explicit confirmation required')
-            if r['status']!='draft':return {'certificate':r}
+            if r['status']!='draft':return {'certificate':certificate_public(r)}
             if r['mentor_id']!=CURRENT_USER.get()['id']:reject('Author mismatch',403)
+            if len(r.get('recipient_full_name','').split())<2:
+                raise HTTPException(422,detail={'code':'CERTIFICATE_FULL_NAME_REQUIRED'})
             # Content idempotency also covers accidentally opening a second preview.
             for existing in w.all('certificate'):
-                if existing['status']=='issued' and not r.get('replaces') and all(existing.get(k)==r.get(k) for k in ['employee_id','print_name','topic','basis','comment','mentor_id']):
-                    return {'certificate':existing}
+                if existing['status']=='issued' and not r.get('replaces') and all(existing.get(k)==r.get(k) for k in ['employee_id','print_name','topic','basis','comment','mentor_id','language','design_version']):
+                    return {'certificate':certificate_public(existing)}
             r.update(status='issued',issued_at=stamp(),number='KKI-'+datetime.now().strftime('%Y')+'-'+r['id'][:12].upper())
+            freeze_certificate(r)
             if r.get('replaces'):
-                old=certificate(r['replaces']);old.update(status='replaced',replaced_by=cid);w.put('certificate',old['id'],old)
+                old=certificate(r['replaces']);old.update(status='replaced',replaced_by=cid);freeze_certificate(old);w.put('certificate',old['id'],old)
             w.put('certificate',cid,r);w.put('certificate_event',uuid4().hex,{'certificate_id':cid,'status':'issued','at':stamp(),'author':CURRENT_USER.get()['id']})
-            return {'certificate':r}
+            return {'certificate':certificate_public(r)}
     @app.post('/api/mentor/learning/certificates/{cid}/revoke',dependencies=mentor)
     async def revoke(cid:str):
         async with lock('certificates'):
             r=certificate(cid)
             if r['status']=='issued':
-                r.update(status='revoked',revoked_at=stamp(),revoked_by=CURRENT_USER.get()['id']);w.put('certificate',cid,r)
+                r.update(status='revoked',revoked_at=stamp(),revoked_by=CURRENT_USER.get()['id']);freeze_certificate(r);w.put('certificate',cid,r)
                 w.put('certificate_event',uuid4().hex,{'certificate_id':cid,'status':'revoked','at':stamp(),'author':CURRENT_USER.get()['id']})
-            return {'certificate':r}
+            return {'certificate':certificate_public(r)}
     @app.get('/api/learning/certificates/{cid}.pdf')
     async def pdf(cid:str,language:Literal['de','en','ru']='de'):
         from .learning_exports import certificate_pdf
         r=certificate(cid)
-        return Response(certificate_pdf(r,language),media_type='application/pdf',headers={'Content-Disposition':f'inline; filename="certificate-{cid[:12]}.pdf"'})
+        return Response(certificate_pdf(r,language),media_type='application/pdf',headers={'Content-Disposition':f'inline; filename="certificate-{cid[:12]}.pdf"','Cache-Control':'no-store'})

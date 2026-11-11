@@ -43,7 +43,7 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
   if(state.route.view==='company'){materials=(await api('/api/learning/materials')).materials;await reference.load();}
   if(state.route.view==='scenario'&&state.route.id!=='new')guidance=(await api('/api/mentor/learning/guidance/'+encodeURIComponent(state.route.id))).guidance;
  }
- const certificateList=uid=>results.certificates.filter(c=>!uid||c.employee_id===uid).map(c=>`<div class="learning-result"><strong>${E(c.topic)}</strong> · ${E(c.number)} · ${t(c.status)}<p>${E(c.print_name)} · ${E(c.mentor_name)} · ${E(c.issued_at?.slice(0,10))}</p><a class="btn" target="_blank" rel="noopener" href="/api/learning/certificates/${E(c.id)}.pdf?language=${locale()}">PDF · ${t('print')}</a>${state.route.role==='mentor'&&c.status==='issued'?`<button class="btn" data-action="learning-revoke" data-id="${E(c.id)}">${t('revoke')}</button><button class="btn" data-action="learning-replace" data-id="${E(c.id)}">${t('replace')}</button>`:''}</div>`).join('');
+ const certificateList=uid=>results.certificates.filter(c=>!uid||c.employee_id===uid).map(c=>`<div class="learning-result"><strong>${E(c.topic)}</strong> · ${E(c.number)} · ${t(c.status)}<p>${E(c.print_name)} · ${E(c.mentor_name)} · ${E(c.issued_at?.slice(0,10))}</p><a class="btn" target="_blank" rel="noopener" href="/api/learning/certificates/${E(c.id)}.pdf?language=${E(c.language||locale())}">PDF · ${t('print')}</a>${state.route.role==='mentor'&&c.status==='issued'?`<button class="btn" data-action="learning-revoke" data-id="${E(c.id)}">${t('revoke')}</button><button class="btn" data-action="learning-replace" data-id="${E(c.id)}">${t('replace')}</button>`:''}</div>`).join('');
  const R=k=>window.TrainerI18n.t('review22.'+k);
  const L=k=>window.TrainerI18n.t('review23.'+k);
  const S=k=>window.TrainerI18n.t('learner35.'+k);
@@ -321,15 +321,36 @@ window.createLearning = ({state,api,esc,render,toast,icon=()=>''}) => {
  async function saveDraft(){const s=state.session,d=draftValue();state.learningDrafts??={};state.learningDrafts[s.id]=d;await api('/api/mentor/learning/reviews/'+s.id+'/draft',{method:'PUT',body:d});return d;}
  function certificateDialog(replacement=null){
   cancelMentorVoice();cert=null;const previous=replacement?results.certificates.find(x=>x.id===replacement):null;const s=state.session,dialog=document.getElementById('confirm-dialog');
-  dialog.innerHTML=`<h2>${t('issue_certificate')}</h2><p>${E(s.employee_name)}</p><form id="learning-certificate-form"><label>${t('print_name')}<input id="learning-cert-name" value="${E(previous?.print_name||s.employee_name)}" maxlength="120" required></label><label>${t('topic')}<input id="learning-cert-topic" value="${E(previous?.topic||'')}" maxlength="240" required></label><fieldset><legend>${t('basis')}</legend>${history.filter(x=>x.status==='finished').map(x=>`<label><input type="checkbox" name="learning-basis" value="${E(x.id)}" ${x.id===s.id?'checked disabled':''}>${E(x.title)} · ${E(x.created_at.slice(0,16))}</label>`).join('')}</fieldset>${field('learning-cert-comment','comment')}<button class="btn" type="submit">${t('preview')}</button></form><div id="learning-cert-preview"></div><button class="btn" id="learning-cert-close">${t('close')}</button>`;
+  dialog.classList.add('certificate39-dialog');dialog.addEventListener('close',()=>dialog.classList.remove('certificate39-dialog'),{once:true});
+  dialog.innerHTML=`<div id="certificate39-intro"><h2>${t('issue_certificate')}</h2><p>${E(s.employee_name)}</p><p class="caption">${P('certificate_scope')}</p></div><form id="learning-certificate-form"><label>${P('certificate_full_name')}<input id="learning-cert-name" value="${E(previous?.recipient_full_name||'')}" maxlength="120" autocomplete="off" required></label><p class="caption">${P('certificate_name_hint')}</p><label>${t('topic')}<input id="learning-cert-topic" value="${E(previous?.topic||({de:'Strukturierte Kundenberatung',en:'Structured customer consultation',ru:'Структурированное консультирование клиентов'}[previous?.language||'de']))}" maxlength="240" required></label><fieldset><legend>${t('basis')}</legend>${history.filter(x=>x.status==='finished').map(x=>`<label><input type="checkbox" name="learning-basis" value="${E(x.id)}" ${x.id===s.id?'checked disabled':''}>${E(x.title)} · ${E(x.created_at.slice(0,16))}</label>`).join('')}</fieldset>${field('learning-cert-comment','comment')}<p class="caption">${P('certificate_comment_hint')}</p><label for="learning-cert-language">${P('certificate_language')}</label><select id="learning-cert-language">${['de','en','ru'].map(l=>`<option value="${l}" ${(previous?.language||'de')===l?'selected':''}>${{de:'Deutsch',en:'English',ru:'Русский'}[l]}</option>`).join('')}</select><button class="btn" type="submit">${t('preview')}</button></form><div id="learning-cert-preview"></div><button class="btn" id="learning-cert-close">${t('close')}</button>`;
   if(!dialog.open)dialog.showModal();document.getElementById('learning-cert-close').onclick=()=>dialog.close();
   dialog.onclick=async e=>{const b=e.target.closest('[data-action]');if(!b||!['learning-revoke','learning-replace'].includes(b.dataset.action))return;try{await handle(b.dataset.action,b);if(b.dataset.action==='learning-revoke')certificateDialog();}catch(error){toast(error.message,true);}};
-  document.getElementById('learning-certificate-form').onsubmit=async e=>{e.preventDefault();try{
-   const body={session_id:s.id,print_name:document.getElementById('learning-cert-name').value,topic:document.getElementById('learning-cert-topic').value,basis:[...document.querySelectorAll('[name=learning-basis]:checked')].map(x=>x.value),comment:document.getElementById('learning-cert-comment').value,replaces:replacement};
-   const r=await api('/api/mentor/learning/certificates/preview',{method:'POST',body});cert=r.certificate;
-   document.getElementById('learning-cert-preview').innerHTML=`<h3>${E(cert.print_name)}</h3><p>${E(cert.topic)}</p><p>${E(cert.comment)}</p><p>${E(cert.mentor_name)} · ${E(cert.created_at.slice(0,10))}</p><a class="btn" target="_blank" href="/api/learning/certificates/${cert.id}.pdf?language=${locale()}">PDF · ${t('preview')}</a><button id="learning-cert-confirm" class="btn primary">${t('confirm_issue')}</button>`;
-   document.getElementById('learning-cert-confirm').onclick=async()=>{try{const r=await api('/api/mentor/learning/certificates/'+cert.id+'/issue',{method:'POST',body:{confirm:true}});document.getElementById('learning-cert-preview').textContent=t(r.certificate.status)+' · '+r.certificate.number;await load();}catch(e){toast(e.message,true);}};
-  }catch(e){toast(e.message,true);}};
+  const form=document.getElementById('learning-certificate-form'),previewNode=document.getElementById('learning-cert-preview');let previewing=false;
+  const showPDF=record=>{
+   form.hidden=true;document.getElementById('certificate39-intro').hidden=true;dialog.scrollTop=0;
+   const url='/api/learning/certificates/'+encodeURIComponent(record.id)+'.pdf?language='+encodeURIComponent(record.language||locale());
+   previewNode.innerHTML=`<h3>${t(record.status)}</h3><iframe class="certificate39-preview" title="${E(t('preview'))}" src="${url}#view=Fit"></iframe><div class="actions"><a class="btn" target="_blank" rel="noopener" href="${url}">PDF · ${t('print')}</a></div>`;
+  };
+  const invalidate=()=>{if(cert){cert=null;previewNode.textContent=P('certificate_preview_stale');}};
+  form.addEventListener('input',invalidate);form.addEventListener('change',invalidate);
+  form.onsubmit=async e=>{e.preventDefault();if(previewing)return;previewing=true;
+   const inputs=[...form.querySelectorAll('input,textarea,select,button')],disabled=inputs.map(x=>x.disabled);
+   try{
+    const body={session_id:s.id,print_name:document.getElementById('learning-cert-name').value,topic:document.getElementById('learning-cert-topic').value,basis:[...document.querySelectorAll('[name=learning-basis]:checked')].map(x=>x.value),comment:document.getElementById('learning-cert-comment').value,language:document.getElementById('learning-cert-language').value,replaces:replacement};
+    inputs.forEach(x=>x.disabled=true);cert=null;previewNode.textContent=t('saving');
+    const r=await api('/api/mentor/learning/certificates/preview',{method:'POST',body});
+    if(!dialog.open)return;cert=r.certificate;showPDF(cert);
+    previewNode.insertAdjacentHTML('beforeend',`<p class="caption">${P('certificate_confirm')}</p>`);
+    previewNode.querySelector('.actions').insertAdjacentHTML('beforeend',`<button type="button" id="learning-cert-edit" class="btn">${P('certificate_edit')}</button><button type="button" id="learning-cert-confirm" class="btn primary">${t('confirm_issue')}</button>`);
+    document.getElementById('learning-cert-edit').onclick=()=>{cert=null;previewNode.innerHTML='';form.hidden=false;document.getElementById('certificate39-intro').hidden=false;document.getElementById('learning-cert-name').focus();};
+    document.getElementById('learning-cert-confirm').onclick=async e=>{
+     if(!cert)return;const button=e.currentTarget;button.disabled=true;
+     try{const r=await api('/api/mentor/learning/certificates/'+cert.id+'/issue',{method:'POST',body:{confirm:true}});cert=r.certificate;form.hidden=true;showPDF(cert);await load();}
+     catch(error){button.disabled=false;toast(error.message,true);}
+    };
+   }catch(error){cert=null;previewNode.textContent=error.message;toast(error.message,true);}
+   finally{inputs.forEach((x,i)=>x.disabled=disabled[i]);previewing=false;}
+  };
  }
  async function handle(action,target){
   if(!action.startsWith('learning-'))return false;

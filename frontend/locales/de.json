@@ -1274,5 +1274,17 @@
   "dictation18.session_required": "Die Anmeldung ist nicht mehr gültig. Der eingegebene Text bleibt auf dieser Seite erhalten. Melden Sie sich in einem anderen Tab mit demselben Konto an und starten Sie die Diktierfunktion erneut.",
   "dictation18.session_changed": "Das Konto wurde in einem anderen Tab gewechselt. Der eingegebene Text bleibt auf dieser Seite erhalten. Melden Sie sich vor dem Diktieren wieder mit dem ursprünglichen Konto an.",
   "mentor33.dictation_hint": "Diktat: bis zu 60 Sekunden · Transkription durch OpenAI. Text vor der Veröffentlichung prüfen.",
-  "mentor33.feedback_placeholder": "Feedback schreiben oder diktieren…"
+  "mentor33.feedback_placeholder": "Feedback schreiben oder diktieren…",
+  "mentor33.certificate_scope": "Ein Zertifikat ist eine eigenständige Gesamtbeurteilung des Mentors. Ausgewählte Gespräche dienen als interne Belege; ein einzelnes Gespräch oder KI-Ergebnis löst keine Ausstellung aus.",
+  "mentor33.certificate_topic": "Strukturierte Kundenberatung",
+  "mentor33.certificate_comment_hint": "Optionale persönliche Würdigung: bitte kurz halten. Der Text wird unverändert gedruckt.",
+  "mentor33.certificate_language": "Sprache des Zertifikats",
+  "mentor33.certificate_preview_stale": "Angaben geändert. Bitte die PDF-Vorschau erneut erstellen.",
+  "mentor33.certificate_confirm": "Mit der Ausstellung bestätige ich die ausgewiesene Kompetenz auf Grundlage meiner eigenständigen Gesamtbeurteilung.",
+  "errors.CERTIFICATE_TEXT_TOO_LONG": "Der Text passt nicht lesbar auf eine Zertifikatsseite. Bitte insbesondere die persönliche Würdigung kürzen.",
+  "mentor33.certificate_full_name": "Vollständiger Name des Zertifikatsempfängers (Vor- und Nachname)",
+  "mentor33.certificate_name_hint": "Bitte den gewünschten Vor- und Nachnamen manuell eingeben. Ein Login oder Kontoname ist kein bestätigter vollständiger Name.",
+  "errors.CERTIFICATE_FULL_NAME_REQUIRED": "Bitte Vor- und Nachnamen des Zertifikatsempfängers angeben.",
+  "learning.draft": "Entwurf — nicht ausgestellt",
+  "mentor33.certificate_edit": "Angaben bearbeiten"
 }

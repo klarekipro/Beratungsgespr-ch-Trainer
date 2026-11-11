@@ -58,7 +58,7 @@ class WorkflowChecks(unittest.TestCase):
         self.assertEqual(self.m.post('/api/mentor/reviews/'+one,json=review).status_code,200)
         other=self.client(self.users[1]);r=other.get('/api/sessions/'+one).json()['session'];self.assertEqual(r['published_review']['note'],review['note']);self.assertNotIn('decision_draft',r)
         self.assertEqual(self.a.post('/api/sessions/'+two+'/submit').status_code,200)  # Private attempts require explicit sharing before inclusion in mentor certificate basis.
-        body={'session_id':one,'print_name':'Alice','topic':'Beratung','basis':[one,two],'comment':'Two attempts considered.'}
+        body={'session_id':one,'print_name':'Alice Weber','topic':'Beratung','basis':[one,two],'comment':'Two attempts considered.'}
         r=self.m.post('/api/mentor/learning/certificates/preview',json=body);self.assertEqual(r.status_code,200,r.text);cid=r.json()['certificate']['id']
         self.assertEqual(other.get('/api/learning/certificates/'+cid+'.pdf').status_code,404)
         self.assertEqual(self.m.post('/api/mentor/learning/certificates/'+cid+'/issue',json={'confirm':False}).status_code,422)

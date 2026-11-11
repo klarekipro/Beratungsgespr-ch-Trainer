@@ -141,5 +141,10 @@ def report_pdf(s,language='de'):
     headings=[LABELS[language][i] for i in [8,9,13]]+EXTRA[language][:3]+[f['label'] for f in s['scenario_snapshot']['facts']]+[x['title'] for x in s['company_snapshot']['services']]
     return pdf_lines(lines[0],lines[1:],headings)
 def certificate_pdf(r,language='de'):
+    if r.get('design_version'):
+        import base64
+        from .certificate_design import render_certificate
+        snapshot=r.get('pdf_snapshots',{}).get(r['status'])
+        return base64.b64decode(snapshot) if snapshot else render_certificate(r)
     t=LABELS[lang(language)];status=t[{'draft':28,'issued':29,'revoked':30,'replaced':31}[r['status']]]
     return pdf_lines(t[19],[f"{t[25]}: {status}",f"{t[20]}: {r['print_name']}",f"{t[21]}: {r['topic']}",f"{t[24]}: {r.get('number',t[28])}",f"{t[11]}: {r.get('issued_at',r['created_at'])[:10]}",f"{t[10]}: {r['mentor_name']}",f"{t[23]}: {r['comment']}",f"{t[22]}:",*r['basis']])

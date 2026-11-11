@@ -325,3 +325,13 @@ html[data-theme="dark"] .mentor32-status.reviewed { color:#cbeed6; background:#2
 #mentor-voice-hint {font-size:.8rem;margin:8px 0 0}
 #mentor-voice-status {font-size:.85rem;margin:6px 0 0}
 #mentor-voice-status:empty {display:none}
+
+.confirm-dialog.certificate39-dialog {width:min(1100px,94vw);max-width:1100px;box-sizing:border-box}
+.certificate39-dialog #learning-certificate-form {display:grid;gap:12px}
+.certificate39-dialog #learning-certificate-form label {display:block}
+.certificate39-dialog #learning-certificate-form :is(input:not([type=checkbox]),select,textarea) {width:100%;box-sizing:border-box}
+.certificate39-dialog fieldset {max-height:180px;overflow:auto}
+.certificate39-preview {display:block;width:100%;height:min(55vh,650px);border:1px solid var(--line);margin:12px 0;background:#FCFBF6}
+
+.certificate39-dialog #learning-certificate-form[hidden] {display:none}
+.certificate39-dialog #learning-cert-preview .actions {display:flex;flex-wrap:wrap;gap:8px}

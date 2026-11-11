@@ -36,7 +36,7 @@ from .store import SQLiteStore, VersionConflict
 from .workflow import Workflow, attach_workflow
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "0.14.1-mentor-dictation"
+VERSION = "0.15.0-certificate-design"
 
 
 def now():
@@ -204,6 +204,9 @@ def create_app(data_path: Path | None = None, provider_factory=None):
         response.headers["X-Content-Type-Options"]="nosniff"
         response.headers["Referrer-Policy"]="no-referrer"
         response.headers["Content-Security-Policy"]="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+        # Authenticated certificate PDFs alone may be previewed by this same-origin app.
+        if path.startswith('/api/learning/certificates/') and path.endswith('.pdf'):
+            response.headers['Content-Security-Policy']=response.headers['Content-Security-Policy'].replace("frame-ancestors 'none'", "frame-ancestors 'self'")
         response.headers["Permissions-Policy"]="microphone=(self), camera=(), geolocation=()"
         if path.startswith("/api/") or path in {"/","/login","/mentor","/learner"}:response.headers["Cache-Control"]="no-store"
         if path.startswith('/static/'):
