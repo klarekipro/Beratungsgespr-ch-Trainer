@@ -1,0 +1,26 @@
+'use strict';
+// Focused A32 presentation checks without a browser, database, or provider.
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const dictionaries=Object.fromEntries(['de','en','ru'].map(l=>[l,JSON.parse(fs.readFileSync('frontend/locales/'+l+'.json','utf8'))]));
+let language='ru',confirm=true,resolveAnalysis,exportedBlob,downloadName;const requests=[],nodes={},listeners={};
+const session={id:'qa',employee_id:'alice',employee_name:'Alice',title:'Saved conversation',customer_name:'Customer',training_language:'de',created_at:'2026-11-11T12:00:00Z',status:'finished',review_status:'submitted',mode:'simple_actor',messages:[{role:'learner',text:'Saved quote'}],review_message_ids:['m1'],company:{description:'Historical company',services:[]},learning_context:{guidance:{goal:'DE: Deutsches Ziel EN: English goal RU: Русская цель'},source:'attempt_snapshot'},report:{stages:[]},mentor_analysis:{status:'ready',result:{summary:'Saved private summary',sections:[{title:'summary',text:'Saved private summary',messages:[]},{title:'strengths',text:'A saved strength',messages:[]}],stages:[]}}};
+const state={route:{role:'mentor',view:'review'},session,noteDrafts:{}};
+const context={window:{TRAINER_AUTH:{user:{id:'mentor',get locale(){return language;}}},TrainerI18n:{t:k=>dictionaries[language][k]??k,systemText:x=>x},TrainerUI:{t:k=>k},createCompanyReference:()=>({snapshot:()=>'<details><summary>Historical snapshot</summary></details>'}),matchMedia:()=>({matches:false,addEventListener(){}}),confirm:()=>confirm},document:{documentElement:{dataset:{},style:{}},body:{dataset:{}},addEventListener:(n,f)=>{(listeners[n]??=[]).push(f);},getElementById:id=>nodes[id]||null,createElement:()=>({click(){downloadName=this.download;}})},localStorage:{getItem:()=>null},setTimeout:fn=>fn(),Blob,URL:{createObjectURL:blob=>{exportedBlob=blob;return 'blob:qa';},revokeObjectURL(){}}};
+vm.createContext(context);vm.runInContext(fs.readFileSync('frontend/learning.js','utf8'),context);
+let learning;const render=()=>learning.mentorReport(session,{reviewControls:()=>'',messageHTML:()=>''});
+learning=context.window.createLearning({state,esc:s=>String(s??'').replaceAll('<','&lt;'),render,toast:()=>{},api:async(path,options)=>{requests.push({path,options});if(path.endsWith('/analysis'))return new Promise(resolve=>{resolveAnalysis=resolve;});if(path.includes('/employees/'))return {sessions:[]};if(path==='/api/learning/results')return {reviews:[],certificates:[]};if(path==='/api/ui/reviews/read')return {read:{}};if(path==='/api/ui/preferences')return {preferences:{}};return {};}});
+(async()=>{
+ await learning.load();assert.equal(requests.length,4);assert.ok(requests.every(x=>!x.options));
+ for(const [lang,expected] of Object.entries({de:'Deutsches Ziel',en:'English goal',ru:'Русская цель'})){
+  language=lang;assert.equal(learning.localizedGoal(session.learning_context.guidance.goal),expected);
+  const html=render();assert.ok(html.includes(expected));assert.ok(!html.includes('data-expand-target'));assert.ok(!html.includes('<dialog'));assert.equal((html.match(/id="review-form"/g)||[]).length,1);assert.ok(!html.includes('>strengths<'));assert.ok(!html.includes('>summary<'));
+ }
+ language='en';assert.equal(learning.localizedGoal('DE: Fallback RU: Запасной'),'Fallback');assert.equal(learning.localizedGoal('Authored untagged goal'),'Authored untagged goal');assert.equal(learning.localizedGoal({ru:'Исторический текст'}),'Исторический текст');
+ const before=requests.length;confirm=false;await learning.handle('learning-analysis',{});assert.equal(requests.length,before);
+ confirm=true;const pending=learning.handle('learning-analysis',{});assert.ok(render().includes('aria-busy="true"'));await learning.handle('learning-analysis',{});assert.equal(requests.length,before+1);resolveAnalysis({analysis:session.mentor_analysis});await pending;assert.ok(render().includes('aria-busy="false"'));
+ for(const [id,value] of Object.entries({'review-note':'Draft note','learning-goal':'partly','learning-observations':'Draft observation','review-needs':'completed','review-capabilities':'partial','review-proposal':'partial','review-commercial':'deferred_decision','review-fit':'uncertain'}))nodes[id]={value};
+ const draft=await learning.saveDraft();assert.equal(draft.assessment.stages.needs,'completed');assert.equal(draft.note,'Draft note');assert.equal(draft.goal,'partly');assert.equal(requests.at(-1).options.method,'PUT');assert.ok(!requests.some(x=>x.path==='/api/mentor/reviews/qa'));
+ const beforeExport=requests.length;await learning.handle('learning-mentor-export',{});assert.equal(requests.length,beforeExport);assert.equal(downloadName,'mentor-review.txt');assert.ok((await exportedBlob.text()).includes('Saved private summary'));assert.ok(!(await exportedBlob.text()).includes('review22.summary'));
+ const cached=JSON.stringify(session.learning_context);session.mentor_analysis={status:'not_run'};assert.ok(render().includes(dictionaries.en['mentor32.manual_ai']));assert.equal(JSON.stringify(session.learning_context),cached);
+ console.log('A32 presentation: locale/fallback, one form, inline review, manual-only analysis, duplicate-click guard, complete draft and immutable source — OK');
+})().catch(e=>{console.error(e);process.exitCode=1;});

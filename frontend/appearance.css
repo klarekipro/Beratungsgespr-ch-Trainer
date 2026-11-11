@@ -209,3 +209,25 @@ html[data-input-modality="keyboard"] .reference-snapshot>summary:focus-visible{o
 body:has(.review22-page) .menu-btn{background:var(--surface);color:var(--ink);border-color:var(--line)}
 @media(max-width:600px){.review22-actions{padding:12px!important}.review22-actions .actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.review22-actions .actions>*{font-size:11px;padding:6px;min-height:48px}}
 .review22-status-pill{white-space:normal;max-width:245px}
+
+/* A32: mentor review follows a single, readable sequence. */
+.mentor32-page { max-width: 1060px; margin-inline: auto; }
+.mentor32-page h1 { overflow-wrap: anywhere; }
+.mentor32-page h2 { margin-bottom: 12px; }
+.mentor32-page details > summary { cursor: pointer; line-height: 1.6; }
+.mentor32-details-body { padding-top: 18px; }
+.mentor32-details-body p, .mentor32-summary, .mentor32-page blockquote { white-space: pre-wrap; overflow-wrap: anywhere; }
+.mentor32-page blockquote { margin: 12px 0; padding: 10px 16px; border-left: 3px solid var(--border); }
+.mentor32-page blockquote .text-link { display: block; }
+.mentor32-steps { display: flex; flex-wrap: wrap; gap: 12px 24px; margin: 16px 0 24px; }
+.mentor32-steps a { color: inherit; text-decoration: underline; text-underline-offset: 4px; }
+.mentor32-page fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
+.mentor32-page fieldset > label { display: block; margin-top: 16px; }
+.mentor32-page textarea { width: 100%; box-sizing: border-box; }
+.mentor32-page .studio-preview { max-height: 400px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.mentor32-page #mentor32-evidence { margin-block: 24px; }
+.mentor32-certificates { margin-top: 32px; }
+@media (max-width: 600px) {
+ .mentor32-page .actions { flex-wrap: wrap; }
+ .mentor32-page .actions > .btn { max-width: 100%; white-space: normal; }
+}
