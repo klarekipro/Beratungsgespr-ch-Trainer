@@ -1,3 +1,26 @@
+# Продолжение — A35 Release Freeze после A39 / A34 Addendum 2
+
+**Режим: freeze.** Основная функциональность/дизайн и оба ФИО сертификата приняты владельцем. Дальше — его ручной немецкий цикл12.11.2026, не новые функции.
+
+- Папка: `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech`.
+- Ветка: `codex/a39-certificate-design`, не переключать на старые A32/A35/main.
+- Принятый recovery HEAD до freeze docs: `7d19a231f0833b5a920c8abc365971393653974b`.
+- Работающий код: `bdc5ef9692d709e1827326647d7d240ebabaeb39`, backend0.15.1-certificate-issuer, PID36973, порт8100, frontend revisionc47616a39bda842e.
+- Рабочая SQLite: `runtime/dashboard/trainer.sqlite3`. В freeze не изменялась и не восстанавливалась.
+- Backup: `runtime/release-freeze/20261111T222200+0100/trainer.sqlite3`; SHA-256 `bc2deb68318c9b5fade7670adcd7b0086b3885320fcfc304b93f111f93ee7846`,2482176 bytes, integrity ok/FK0. Manifest/supplemental/source bundle/checkpoint receipt — в той же приватной папке, не в Git.
+- HEAD после этой работы новее runtime из-за Markdown. **Не запускать start ради устранения различия SHA**: launcher способен перезапустить процесс. Пока работает — просто открыть [learner](http://127.0.0.1:8100/learner) / [mentor](http://127.0.0.1:8100/mentor).
+- Remote branch/upstream отсутствуют; origin/main `2962a1b89cb8c9816decc8322ec92259993b3b03`, на исходном recovery HEAD локальная ветка впереди92 коммита. Push/merge не разрешены.
+
+## Следующее действие
+
+Владелец проходит `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md`. Подробный freeze/backup/recovery/functional inventory — `docs/A35_RELEASE_FREEZE_RU.md`; VPS только оценён в `docs/A35_VPS_FEASIBILITY_RU.md`, сервер не посещался. Приложение сегодня не останавливалось/не запускалось; новые разговоры/AI/публикации/сертификаты агент не создавал.
+
+Сохранить ограничения: REVIEW-SEM-001, REVIEW-COACH-001, ACTOR-CLOSURE-003, текущие intermittent mentor AI failures; они не исправлены.0 issued/7 draft certificates в backup — learner certificate list ожидаемо пуст. CERT-ADMIN-UI-001: mentor list/revoke/replace UI не подключён к текущему certificate dialog; не обещать это в demo. Нет готового tracked demo video и полного restore drill. Не сбрасывать базу после приёмки, не восстанавливать старую копию поверх новых результатов.
+
+Перед любой будущей работой снова прочитать AGENTS/PROJECT_STATE/этот документ/KNOWN_ISSUES и проверить фактические HEAD, PID и DB. Исторические notes ниже могут описывать давно остановленные процессы и не являются разрешением на новые операции.
+
+## Исторические записи до release freeze (не текущая установка)
+
 # Продолжение проекта — A32 поверх checkpoint A30/A31
 
 **A34 Addendum 2 активирован в той же A39:**0.15.1, код `bdc5ef9692d709e1827326647d7d240ebabaeb39`, PID36973, revisionc47616a39bda842e; backup/сверка7 таблиц и22 файлов — OK. редактируемое обязательное `issuer_full_name`, отдельно от аккаунта; оба ФИО доступны в форме. Ветка остаётся `codex/a39-certificate-design`. Тесты/ограничения/ручная приёмка — последний addendum `A39_CERTIFICATE_HANDOFF_RU.md`; установку см. в PROJECT_STATE.

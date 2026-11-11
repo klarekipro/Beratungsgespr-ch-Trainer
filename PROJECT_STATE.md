@@ -2,6 +2,19 @@
 
 Обновлено: 11.11.2026 (Europe/Berlin). Это единая точка входа для продолжения работы. Постоянные правила — в `AGENTS.md`; подробные свидетельства прошлых этапов — в handoff-отчётах. При расхождениях проверять фактические Git, процесс и API, сохраняя различие между реализацией и приёмкой владельцем.
 
+
+## Release freeze A35 — текущий приоритет
+
+11.11.2026: владелец принял основную функциональность/дизайн, сертификат и оба редактируемых ФИО. Сейчас **freeze, без разработки**; немецкий полный цикл запланирован владельцем на12.11.2026 (Europe/Berlin), ещё не выполнен. Существующий A35_HANDOFF про learner UI — более ранний этап с тем же номером.
+
+Авторитетные документы: `docs/A35_RELEASE_FREEZE_RU.md`, `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md`, `docs/A35_VPS_FEASIBILITY_RU.md`, актуализированный `docs/KNOWN_ISSUES.md`. Ветка прежняя `codex/a39-certificate-design`. Исходный recovery HEAD `7d19a231f0833b5a920c8abc365971393653974b`; runtime code SHA/версия/PID ниже не менялись. Различие runtime vs HEAD — только документация, не повод для автоматического restart.
+
+Согласованный snapshot11.11.2026 22:22:00 CET: `runtime/release-freeze/20261111T222200+0100/trainer.sqlite3`,2482176 bytes, SHA-256 `bc2deb68318c9b5fade7670adcd7b0086b3885320fcfc304b93f111f93ee7846`, read-only integrity_check=ok, FK violations0. Supplemental131 audit/review_failure файлов и manifest — там же; source.bundle/checkpoint.json оформляются после фиксации документации. Это локальная копия на том же Mac; restore/off-device backup не выполнялись.
+
+Наsnapshot33 беседы (19 finished/14 active),3 submitted,7 reviewed;7 certificate drafts и0 issued. Один текущий mentor AI error: HTTP200/reference_validation/finding_index_out_of_range; не перезапускался. REVIEW-SEM-001 / REVIEW-COACH-001 / ACTOR-CLOSURE-003 открыты. Финальная German acceptance/реальная выдача/печать/Safari/VPS не выдаются за проверенные. Технически пригоден для ручной приёмки с перечисленными demo risks.
+
+В freeze код/база/аккаунты/сертификаты не меняются; приложение не перезапускается, provider calls0, новых бесед/AI/публикаций/выдач нет. Подготовлена только документация и приватный checkpoint. Удалённой codex/a39-certificate-design/upstream нет; remote main `2962a1b89cb8c9816decc8322ec92259993b3b03`, исходная локальная ветка впереди на92 коммита; push/merge/rebase не делались. Два прежних untracked-каталога не трогать.
+
 ## Актуальная установка
 
 | Параметр | Проверенное состояние |
@@ -10,7 +23,7 @@
 | Рабочая ветка | `codex/a39-certificate-design` (от A38 `ebcf40a`) |
 | Версия приложения | `0.15.1-certificate-issuer` — A39 / A34 Addendum 2 активирован на8100 |
 | Коммит установленного кода A39 | `bdc5ef9692d709e1827326647d7d240ebabaeb39` |
-| Git | A39 Addendum 2 `bdc5ef9` установлен; последующая фиксация только документирует активацию. Main не менялся |
+| Git | Runtime `bdc5ef9` установлен; текущий freeze добавляет только документацию. Main не менялся |
 | Адрес | `http://127.0.0.1:8100` |
 | Процесс на 8100 | Python, PID `36973`, штатный запуск A39 Addendum 2 11.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |
@@ -503,3 +516,10 @@ Textarea и прежние voice controls теперь в одной рамке:
 Четыре focused unittest и mentor JS-check — OK; AST/JSON/syntax/diff — OK. Проверены обязательность обоих имён, Unicode/long names, preview, rename наставника после issue, отсутствие записи в users/auth_sessions при вводе/выдаче, идемпотентность с учётом issuer, неизменность прежнего issued a39-v1. Все server imports/действия изолированы TRAINER_DATA_DIR и временной SQLite. Chrome synthetic8101: оба поля пусты, ввод/preview/возврат к правке сохраняют оба имени. Sample/long-name PDF визуально проверены. Рабочие сертификаты не выдавались, provider0; Safari/печать не повторялись. Подробности/файлы/ручная приёмка дописаны в `A39_CERTIFICATE_HANDOFF_RU.md`. Backend0.15.1-certificate-issuer готов к штатной активации с backup/сверкой.
 
 Активация A34 Addendum 2:0.15.1-certificate-issuer, код `bdc5ef9692d709e1827326647d7d240ebabaeb39`, PID36973, frontend revision `c47616a39bda842e`. Backup API runtime/a39-issuer/before-install.sqlite3 (0700/0600), штатный start --no-browser; все строки7 защищённых таблиц совпали с backup,22 frontend-файла совпали с диском. Квитанция runtime/a39-issuer/final-verification.json вне Git.8101 остановлен. Сертификаты/аккаунты/беседы рабочей базы агентом не редактировались/не выдавались; платных вызовов0. Последующий коммит только фиксирует установку, новый restart не нужен.
+
+
+## A35 Release Freeze — выполнено без операционного вмешательства
+
+Прочитаны AGENTS/PROJECT_STATE/CONTINUE/KNOWN_ISSUES, A17, последние A32/A33 и handoff сертификата A34 (в корне отдельного A34_HANDOFF нет; принятый дизайн/оба addendum описаны A39). Проверены основная папка, HEAD/ветка/dirty/untracked, PID/cwd/путь базы/стек/Keychain-механизм, remote refs без fetch. Фактический code SHA и22 frontend-файла согласованы с принятым кодом; отличие HEAD только Markdown явно описано. Приложение не перезапускалось.
+
+Создан SQLite Backup API checkpoint с read-only integrity/FK/hash, supplemental snapshots и manifest. В freeze выполнены read-only health/Git/SQLite/file checks, node syntax app/learning/voice, два существующих JS-checks mentor/learner и diff; provider0, prod fixtures/массовых разговоров/приёмки владельца нет. Готовы инвентаризация реализовано/технически проверено/принято/ещё открыто, recovery/start-stop/demo baseline, checklist на12 ноября и read-only VPS assessment с официальными источниками. Выявленный статически mentor certificate listing gap занесён CERT-ADMIN-UI-001 без исправления; готового tracked demo video нет. Смысловые issue/AI intermittency сохранены. Завершение фиксируется последующим SHA checkpoint без изменения running process.
