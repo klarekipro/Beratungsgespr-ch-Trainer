@@ -1217,5 +1217,6 @@
   "review23.verdict_contradicted": "Contradicts saved materials",
   "review23.verdict_uncertain": "Insufficient materials for a conclusion",
   "review25.no_gaps": "No material gaps identified.",
-  "review25.no_required_changes": "No required corrections specified for a new attempt."
+  "review25.no_required_changes": "No required corrections specified for a new attempt.",
+  "review22.previous_analysis": "Previous analysis — the refresh failed."
 }

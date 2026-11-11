@@ -19,7 +19,7 @@ Provide exactly three stages with keys needs, capabilities, proposal. For each s
 observation, status evidence_found, no_clear_evidence or insufficient_evidence, and evidence.
 Transcript evidence must contain only a supplied message_id, selected from its schema enum.
 Do not generate transcript quotes, paraphrases or indexes: the server binds each selected ID
-to the exact complete saved message. Material_evidence still requires exact source quotes. Evidence may overlap and be non-contiguous. No rigid message ranges. Missing
+to the exact complete saved message. Material_evidence must select only a supplied historical JSON-pointer path; the server binds its exact full source text. Evidence may overlap and be non-contiguous. No rigid message ranges. Missing
 clear evidence is a preliminary observation, not failure. Do not invent quotes or references.
 For learner audience never reveal or speculate about undisclosed customer facts. Historical
 fallback guidance is not an original assignment. Authoritative facts are saved company data;
@@ -27,7 +27,7 @@ legacy translations and document copies have been omitted to avoid repetition, n
 A transcript quote proves a statement was made, NOT that it is correct company policy.
 For relevant company promises return claim_checks distinguishing communicated, supported,
 unsupported, contradicted and uncertain. supported/contradicted require exact material_evidence
-quotes and JSON-pointer paths in company or saved_materials; a transcript is not a policy source.
+JSON-pointer paths in company or saved_materials; a transcript is not a policy source.
 Do not transfer a price between different services: an installation/connection/site-inspection
 fee does not establish a diagnostic visit surcharge. Warranty duration, free repeat visits and
 appointment availability require explicit saved source support. Where absent, flag unsupported
@@ -41,7 +41,9 @@ try_another_scenario. Explain briefly using actual findings and the scenario obj
 at most two concrete learning priorities. Include finding_refs to existing findings and selected
 transcript message IDs. Do not use purchase/refusal as proof of learning success/failure. Recommend
 another scenario generically from available choices, never assign/name one or change access.
-Keep material_evidence quotes compact: only the exact source phrases needed to check the promise.
+Material_evidence wire objects contain only path, never quote. Select the most specific relevant
+string field in company or saved_materials. Do not cite an absent source: use unsupported/uncertain
+with material_evidence=[] where appropriate. The server preserves exact source text.
 Use one or two sentences for the recommendation explanation and brief learning priorities.
 All choices remain voluntary; final assessment belongs to the mentor. No separate action is
 performed by a recommendation. Never recommend automatic submission or certification.
@@ -122,7 +124,21 @@ class ReviewValidationError(ValueError):
         super().__init__(reason)
         self.reason=reason;self.path=path;self.stage=stage
 
-def request_schema(s):
+def material_sources(s,ctx=None):
+    """Exact string leaves of the historical payload, addressed by JSON pointer."""
+    source=payload(s,ctx or {'source':'legacy_fallback_not_original'},'learner','de')
+    found={}
+    def visit(value,path):
+        if isinstance(value,str):
+            if len(value.strip())>=12:found[path]=value
+        elif isinstance(value,dict):
+            for key,item in value.items():visit(item,path+'/'+str(key).replace('~','~0').replace('/','~1'))
+        elif isinstance(value,list):
+            for i,item in enumerate(value):visit(item,path+'/'+str(i))
+    for key in ('company','saved_materials'):visit(source[key],'/'+key)
+    return found
+
+def request_schema(s,ctx=None):
     """Select valid messages; never ask a model to reproduce their IDs/quotes freely."""
     result=deepcopy(schema());ids=message_ids(s)
     if len(ids)!=len(set(ids)):raise ReviewValidationError('duplicate_message_ids','transcript')
@@ -131,9 +147,13 @@ def request_schema(s):
     props=result['properties']
     for entry in (props['stages']['items'],props['claim_checks']['items'],props['recommendation']):
         entry['properties']['evidence']['items']=deepcopy(evidence)
+    paths=list(material_sources(s,ctx))
+    props['claim_checks']['items']['properties']['material_evidence']['items']={
+        'type':'object','additionalProperties':False,'required':['path'],
+        'properties':{'path':{'type':'string','enum':paths or ['__no_saved_source__']}}}
     return result
 
-def bind_evidence(result,s):
+def bind_evidence(result,s,ctx=None):
     """Strict wire contract -> backward-compatible stored exact quotations. No guessing."""
     if not isinstance(result,dict) or set(result)!=set(schema()['properties']):raise ReviewValidationError('result_structure','result','schema_validation')
     result=deepcopy(result);lookup=dict(zip(message_ids(s),s['messages']))
@@ -148,6 +168,16 @@ def bind_evidence(result,s):
             mid=ref['message_id']
             if not isinstance(mid,str) or mid not in lookup:raise ReviewValidationError('unknown_message_id',where)
             ref['quote']=lookup[mid]['text']
+    sources=material_sources(s,ctx)
+    for i,claim in enumerate(result['claim_checks']):
+        refs=claim.get('material_evidence')
+        where=f'claim_checks/{i}/material_evidence'
+        if not isinstance(refs,list):raise ReviewValidationError('material_expected_array',where,'schema_validation')
+        for j,ref in enumerate(refs):
+            path=f'{where}/{j}'
+            if not isinstance(ref,dict) or set(ref)!={'path'}:raise ReviewValidationError('material_fields',path,'schema_validation')
+            if not isinstance(ref['path'],str) or ref['path'] not in sources:raise ReviewValidationError('material_unknown_path',path,'material_evidence_validation')
+            ref['quote']=sources[ref['path']]
     return result
 
 def validate(result,s,ctx=None):
@@ -191,28 +221,23 @@ def validate_learning_advice(result,s,ctx):
         for item in items:
             obj(item,['message_id','quote']);text(item['message_id'],120);text(item['quote'],max(3000,max((len(m['text']) for m in s['messages']),default=0)))
             if item['message_id'] not in lookup or item['quote'] not in lookup[item['message_id']]['text']:raise ValueError('advice evidence')
-    # Resolve policy citations only against the exact historical input given to this request.
-    source=payload(s,ctx or {'source':'legacy_fallback_not_original'},'learner','de')
-    def material(item):
-        obj(item,['path','quote']);text(item['path'],400);text(item['quote'],max(3000,max((len(m['text']) for m in s['messages']),default=0)))
-        parts=item['path'].split('/')[1:]
-        if not parts or parts[0] not in ('company','saved_materials') or len(item['quote'].strip())<12:raise ValueError('material evidence')
-        value=source
-        try:
-            for part in parts:
-                part=part.replace('~1','/').replace('~0','~')
-                if isinstance(value,list) and not part.isdigit():raise ValueError('material evidence')
-                value=value[int(part)] if isinstance(value,list) else value[part]
-        except (KeyError,IndexError,ValueError,TypeError):raise ValueError('material evidence') from None
-        if not isinstance(value,str) or item['quote'] not in value:raise ValueError('material evidence')
+    # Canonical saved analyses still require exact historical source quotations.
+    sources=material_sources(s,ctx)
+    def material(item,where):
+        if not isinstance(item,dict) or set(item)!={'path','quote'}:raise ReviewValidationError('material_fields',where,'material_evidence_validation')
+        path=item['path'];quote=item['quote']
+        if not isinstance(path,str) or path not in sources:raise ReviewValidationError('material_unknown_path',where,'material_evidence_validation')
+        if not isinstance(quote,str) or len(quote.strip())<12:raise ReviewValidationError('material_quote_too_short',where,'material_evidence_validation')
+        if quote not in sources[path]:raise ReviewValidationError('material_quote_mismatch',where,'material_evidence_validation')
     checks=result['claim_checks']
     if not isinstance(checks,list) or len(checks)>8:raise ValueError('claim checks')
-    for claim in checks:
+    for i,claim in enumerate(checks):
         obj(claim,['statement','verdict','observation','evidence','material_evidence']);text(claim['statement'],600);text(claim['observation'],1200);evidence(claim['evidence'])
         if claim['verdict'] not in ('communicated','supported','unsupported','contradicted','uncertain'):raise ValueError('claim verdict')
-        refs=claim['material_evidence']
-        if not isinstance(refs,list) or len(refs)>3 or claim['verdict'] in ('supported','contradicted') and not refs:raise ValueError('material evidence')
-        for ref in refs:material(ref)
+        refs=claim['material_evidence'];where=f'claim_checks/{i}/material_evidence'
+        if not isinstance(refs,list) or len(refs)>3:raise ReviewValidationError('material_count',where,'material_evidence_validation')
+        if claim['verdict'] in ('supported','contradicted') and not refs:raise ReviewValidationError('material_required',where,'material_evidence_validation')
+        for j,ref in enumerate(refs):material(ref,f'{where}/{j}')
     advice=result['recommendation'];obj(advice,['action','explanation','priorities','finding_refs','evidence'])
     if advice['action'] not in ('submit_to_mentor','repeat_scenario','try_another_scenario'):raise ValueError('advice action')
     text(advice['explanation'],600)
@@ -235,7 +260,12 @@ def display_review_result(result,s=None):
         for mid,index in sorted(known.items(),key=lambda item:len(item[0]),reverse=True):
             if len(mid)>=8:text=re.sub(r'(?<![\w-])'+re.escape(mid)+r'(?![\w-])',f'[{index}]',text)
         text=re.sub(r'\bmsg_[A-Za-z0-9_-]+\b','',text)
-        text=re.sub(r'\(\s*[,; ]*\)|\[\s*[,; ]*\]','',text)
+        # Clean citation-only groups after removing unresolved IDs, without rewriting prose.
+        def citations(match):
+            group=match[0];numbers=re.findall(r'\[\d+\]',group)
+            return '('+', '.join(numbers)+')' if numbers else ''
+        text=re.sub(r'\((?:\s|[,;]|\[\d+\])*\)',citations,text)
+        text=re.sub(r'\[\s*[,; ]*\]','',text)
         return re.sub(r'[ \t]{2,}',' ',text).strip()
     for key in ('summary','actual_outcome'):
         if key in value:value[key]=prose(value[key])

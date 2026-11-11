@@ -137,9 +137,9 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
                 if not api_key and not custom:raise RuntimeError('AI unavailable')
                 provider=custom or ReviewProvider(api_key,model,timeout=45)
                 phase='provider_request'
-                result=await provider._request_json(review_service.SYSTEM,data,review_service.request_schema(s),'consultation_review',max_output_tokens=3500)
+                result=await provider._request_json(review_service.SYSTEM,data,review_service.request_schema(s,ctx),'consultation_review',max_output_tokens=3500)
                 phase='schema_validation'
-                result=review_service.bind_evidence(result,s)
+                result=review_service.bind_evidence(result,s,ctx)
                 phase='semantic_validation'
                 record.update(status='ready',result=review_service.validate(result,s,ctx))
             except Exception as exc:
@@ -152,9 +152,9 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
                 if category=='ai_timeout':stage='provider_timeout'
                 elif category=='ai_context_limit':stage='request_construction'
                 elif category=='ai_incomplete':stage='provider_incomplete'
-                record['diagnostics']={**transport,'stage':stage,'validation_reason':getattr(exc,'reason',None) or (str(exc) if isinstance(exc,ValueError) and str(exc) in {'structure','text type','list type','stage type','stage structure','evidence structure','review text','review list','stages','duplicate message IDs','observation','missing evidence','evidence','advice structure','advice text','advice evidence','material evidence','claim checks','claim verdict','advice action','advice priorities','advice findings','repeat requires demonstrated gap'} else None),'validation_path':getattr(exc,'path',None),'category':category,'exception_type':type(exc).__name__,'payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1'}
+                record['diagnostics']={**transport,'stage':stage,'validation_reason':getattr(exc,'reason',None) or (str(exc) if isinstance(exc,ValueError) and str(exc) in {'structure','text type','list type','stage type','stage structure','evidence structure','review text','review list','stages','duplicate message IDs','observation','missing evidence','evidence','advice structure','advice text','advice evidence','material evidence','claim checks','claim verdict','advice action','advice priorities','advice findings','repeat requires demonstrated gap'} else None),'validation_path':getattr(exc,'path',None),'category':category,'exception_type':type(exc).__name__,'payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1','material_contract':'historical_path_selection_v1'}
                 logging.getLogger(__name__).warning('review_failed session=%s audience=%s diagnostics=%s',sid,value.audience,json.dumps(record['diagnostics'],ensure_ascii=True,sort_keys=True))
-            if record['status']=='ready':record['diagnostics']={**dict(getattr(provider,'review_diagnostics',{}) or {}),'stage':'persisted','payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1'}
+            if record['status']=='ready':record['diagnostics']={**dict(getattr(provider,'review_diagnostics',{}) or {}),'stage':'persisted','payload_characters':len(json.dumps(data,ensure_ascii=False)) if data is not None else 0,'request_count':getattr(provider,'request_count',0),'message_count':len(s['messages']),'evidence_contract':'message_selection_v1','material_contract':'historical_path_selection_v1'}
             record['completed_at']=stamp()
             w.put('analysis_history',uuid4().hex,record)
             if record['status']=='error' and old and old.get('result'):
