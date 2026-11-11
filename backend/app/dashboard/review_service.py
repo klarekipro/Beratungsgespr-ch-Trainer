@@ -22,7 +22,28 @@ that message. Evidence may overlap and be non-contiguous. No rigid message range
 clear evidence is a preliminary observation, not failure. Do not invent quotes or references.
 For learner audience never reveal or speculate about undisclosed customer facts. Historical
 fallback guidance is not an original assignment. Authoritative facts are saved company data;
-legacy translations and document copies have been omitted to avoid repetition, not replaced.'''
+legacy translations and document copies have been omitted to avoid repetition, not replaced.
+A transcript quote proves a statement was made, NOT that it is correct company policy.
+For relevant company promises return claim_checks distinguishing communicated, supported,
+unsupported, contradicted and uncertain. supported/contradicted require exact material_evidence
+quotes and JSON-pointer paths in company or saved_materials; a transcript is not a policy source.
+Do not transfer a price between different services: an installation/connection/site-inspection
+fee does not establish a diagnostic visit surcharge. Warranty duration, free repeat visits and
+appointment availability require explicit saved source support. Where absent, flag unsupported
+or uncertainty, never praise such claims as verified conditions. Do not invent why a customer
+hesitates. Clarity of communication is separate from factual correctness. Company-related
+praise anywhere in strengths/summary/stages must be supported by historical materials.
+next_attempt must contain learning improvements in a NEW independent training attempt,
+not instructions to contact this customer again, retain their slot or resume this conversation.
+Conclude with exactly ONE advisory recommendation: submit_to_mentor, repeat_scenario or
+try_another_scenario. Explain briefly using actual findings and the scenario objective, with
+at most two concrete learning priorities. Include finding_refs to existing findings and exact
+transcript evidence. Do not use purchase/refusal as proof of learning success/failure. Recommend
+another scenario generically from available choices, never assign/name one or change access.
+Keep claim checks compact, quoting only the short exact phrases needed to check the promise.
+Use one or two sentences for the recommendation explanation and brief learning priorities.
+All choices remain voluntary; final assessment belongs to the mentor. No separate action is
+performed by a recommendation. Never recommend automatic submission or certification.'''
 
 def message_ids(s):
     # Legacy messages have no ID. Stable read-only IDs bind ordinal + exact saved text/role.
@@ -64,9 +85,13 @@ def schema():
     stage={'type':'object','additionalProperties':False,'required':['key','status','observation','evidence'],'properties':{'key':{'type':'string','enum':list(STAGES)},'status':{'type':'string','enum':['evidence_found','no_clear_evidence','insufficient_evidence']},'observation':text,'evidence':{'type':'array','items':evidence}}}
     props={k:text for k in ('summary','actual_outcome')}
     props.update({k:{'type':'array','items':text} for k in ('strengths','gaps','next_attempt')});props['stages']={'type':'array','items':stage}
+    material={'type':'object','additionalProperties':False,'required':['path','quote'],'properties':{'path':text,'quote':text}}
+    reference={'type':'object','additionalProperties':False,'required':['section','index'],'properties':{'section':{'type':'string','enum':['strengths','gaps','next_attempt','stages']},'index':{'type':'integer'}}}
+    props['claim_checks']={'type':'array','items':{'type':'object','additionalProperties':False,'required':['statement','verdict','observation','evidence','material_evidence'],'properties':{'statement':text,'verdict':{'type':'string','enum':['communicated','supported','unsupported','contradicted','uncertain']},'observation':text,'evidence':{'type':'array','items':evidence},'material_evidence':{'type':'array','items':material}}}}
+    props['recommendation']={'type':'object','additionalProperties':False,'required':['action','explanation','priorities','finding_refs','evidence'],'properties':{'action':{'type':'string','enum':['submit_to_mentor','repeat_scenario','try_another_scenario']},'explanation':text,'priorities':{'type':'array','items':text},'finding_refs':{'type':'array','items':reference},'evidence':{'type':'array','items':evidence}}}
     return {'type':'object','additionalProperties':False,'required':list(props),'properties':props}
 
-def validate(result,s):
+def validate(result,s,ctx=None):
     # Strict validation also runs for controlled providers; no fabricated successful fallback.
     if not isinstance(result,dict) or set(result)!=set(schema()['properties']):raise ValueError('structure')
     if any(not isinstance(result[k],str) for k in ('summary','actual_outcome')):raise ValueError('text type')
@@ -89,10 +114,56 @@ def validate(result,s):
         if stage['status']=='evidence_found' and not stage['evidence']:raise ValueError('missing evidence')
         for item in stage['evidence']:
             if item['message_id'] not in lookup or not item['quote'].strip() or item['quote'] not in lookup[item['message_id']]['text']:raise ValueError('evidence')
+    validate_learning_advice(result,s,ctx)
     result=deepcopy(result)
     # Compatibility with existing mentor rendering and report exports.
     result['sections']=[{'title':k,'text':result[k] if isinstance(result[k],str) else '\n'.join(result[k]),'messages':[]} for k in ('summary','actual_outcome','strengths','gaps','next_attempt')]
     return result
+
+def validate_learning_advice(result,s,ctx):
+    def obj(value,keys):
+        if not isinstance(value,dict) or set(value)!=set(keys):raise ValueError('advice structure')
+    def text(value,limit):
+        if not isinstance(value,str) or not value.strip() or len(value)>limit:raise ValueError('advice text')
+    lookup=dict(zip(message_ids(s),s['messages']))
+    def evidence(items):
+        if not isinstance(items,list) or not 1<=len(items)<=4:raise ValueError('advice evidence')
+        for item in items:
+            obj(item,['message_id','quote']);text(item['message_id'],120);text(item['quote'],3000)
+            if item['message_id'] not in lookup or item['quote'] not in lookup[item['message_id']]['text']:raise ValueError('advice evidence')
+    # Resolve policy citations only against the exact historical input given to this request.
+    source=payload(s,ctx or {'source':'legacy_fallback_not_original'},'learner','de')
+    def material(item):
+        obj(item,['path','quote']);text(item['path'],400);text(item['quote'],3000)
+        parts=item['path'].split('/')[1:]
+        if not parts or parts[0] not in ('company','saved_materials') or len(item['quote'].strip())<12:raise ValueError('material evidence')
+        value=source
+        try:
+            for part in parts:
+                part=part.replace('~1','/').replace('~0','~')
+                if isinstance(value,list) and not part.isdigit():raise ValueError('material evidence')
+                value=value[int(part)] if isinstance(value,list) else value[part]
+        except (KeyError,IndexError,ValueError,TypeError):raise ValueError('material evidence') from None
+        if not isinstance(value,str) or item['quote'] not in value:raise ValueError('material evidence')
+    checks=result['claim_checks']
+    if not isinstance(checks,list) or len(checks)>8:raise ValueError('claim checks')
+    for claim in checks:
+        obj(claim,['statement','verdict','observation','evidence','material_evidence']);text(claim['statement'],600);text(claim['observation'],1200);evidence(claim['evidence'])
+        if claim['verdict'] not in ('communicated','supported','unsupported','contradicted','uncertain'):raise ValueError('claim verdict')
+        refs=claim['material_evidence']
+        if not isinstance(refs,list) or len(refs)>3 or claim['verdict'] in ('supported','contradicted') and not refs:raise ValueError('material evidence')
+        for ref in refs:material(ref)
+    advice=result['recommendation'];obj(advice,['action','explanation','priorities','finding_refs','evidence'])
+    if advice['action'] not in ('submit_to_mentor','repeat_scenario','try_another_scenario'):raise ValueError('advice action')
+    text(advice['explanation'],600)
+    if not isinstance(advice['priorities'],list) or len(advice['priorities'])>2:raise ValueError('advice priorities')
+    for priority in advice['priorities']:text(priority,300)
+    evidence(advice['evidence'])
+    refs=advice['finding_refs']
+    if not isinstance(refs,list) or not 1<=len(refs)<=4:raise ValueError('advice findings')
+    for ref in refs:
+        obj(ref,['section','index'])
+        if ref['section'] not in ('strengths','gaps','next_attempt','stages') or type(ref['index'])!=int or not 0<=ref['index']<len(result[ref['section']]):raise ValueError('advice findings')
 
 def public_analysis(a,mentor=False):
     if not a:return {'status':'not_run'}

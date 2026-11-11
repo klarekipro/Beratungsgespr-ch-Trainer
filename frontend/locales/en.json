@@ -1200,5 +1200,20 @@
   "review22.export_language": "Export headings language",
   "review22.export_error": "The file could not be downloaded. Retry or choose another format.",
   "review22.saved_observations": "Saved observations for the next attempt",
-  "review22.objective_fallback": "Saved author text: a translation into the training language is not recorded."
+  "review22.objective_fallback": "Saved author text: a translation into the training language is not recorded.",
+  "review23.title": "Recommended next learning step",
+  "review23.submit_to_mentor": "Submit this attempt to the mentor for feedback",
+  "review23.repeat_scenario": "Repeat this scenario with specific improvements",
+  "review23.try_another_scenario": "Try another available scenario",
+  "review23.advisory": "This is advice. The choice remains yours; the mentor makes the final assessment.",
+  "review23.legacy": "This saved review has no next learning action recommendation. One will be created only when you explicitly refresh the review.",
+  "review23.training_priorities": "What to improve in a new training attempt",
+  "review23.legacy_priorities": "Advice from the previously saved review",
+  "review23.conditions": "Check statements against saved company conditions",
+  "review23.saved_basis": "Evidence from this attempt’s saved materials",
+  "review23.verdict_communicated": "Communicated — this does not establish correctness",
+  "review23.verdict_supported": "Supported by saved materials",
+  "review23.verdict_unsupported": "Not supported by saved materials",
+  "review23.verdict_contradicted": "Contradicts saved materials",
+  "review23.verdict_uncertain": "Insufficient materials for a conclusion"
 }

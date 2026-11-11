@@ -137,7 +137,7 @@ def attach_workflow(app,w,auth,get_session,lock,api_key,model,summary):
                 if not api_key and not custom:raise RuntimeError('AI unavailable')
                 provider=custom or OpenAIProvider(api_key,model,timeout=45)
                 result=await provider._request_json(review_service.SYSTEM,data,review_service.schema(),'consultation_review',max_output_tokens=3500)
-                record.update(status='ready',result=review_service.validate(result,s))
+                record.update(status='ready',result=review_service.validate(result,s,ctx))
             except Exception as exc:
                 category=getattr(exc,'code',None) or ('ai_invalid_response' if isinstance(exc,(ValueError,KeyError,TypeError)) else 'ai_unavailable')
                 allowed={'ai_context_limit','ai_timeout','ai_unavailable','ai_rate_limited','ai_access_denied','ai_not_configured','ai_invalid_response','ai_incomplete','ai_request_rejected','ai_refusal'}

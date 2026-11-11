@@ -31,7 +31,13 @@ def report_text(s,language='de'):
         labels=json.loads((Path(__file__).resolve().parents[3]/'frontend/locales'/f'{language}.json').read_text())
         for item in a['result']['sections']:
             title=labels.get('review22.'+item['title'],t[8] if item['title']=='summary' else item['title'])
+            if item['title']=='next_attempt':title=labels['review23.training_priorities' if a['result'].get('recommendation') else 'review23.legacy_priorities']
             lines += [title,item['text']]
+        for claim in a['result'].get('claim_checks',[]):
+            lines += [labels['review23.conditions'],claim['statement'],labels['review23.verdict_'+claim['verdict']],claim['observation']]
+            lines += [ref['quote'] for ref in claim['material_evidence']]
+        advice=a['result'].get('recommendation')
+        if advice:lines += [labels['review23.title'],labels['review23.'+advice['action']],advice['explanation'],*advice['priorities'],labels['review23.advisory']]
         from .review_service import message_ids
         ids=message_ids(s)
         for stage in a['result'].get('stages',[]):

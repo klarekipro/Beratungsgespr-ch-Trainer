@@ -1200,5 +1200,20 @@
   "review22.export_language": "Sprache der Exportüberschriften",
   "review22.export_error": "Datei konnte nicht heruntergeladen werden. Erneut versuchen oder ein anderes Format wählen.",
   "review22.saved_observations": "Gespeicherte Beobachtungen für den nächsten Versuch",
-  "review22.objective_fallback": "Gespeicherter Autorentext: Eine Übersetzung in die Trainingssprache ist nicht belegt."
+  "review22.objective_fallback": "Gespeicherter Autorentext: Eine Übersetzung in die Trainingssprache ist nicht belegt.",
+  "review23.title": "Empfohlener nächster Lernschritt",
+  "review23.submit_to_mentor": "Diesen Versuch für Feedback beim Mentor einreichen",
+  "review23.repeat_scenario": "Dieses Szenario mit gezielten Verbesserungen wiederholen",
+  "review23.try_another_scenario": "Ein anderes verfügbares Szenario ausprobieren",
+  "review23.advisory": "Dies ist eine Empfehlung. Sie entscheiden selbst; die abschließende Beurteilung übernimmt der Mentor.",
+  "review23.legacy": "Diese gespeicherte Auswertung enthält noch keine Empfehlung zum nächsten Lernschritt. Sie entsteht erst nach einer ausdrücklich gestarteten Aktualisierung.",
+  "review23.training_priorities": "Was im neuen Trainingsversuch verbessert werden sollte",
+  "review23.legacy_priorities": "Hinweise aus der bisherigen gespeicherten Auswertung",
+  "review23.conditions": "Aussagen anhand gespeicherter Bedingungen prüfen",
+  "review23.saved_basis": "Beleg aus den Materialien dieses Versuchs",
+  "review23.verdict_communicated": "Mitgeteilt — dadurch nicht als richtig bestätigt",
+  "review23.verdict_supported": "Durch gespeicherte Materialien belegt",
+  "review23.verdict_unsupported": "Nicht durch gespeicherte Materialien belegt",
+  "review23.verdict_contradicted": "Widerspricht gespeicherten Materialien",
+  "review23.verdict_uncertain": "Die Materialien reichen für eine Beurteilung nicht aus"
 }
