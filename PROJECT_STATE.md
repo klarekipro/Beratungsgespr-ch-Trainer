@@ -8,11 +8,11 @@
 |---|---|
 | Рабочая папка | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech` |
 | Рабочая ветка | `codex/a35-learner-review-compact` (от A34 `9d7ec4e`) |
-| Версия приложения | `0.13.9-mentor-voice-feedback` — A33 активирован на 8100; ручная voice-приёмка открыта |
-| Коммит установленного кода A34 | `324d56c9989b5f46ce5508f711122965361ddb51` |
-| Git | A33 с CSS-исправлением A34 `324d56c` установлен; последующий коммит только документационный. Main не менялся |
+| Версия приложения | `0.14.0-learner-review-compact` — A35 активирован на 8100; ручная UX-приёмка открыта |
+| Коммит установленного кода A35 | `c61b208e52fa314f6910784613546879b1ff7e8a` |
+| Git | A35 `c61b208` установлен; последующий коммит только фиксирует активацию. Main не менялся |
 | Адрес | `http://127.0.0.1:8100` |
-| Процесс на 8100 | Python, PID `28958`, штатный запуск A34 11.11.2026 |
+| Процесс на 8100 | Python, PID `30400`, штатный запуск A35 11.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |
 | cwd процесса | Основная рабочая папка, указанная выше |
 | База | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard/trainer.sqlite3` |
@@ -439,3 +439,6 @@ Backlog SUPPORT-ADMIN-001 / REVIEW-CORRECTION-001 добавлен без реа
 В старом RU-разборе нет recommendation: это подтверждено read-only. Старый результат не менялся. Теперь явно показано отсутствие отдельной рекомендации и доступное действие по workflow (опубликован → открыть отзыв, submitted → ждать, private → явно отправить). Новые model advice сохраняют прежний смысл. Нового ИИ-запроса нет.
 
 Read-only learner analysis/feedback exports используют прежний get_session и только learner result/published feedback, без mentor/draft fallback. Новых схем/таблиц нет. Исходники0.14.0-learner-review-compact, готовятся к штатной активации. Пять целевых unittest, три JS-checks, AST/JSON/syntax/diff — OK; после PDF-уточнения повторены три затронутых теста. Chrome на synthetic8101 light/обычное и dark/узкое: preview/next step/документы/exports/read receipt/Escape, приватный sentinel не виден. PDF отрендерены и просмотрены. Все тестовые импорты изолированы, платных вызовов0; рабочая база в разработке не менялась. Полный handoff/файлы/приёмка — `A35_HANDOFF_RU.md`. Main/merge/push не выполнялись.
+
+
+Активация A35 выполнена штатно по сохранённому поручению владельца: SQLite backup API `runtime/a35/before-install.sqlite3` (0700/0600), start --no-browser, прежняя база/Keychain. API подтвердил0.14.0-learner-review-compact, код `c61b208e52fa314f6910784613546879b1ff7e8a`, PID30400, frontend revision `0666f95878bf5eb3`. После запуска все строки7 защищённых таблиц совпали с backup (56/46/15/32/6/1/0),22 frontend-файла — с диском. Квитанция `runtime/a35/final-verification.json` вне Git. Рабочие беседы/снимки/отзывы/прочтение не переписывались; платных вызовов нет.8101 остановлен. Готовая ссылка для проверки владельцем: `http://127.0.0.1:8100/learner#learner/session/86817775a47c4e389062e2d2a16191eb`. Последующая фиксация только документационная, повторный restart не нужен.

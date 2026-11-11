@@ -56,3 +56,8 @@ Chrome на отдельной синтетической8101: RU/light обыч
 5. Для старой RU-попытки next step должен открывать уже опубликованный отзыв, не требуя генерации. Для отправленной без отзыва — ожидание, для личной — явная отправка. Проверить обе темы.
 
 Изменённые файлы: frontend/{learning.js,app.js,appearance.css,locales/de.json,locales/en.json,locales/ru.json}; backend/app/dashboard/{workflow.py,learning_exports.py,server.py}; tests/dashboard/test_learner_review_documents.py; tests/learner_review_compact_checks.js; PROJECT_STATE.md; CONTINUE_FROM_HERE_RU.md; docs/KNOWN_ISSUES.md; этот handoff.
+
+
+## Подтверждённая активация
+
+На8100 активирован код `c61b208e52fa314f6910784613546879b1ff7e8a`, версия0.14.0-learner-review-compact, PID30400, revision `0666f95878bf5eb3`. Backup API `runtime/a35/before-install.sqlite3`; все строки7 защищённых таблиц после запуска совпали с ним (56/46/15/32/6/1/0),22 frontend-файла — с диском. Служебная инициализация при штатном старте разрешена владельцем, рабочие учебные данные не переписывались. Квитанция вне Git: `runtime/a35/final-verification.json`.8101 остановлен. Реальный анализ/перепубликация/изменение прочтения агентом не запускались. Последующий коммит только документирует установку.
