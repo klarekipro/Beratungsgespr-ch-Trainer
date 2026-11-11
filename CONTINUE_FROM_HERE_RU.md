@@ -1,5 +1,7 @@
 # Продолжение — A35 Release Freeze после A39 / A34 Addendum 2
 
+**Freeze checkpoint: `5b2c1cdb790c131e017649cdf9e29c2ee5369303`**, ветка `codex/a39-certificate-design`. Последующий documentation receipt не меняет исходники/runtime.
+
 **Режим: freeze.** Основная функциональность/дизайн и оба ФИО сертификата приняты владельцем. Дальше — его ручной немецкий цикл12.11.2026, не новые функции.
 
 - Папка: `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech`.

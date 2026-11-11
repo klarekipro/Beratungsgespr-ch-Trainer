@@ -44,7 +44,7 @@ PRAGMA foreign_key_check: 0 violations
 
 Каталоги backup0700, файлы0600. В той же папке `manifest.json`: время/версия/пути, хэши и число строк всех таблиц,22 frontend-хэша, сведения о runtime/dependencies/fonts и агрегаты/идентификаторы demo и истории без текстов бесед и секретов. Приватные raw data остаются в backup, не в Git.
 
-Дополнительно скопированы131 приватный audit/review_failure файл,1012016 bytes, с индивидуальными SHA-256 и проверкой неизменности размера/mtime при чтении. Это supplemental per-file snapshots, не обещание общей транзакции файловой системы с SQLite. Файлы `runtime/dashboard/review_failures` и `runtime/audit` важны для расследования, но печать frozen certificate PDF от них не зависит. WAL/SHM активной базы напрямую не копировались. Первый предварительный проход inventory остановился на неверном имени колонки; использован следующий полностью проверенный snapshot, исходная база не изменялась.
+Дополнительно скопированы131 приватный audit/review_failure файл,1012016 bytes, с индивидуальными SHA-256 и проверкой неизменности размера/mtime при чтении. Это supplemental per-file snapshots, не обещание общей транзакции файловой системы с SQLite. Файлы `runtime/dashboard/review_failures` и `runtime/audit` важны для расследования, но печать frozen certificate PDF от них не зависит. WAL/SHM активной базы напрямую не копировались. Исходная база открывалась только read-only.
 
 Сертификаты/снимки/сценарии/материалы и новые frozen PDF находятся внутри SQLite. Отдельные PDF на Desktop/Downloads/output не нужны для восстановления записей. Шаблоны, business materials, profiles и frontend — tracked source. Источник freeze сохраняется также в `source.bundle` в backup directory; финальный SHA/размер bundle — в `checkpoint.json` после commit, `git bundle verify` обязателен. Bundle содержит tracked историю текущей ветки, без runtime/двух чужих untracked-каталогов.
 
@@ -141,3 +141,7 @@ PY
 Локальных выявленных блокеров сохранности для создания checkpoint нет: версия/исходники объяснимо согласованы, backup целостен. Финальная функциональная приёмка всё ещё открыта. Demo risks и post-demo backlog — [KNOWN_ISSUES](KNOWN_ISSUES.md), публичный пилот — [VPS assessment](A35_VPS_FEASIBILITY_RU.md).
 
 Следующий шаг владельца: **12.11.2026 пройти [немецкий checklist](A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md)**, сохранить результат отдельно и не восстанавливать старую БД поверх новой работы. Агент не выполнил этот тест за владельца.
+
+## Зафиксированный release checkpoint
+
+Freeze commit: `5b2c1cdb790c131e017649cdf9e29c2ee5369303`, ветка `codex/a39-certificate-design`. Зафиксировано 2026-11-11T22:35:03.952965+01:00 (Europe/Berlin). Он содержит принятый source и6 freeze-документов; приложение в commit не менялось. Последующий документационный коммит только записывает этот полный SHA и квитанцию, не меняет baseline/source/runtime. Полный конечный branch HEAD, source bundle size/SHA-256 и результаты сохранности данных находятся в `checkpoint.json` указанной backup directory. Running code остаётся `bdc5ef9692d709e1827326647d7d240ebabaeb39` /PID36973, без restart.
