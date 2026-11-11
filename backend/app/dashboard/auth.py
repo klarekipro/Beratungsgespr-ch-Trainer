@@ -21,6 +21,13 @@ DUMMY_HASH=PH.hash(secrets.token_urlsafe(32))
 
 def fail(code,message,status=400):raise HTTPException(status_code=status,detail={'code':code,'message':message})
 def public_user(u):return {**{k:u[k] for k in ['id','username','display_name','role']},'active':bool(u['active']),'must_change_password':bool(u['must_change_password']),'locale':u.get('locale','de'),'archived_at':u.get('archived_at'),'is_test':bool(u.get('is_test',0))}
+def employee_state(active,archived_at):
+    return 'archived' if archived_at is not None else 'active' if active else 'inactive'
+
+def record_employee_transition(c,uid,previous,current,actor):
+    if previous!=current:
+        c.execute('INSERT INTO employee_state_events VALUES (?,?,?,?,?,?)',(uuid4().hex,uid,previous,current,time.time(),actor))
+
 def password_ok(p):
     if not isinstance(p,str) or not 12<=len(p)<=128:fail('PASSWORD_POLICY','Пароль должен содержать от 12 до 128 символов.',422)
 def normalize_login(v):
@@ -68,6 +75,7 @@ class AuthStore:
             c.execute('CREATE TABLE IF NOT EXISTS training_owners (session_id TEXT PRIMARY KEY, employee_id TEXT REFERENCES users(id))')
             c.execute("INSERT OR IGNORE INTO training_owners SELECT id,NULL FROM documents WHERE kind='session'")
             c.execute("CREATE TABLE IF NOT EXISTS employee_lifecycle (user_id TEXT PRIMARY KEY REFERENCES users(id),archived_at REAL,archived_by TEXT,is_test INTEGER NOT NULL DEFAULT 0,marked_by TEXT,restored_at REAL)")
+            c.execute("CREATE TABLE IF NOT EXISTS employee_state_events (id TEXT PRIMARY KEY,employee_id TEXT NOT NULL,previous_state TEXT NOT NULL,new_state TEXT NOT NULL,changed_at REAL NOT NULL,actor_id TEXT NOT NULL)")
             c.execute("INSERT OR REPLACE INTO metadata VALUES ('auth_schema_version','1')")
     def user(self,uid):
         with self.store.connection() as c:
@@ -101,10 +109,16 @@ class AuthStore:
         password_ok(password);hashed=PH.hash(password)
         with self.store.connection() as c:
             c.execute('UPDATE users SET password_hash=?,must_change_password=? WHERE id=?',(hashed,int(temporary),uid));c.execute('DELETE FROM auth_sessions WHERE user_id=?',(uid,))
-    def active(self,uid,active):
-        if active and (self.user(uid) or {}).get('archived_at'):fail('INVALID_INPUT','Archived employee requires IT restoration',409)
+    def active(self,uid,active,actor=None):
         with self.store.connection() as c:
-            c.execute('UPDATE users SET active=? WHERE id=?',(int(active),uid));c.execute('DELETE FROM auth_sessions WHERE user_id=?',(uid,))
+            c.execute('BEGIN IMMEDIATE')
+            row=c.execute('SELECT u.active,l.archived_at,u.role FROM users u LEFT JOIN employee_lifecycle l ON l.user_id=u.id WHERE u.id=?',(uid,)).fetchone()
+            if not row:fail('NOT_FOUND','Employee not found',404)
+            if row[1] is not None:fail('INVALID_INPUT','Archived employee requires IT restoration',409)
+            previous=employee_state(row[0],row[1])
+            c.execute('UPDATE users SET active=? WHERE id=?',(int(active),uid))
+            c.execute('DELETE FROM auth_sessions WHERE user_id=?',(uid,))
+            if row[2]=='employee':record_employee_transition(c,uid,previous,employee_state(active,None),actor or 'it-local')
     def authenticate(self,username,password,ip,portal):
         stamp=time.time();username=username.strip().lower();keys=[token_hash(ip+'\0'+username),token_hash('ip:'+ip)]
         with self.store.connection() as c:
@@ -127,6 +141,9 @@ class AuthStore:
         if not u or not u['active'] or u.get('archived_at'):fail('AUTH_REQUIRED','Active account required',401)
         token=secrets.token_urlsafe(32);csrf=secrets.token_urlsafe(32);stamp=time.time()
         with self.store.connection() as c:
+            c.execute('BEGIN IMMEDIATE')
+            current=c.execute('SELECT u.active,l.archived_at FROM users u LEFT JOIN employee_lifecycle l ON l.user_id=u.id WHERE u.id=?',(uid,)).fetchone()
+            if not current or not current[0] or current[1] is not None:fail('AUTH_REQUIRED','Active account required',401)
             c.execute('DELETE FROM auth_sessions WHERE expires_at<?',(stamp,))
             c.execute('INSERT INTO auth_sessions VALUES (?,?,?,?,?)',(token_hash(token),uid,csrf,stamp,stamp+LIFETIME))
         return token,csrf
@@ -184,5 +201,5 @@ def attach_auth(app,auth,secure=False):
         if auth.user(uid).get('archived_at'):fail('INVALID_INPUT','Archived employee requires IT restoration',409)
         auth.reset(uid,value.temporary_password);return {'ok':True}
     @router.patch('/api/mentor/employees/{uid}')
-    def active(uid:str,value:AccountState):employee(uid);auth.active(uid,value.active);return {'employee':public_user(auth.user(uid))}
+    def active(uid:str,value:AccountState):employee(uid);auth.active(uid,value.active,CURRENT_USER.get()['id']);return {'employee':public_user(auth.user(uid))}
     app.include_router(router)

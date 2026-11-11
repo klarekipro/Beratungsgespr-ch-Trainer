@@ -2,7 +2,7 @@
 import hashlib
 import json
 import time
-from .auth import fail, normalize_login, password_ok, PH, CURRENT_USER, public_user
+from .auth import fail, normalize_login, password_ok, PH, CURRENT_USER, public_user, employee_state, record_employee_transition
 from argon2.exceptions import VerificationError, InvalidHashError
 from .models import InputModel
 from pydantic import Field
@@ -25,9 +25,13 @@ class EmployeeLifecycle:
         self.employee(uid)
         with self.store.connection() as c:
             c.execute('BEGIN IMMEDIATE')
+            row=c.execute('SELECT u.active,l.archived_at FROM users u LEFT JOIN employee_lifecycle l ON l.user_id=u.id WHERE u.id=?',(uid,)).fetchone()
+            if not row:fail('NOT_FOUND','Employee not found',404)
+            previous=employee_state(*row)
             c.execute('INSERT OR IGNORE INTO employee_lifecycle(user_id) VALUES (?)',(uid,))
             c.execute('UPDATE employee_lifecycle SET archived_at=COALESCE(archived_at,?),archived_by=? WHERE user_id=?',(time.time(),author,uid))
             c.execute('UPDATE users SET active=0 WHERE id=?',(uid,))
+            record_employee_transition(c,uid,previous,'archived',author)
             c.execute('DELETE FROM auth_sessions WHERE user_id=?',(uid,))
         return public_user(self.auth.user(uid))
     def mark(self,uid,is_test,author):
@@ -51,6 +55,7 @@ class EmployeeLifecycle:
             if c.execute('SELECT 1 FROM users WHERE username=? AND id<>?',(login,uid)).fetchone():fail('LOGIN_UNAVAILABLE','Login conflict',409)
             c.execute('UPDATE users SET username=?,password_hash=?,active=1,must_change_password=1 WHERE id=?',(login,hashed,uid))
             c.execute('UPDATE employee_lifecycle SET archived_at=NULL,restored_at=? WHERE user_id=?',(time.time(),uid))
+            record_employee_transition(c,uid,'archived','active','it-local')
             c.execute('DELETE FROM auth_sessions WHERE user_id=?',(uid,))
         return public_user(self.auth.user(uid))
     def _plan(self,c,uid):
