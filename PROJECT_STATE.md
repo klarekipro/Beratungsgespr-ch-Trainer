@@ -7,12 +7,12 @@
 | Параметр | Проверенное состояние |
 |---|---|
 | Рабочая папка | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech` |
-| Рабочая ветка | `codex/a38-mentor-composer-proportions` (от A37 `f714105`) |
-| Версия приложения | `0.14.1-mentor-dictation` — frontend A38 активирован на8100 |
-| Коммит установленного кода A38 | `459eacec2225538434cb6d95b605cdc6f9518a17` |
-| Git | A38 `459eace` установлен; последующая фиксация только документирует активацию. Main не менялся |
+| Рабочая ветка | `codex/a39-certificate-design` (от A38 `ebcf40a`) |
+| Версия приложения | `0.15.0-certificate-design` — A39 / дизайн A34 + Full Name активирован на8100 |
+| Коммит установленного кода A39 | `7c12ce5e8bcb58c0dabf5fec191ead66a92781c6` |
+| Git | A39 `7c12ce5` установлен; последующая фиксация только документирует активацию. Main не менялся |
 | Адрес | `http://127.0.0.1:8100` |
-| Процесс на 8100 | Python, PID `33674`, штатный запуск A38 11.11.2026 |
+| Процесс на 8100 | Python, PID `35718`, штатный запуск A39 11.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |
 | cwd процесса | Основная рабочая папка, указанная выше |
 | База | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard/trainer.sqlite3` |
@@ -492,3 +492,5 @@ Textarea и прежние voice controls теперь в одной рамке:
 Новый одностраничный A4 landscape PDF `a39-v1`, DE/EN/RU, отдельный PDF-preview с edit/confirm, MUSTER/ENTWURF без номера до выдачи. Полное имя вводится вручную (по умолчанию пусто), хранится независимо в recipient_full_name, требуется имя+фамилия при issue. API print_name сохранён для совместимости. Нет автоназначения имени/перевода/UUID на листе; старые сертификаты без backfill/смены дизайна. Явная выдача фиксирует bytes PDF в certificate-record; последующие GET не зависят от переименования аккаунта/query языка/шаблона. Revoke/replace сохраняют прежний issued snapshot и отдельный PDF статуса. Basis/права/самостоятельное подтверждение mentor/Actor прежние.
 
 Три focused unittest и прежний mentor JS-check — OK; после финальной вёрстки повторены два затронутых certificate tests. Syntax/JSON/AST/diff — OK. Temporary DB/локальные doubles, provider0; DE/EN/RU PDF/Unicode/имена120/темы240/immutable bytes/legacy/access подтверждены. Chrome synthetic8101: имя пустое, DE default, PDF watermarked, edit сохраняет ввод. Рабочие сертификаты/данные не создавались и не переписывались. Реальная печать/Safari/mobile и содержательная выдача остаются владельцу. Шрифт прежнего Unicode-стека Arial, не Lato; optional ink-friendly режим не реализован. Полный отчёт, файлы, команды и ручная приёмка: `A39_CERTIFICATE_HANDOFF_RU.md`. Backend0.15.0 готов к штатной активации с backup/сверкой. Main/merge/push не затронуты.
+
+Активация A39 подтверждена:0.15.0-certificate-design, код `7c12ce5e8bcb58c0dabf5fec191ead66a92781c6`, PID35718, frontend revision `18b100d113c4c318`. SQLite backup API runtime/a39/before-install.sqlite3 (0700/0600); все строки7 защищённых таблиц после штатного запуска совпали с backup,22 frontend-файла совпали с диском. Квитанция runtime/a39/final-verification.json вне Git. Финальная JS-правка ограничивает ответы preview/issue их открытой формой (закрытие/повторное открытие не подменяет новый диалог); syntax/mentor JS-check повторены — OK.8101 остановлен. Реальных сертификатов/бесед/публикаций агентом не создано; платных вызовов0. Последующая фиксация только документационная, новый restart не нужен.

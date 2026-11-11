@@ -44,3 +44,7 @@ Chrome synthetic8101: имя пустое без alice, DE default, ввод с�
 6. Печатать A4 landscape,100%, без browser headers/footers. Проверить безопасные поля; при необходимости открыть PDF отдельно. Большой комментарий сокращать вручную, не допускать молчаливой обрезки.
 
 Изменённые файлы: backend/app/dashboard/{certificate_design.py,learning_exports.py,workflow.py,server.py}; frontend/{learning.js,appearance.css,locales/de.json,locales/en.json,locales/ru.json}; tests/dashboard/{test_certificate_design.py,test_learning_workflow.py}; PROJECT_STATE.md; CONTINUE_FROM_HERE_RU.md; этот отчёт. База/runtime/PDF/ключи в Git не добавляются. Main/merge/push не выполняются. Точный коммит и активация фиксируются ниже и в PROJECT_STATE.
+
+## Подтверждённая установка
+
+Код `7c12ce5e8bcb58c0dabf5fec191ead66a92781c6`, версия0.15.0-certificate-design, PID35718, revision18b100d113c4c318. Backup API runtime/a39/before-install.sqlite3 и сверка7 таблиц/22 frontend-файлов — OK. Квитанция вне Git runtime/a39/final-verification.json.8101 остановлен. Рабочие сертификаты не выдавались. Финальная JS-правка ограничивает отложенные ответы открытой исходной формой и использует локальное cert-состояние; syntax/mentor check повторены. Предыдущая кодовая фиксация `2a13e07f3d3a46e851b8338c645ceeac4db21a1e` входит в итоговый код. Последующий коммит только документирует установку.
