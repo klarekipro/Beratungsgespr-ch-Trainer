@@ -23,6 +23,8 @@ class Analyst:
         refs=data['transcript'];result={'summary':'Уточнены потребности.','actual_outcome':'Следующий шаг обсуждается, заказ не подтверждён.','strengths':['Учтена сообщённая клиентом потребность.'],'gaps':['Срок требует уточнения.'],'next_attempt':['Подтвердить следующий шаг.'],'stages':[{'key':key,'status':'evidence_found','observation':'Предварительное наблюдение.','evidence':[{'message_id':refs[i]['message_id'],'quote':refs[i]['text']} for i in [0,5]]} for key in review_service.STAGES]}
         result['claim_checks']=[]
         result['recommendation']={'action':'repeat_scenario','explanation':'Practise clarifying the open conditions in a new training attempt.','priorities':['Clarify conditions before making a promise.'],'finding_refs':[{'section':'gaps','index':0}],'evidence':[{'message_id':refs[0]['message_id'],'quote':refs[0]['text']}]}
+        for item in [*result['stages'],result['recommendation']]:
+            for evidence in item['evidence']:evidence.pop('quote')
         if self.bad:result['stages'][0]['evidence'][0]['quote']='Invented quote'
         return result
 class PostReview(unittest.TestCase):

@@ -24,7 +24,10 @@ class Analyst:
     async def _request_json(self,instructions,data,*args,**kwargs):
         self.calls.append(copy.deepcopy(data))
         if self.fail:raise RuntimeError('provider offline')
-        return {'claim_checks':[],'recommendation':{'action':'submit_to_mentor','explanation':'Ask the mentor to review the open conditions.','priorities':['Clarify conditions in a new training attempt.'],'finding_refs':[{'section':'gaps','index':0}],'evidence':[{'message_id':data['transcript'][0]['message_id'],'quote':data['transcript'][0]['text']}]},'summary':'No order confirmed.','actual_outcome':'A next step is open.','strengths':['Customer need acknowledged.'],'gaps':['Conditions still open.'],'next_attempt':['Clarify conditions.'],'stages':[{'key':key,'status':'evidence_found','observation':'Customer supplied information.','evidence':[{'message_id':data['transcript'][0]['message_id'],'quote':data['transcript'][0]['text']}]} for key in ['needs','capabilities','proposal']]}
+        result={'claim_checks':[],'recommendation':{'action':'submit_to_mentor','explanation':'Ask the mentor to review the open conditions.','priorities':['Clarify conditions in a new training attempt.'],'finding_refs':[{'section':'gaps','index':0}],'evidence':[{'message_id':data['transcript'][0]['message_id'],'quote':data['transcript'][0]['text']}]},'summary':'No order confirmed.','actual_outcome':'A next step is open.','strengths':['Customer need acknowledged.'],'gaps':['Conditions still open.'],'next_attempt':['Clarify conditions.'],'stages':[{'key':key,'status':'evidence_found','observation':'Customer supplied information.','evidence':[{'message_id':data['transcript'][0]['message_id'],'quote':data['transcript'][0]['text']}]} for key in ['needs','capabilities','proposal']]}
+        for item in [*result['stages'],result['recommendation']]:
+            for evidence in item['evidence']:evidence.pop('quote')
+        return result
 
 class WorkflowChecks(unittest.TestCase):
     def setUp(self):

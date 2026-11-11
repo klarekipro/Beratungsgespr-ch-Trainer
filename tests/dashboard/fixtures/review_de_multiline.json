@@ -1,0 +1,73 @@
+{
+  "description": "Synthetic 17-message DE fixture matching the shape of the observed evidence-validation failure; not a captured provider response.",
+  "messages": [
+    {
+      "role": "customer",
+      "text": "Nachricht 1: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "learner",
+      "text": "Nachricht 2: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "customer",
+      "text": "Nachricht 3: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "learner",
+      "text": "Nachricht 4: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "customer",
+      "text": "Nachricht 5: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "learner",
+      "text": "Nachricht 6: Die Bedingungen bleiben offen.\n– Diagnose: 90 EUR.\n– Reparatur erst nach Angebot.\n„Ein Termin ist noch nicht bestätigt.“"
+    },
+    {
+      "role": "customer",
+      "text": "Nachricht 7: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "learner",
+      "text": "Nachricht 8: Die Bedingungen bleiben offen.\n– Diagnose: 90 EUR.\n– Reparatur erst nach Angebot.\n„Ein Termin ist noch nicht bestätigt.“"
+    },
+    {
+      "role": "customer",
+      "text": "Nachricht 9: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "learner",
+      "text": "Nachricht 10: Die Bedingungen bleiben offen.\n– Diagnose: 90 EUR.\n– Reparatur erst nach Angebot.\n„Ein Termin ist noch nicht bestätigt.“"
+    },
+    {
+      "role": "customer",
+      "text": "Nachricht 11: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "learner",
+      "text": "Nachricht 12: Die Bedingungen bleiben offen.\n– Diagnose: 90 EUR.\n– Reparatur erst nach Angebot.\n„Ein Termin ist noch nicht bestätigt.“"
+    },
+    {
+      "role": "customer",
+      "text": "Nachricht 13: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "learner",
+      "text": "Nachricht 14: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "customer",
+      "text": "Nachricht 15: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "learner",
+      "text": "Nachricht 16: Der nächste Schritt ist noch nicht bestätigt."
+    },
+    {
+      "role": "customer",
+      "text": "Nachricht 17: Der nächste Schritt ist noch nicht bestätigt."
+    }
+  ]
+}

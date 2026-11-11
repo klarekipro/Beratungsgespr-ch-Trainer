@@ -32,7 +32,9 @@ class LearningAdvice(unittest.TestCase):
             result=await original(instructions,data,*args,**kwargs);evidence={'message_id':data['transcript'][1]['message_id'],'quote':data['transcript'][1]['text']}
             result['strengths']=['The terms were communicated clearly; this does not verify them.'];result['gaps']=['Visit fee, warranty and appointment promises are not supported by the saved conditions.'];result['next_attempt']=['In a new training attempt, check the correct service and confirm unknown conditions before promising them.']
             result['claim_checks']=[{'statement':claim,'verdict':'unsupported','observation':'The saved source does not establish this promise.','evidence':[evidence],'material_evidence':[]} for claim in ['Additional diagnostic visit fee of 59 EUR','One-year repair warranty','Tuesday appointment at 15:00']]
-            result['recommendation'].update(explanation='Repeat to practise checking unsupported promises against the saved conditions.',evidence=[evidence]);return result
+            result['recommendation'].update(explanation='Repeat to practise checking unsupported promises against the saved conditions.',evidence=[{'message_id':evidence['message_id']}])
+            for claim in result['claim_checks']:claim['evidence']=[{'message_id':evidence['message_id']}]
+            return result
         self.analyst._request_json=response
         analysis=self.a.post('/api/learning/sessions/'+sid+'/analysis',json={}).json()['analysis'];self.assertEqual(analysis['status'],'ready');self.assertTrue(all(c['verdict']=='unsupported' for c in analysis['result']['claim_checks']))
         raw=copy.deepcopy(analysis['result']);raw.pop('sections');claim=raw['claim_checks'][0];claim['verdict']='supported'

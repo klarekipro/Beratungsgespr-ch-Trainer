@@ -17,8 +17,9 @@ Summarize what was actually agreed, never invent an order, price, payment or boo
 Provide summary, actual_outcome, strengths, gaps and practical next_attempt suggestions.
 Provide exactly three stages with keys needs, capabilities, proposal. For each supply a brief
 observation, status evidence_found, no_clear_evidence or insufficient_evidence, and evidence.
-Evidence must reference supplied message_id values and an EXACT nonempty substring quote from
-that message. Evidence may overlap and be non-contiguous. No rigid message ranges. Missing
+Transcript evidence must contain only a supplied message_id, selected from its schema enum.
+Do not generate transcript quotes, paraphrases or indexes: the server binds each selected ID
+to the exact complete saved message. Material_evidence still requires exact source quotes. Evidence may overlap and be non-contiguous. No rigid message ranges. Missing
 clear evidence is a preliminary observation, not failure. Do not invent quotes or references.
 For learner audience never reveal or speculate about undisclosed customer facts. Historical
 fallback guidance is not an original assignment. Authoritative facts are saved company data;
@@ -37,10 +38,10 @@ next_attempt must contain learning improvements in a NEW independent training at
 not instructions to contact this customer again, retain their slot or resume this conversation.
 Conclude with exactly ONE advisory recommendation: submit_to_mentor, repeat_scenario or
 try_another_scenario. Explain briefly using actual findings and the scenario objective, with
-at most two concrete learning priorities. Include finding_refs to existing findings and exact
-transcript evidence. Do not use purchase/refusal as proof of learning success/failure. Recommend
+at most two concrete learning priorities. Include finding_refs to existing findings and selected
+transcript message IDs. Do not use purchase/refusal as proof of learning success/failure. Recommend
 another scenario generically from available choices, never assign/name one or change access.
-Keep claim checks compact, quoting only the short exact phrases needed to check the promise.
+Keep material_evidence quotes compact: only the exact source phrases needed to check the promise.
 Use one or two sentences for the recommendation explanation and brief learning priorities.
 All choices remain voluntary; final assessment belongs to the mentor. No separate action is
 performed by a recommendation. Never recommend automatic submission or certification.'''
@@ -91,6 +92,39 @@ def schema():
     props['recommendation']={'type':'object','additionalProperties':False,'required':['action','explanation','priorities','finding_refs','evidence'],'properties':{'action':{'type':'string','enum':['submit_to_mentor','repeat_scenario','try_another_scenario']},'explanation':text,'priorities':{'type':'array','items':text},'finding_refs':{'type':'array','items':reference},'evidence':{'type':'array','items':evidence}}}
     return {'type':'object','additionalProperties':False,'required':list(props),'properties':props}
 
+class ReviewValidationError(ValueError):
+    def __init__(self,reason,path,stage='evidence_validation'):
+        super().__init__(reason)
+        self.reason=reason;self.path=path;self.stage=stage
+
+def request_schema(s):
+    """Select valid messages; never ask a model to reproduce their IDs/quotes freely."""
+    result=deepcopy(schema());ids=message_ids(s)
+    if len(ids)!=len(set(ids)):raise ReviewValidationError('duplicate_message_ids','transcript')
+    evidence={'type':'object','additionalProperties':False,'required':['message_id'],
+              'properties':{'message_id':{'type':'string','enum':ids}}}
+    props=result['properties']
+    for entry in (props['stages']['items'],props['claim_checks']['items'],props['recommendation']):
+        entry['properties']['evidence']['items']=deepcopy(evidence)
+    return result
+
+def bind_evidence(result,s):
+    """Strict wire contract -> backward-compatible stored exact quotations. No guessing."""
+    if not isinstance(result,dict) or set(result)!=set(schema()['properties']):raise ReviewValidationError('result_structure','result','schema_validation')
+    result=deepcopy(result);lookup=dict(zip(message_ids(s),s['messages']))
+    for group in ('stages','claim_checks'):
+        if not isinstance(result[group],list):raise ReviewValidationError('expected_array',group,'schema_validation')
+    entries=[(f'stages/{i}',x) for i,x in enumerate(result['stages'])]+[(f'claim_checks/{i}',x) for i,x in enumerate(result['claim_checks'])]+[('recommendation',result['recommendation'])]
+    for path,item in entries:
+        if not isinstance(item,dict) or not isinstance(item.get('evidence'),list):raise ReviewValidationError('evidence_structure',path+'/evidence','schema_validation')
+        for n,ref in enumerate(item['evidence']):
+            where=f'{path}/evidence/{n}'
+            if not isinstance(ref,dict) or set(ref)!={'message_id'}:raise ReviewValidationError('evidence_fields',where,'schema_validation')
+            mid=ref['message_id']
+            if not isinstance(mid,str) or mid not in lookup:raise ReviewValidationError('unknown_message_id',where)
+            ref['quote']=lookup[mid]['text']
+    return result
+
 def validate(result,s,ctx=None):
     # Strict validation also runs for controlled providers; no fabricated successful fallback.
     if not isinstance(result,dict) or set(result)!=set(schema()['properties']):raise ValueError('structure')
@@ -113,7 +147,8 @@ def validate(result,s,ctx=None):
         if not stage['observation'].strip() or len(stage['observation'])>3000 or len(stage['evidence'])>12:raise ValueError('observation')
         if stage['status']=='evidence_found' and not stage['evidence']:raise ValueError('missing evidence')
         for item in stage['evidence']:
-            if item['message_id'] not in lookup or not item['quote'].strip() or item['quote'] not in lookup[item['message_id']]['text']:raise ValueError('evidence')
+            if item['message_id'] not in lookup:raise ReviewValidationError('unknown_message_id','stages/'+stage['key']+'/evidence')
+            if not item['quote'].strip() or item['quote'] not in lookup[item['message_id']]['text']:raise ReviewValidationError('quote_mismatch','stages/'+stage['key']+'/evidence')
     validate_learning_advice(result,s,ctx)
     result=deepcopy(result)
     # Compatibility with existing mentor rendering and report exports.
@@ -129,12 +164,12 @@ def validate_learning_advice(result,s,ctx):
     def evidence(items):
         if not isinstance(items,list) or not 1<=len(items)<=4:raise ValueError('advice evidence')
         for item in items:
-            obj(item,['message_id','quote']);text(item['message_id'],120);text(item['quote'],3000)
+            obj(item,['message_id','quote']);text(item['message_id'],120);text(item['quote'],max(3000,max((len(m['text']) for m in s['messages']),default=0)))
             if item['message_id'] not in lookup or item['quote'] not in lookup[item['message_id']]['text']:raise ValueError('advice evidence')
     # Resolve policy citations only against the exact historical input given to this request.
     source=payload(s,ctx or {'source':'legacy_fallback_not_original'},'learner','de')
     def material(item):
-        obj(item,['path','quote']);text(item['path'],400);text(item['quote'],3000)
+        obj(item,['path','quote']);text(item['path'],400);text(item['quote'],max(3000,max((len(m['text']) for m in s['messages']),default=0)))
         parts=item['path'].split('/')[1:]
         if not parts or parts[0] not in ('company','saved_materials') or len(item['quote'].strip())<12:raise ValueError('material evidence')
         value=source
