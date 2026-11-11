@@ -7,18 +7,18 @@
 | Параметр | Проверенное состояние |
 |---|---|
 | Рабочая папка | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech` |
-| Рабочая ветка | `codex/a22-private-review` |
-| Версия приложения | `0.13.0-private-review` — подтверждена на 8100 после штатного запуска |
-| Коммит установленного кода A22 | `d304df98f92958fd01d03e831cb03ebbd4cebe72` |
-| Git | Код A22 `d304df9` установлен; последующий документационный коммит фиксирует установку. Рабочие данные сохранены |
+| Рабочая ветка | `codex/a23-learning-recommendation` |
+| Версия приложения | `0.13.1-learning-advice` — подтверждена на 8100 после штатного запуска |
+| Коммит установленного кода A23 | `936287fc2208abfb82b6484dcd2e393e8e6fb2a3` |
+| Git | Код A23 `936287f` установлен; последующий документационный коммит фиксирует установку. Рабочие данные сохранены |
 | Адрес | `http://127.0.0.1:8100` |
-| Процесс на 8100 | Python, PID `8765`, штатный запуск A22 11.11.2026 |
+| Процесс на 8100 | Python, PID `10332`, штатный запуск A23 11.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |
 | cwd процесса | Основная рабочая папка, указанная выше |
 | База | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard/trainer.sqlite3` |
 | OpenAI | `configured=true`, `live_enabled=true`, `simple_actor`, `gpt-4.1-mini-2025-04-14`; один Responses-запрос на попытку хода, без LLM-Verifier |
 
-Установка A22 подтверждена `runtime/a22/final-verification.json`: версия, PID, SHA кода, прежняя база, все 22 frontend-файла совпали с диском. Frontend revision `d2b3feddd25d4f3c`. Все строки семи рабочих таблиц совпали с `runtime/a22/before-install.sqlite3`. Alex остаётся `not_submitted`, 51 сообщение и снимки сохранены. Штатный launcher сохранил Keychain. Актуальный handoff — `A22_HANDOFF_RU.md`; IT-восстановление архива описано в `A20_HANDOFF_RU.md`.
+Установка A23 подтверждена `runtime/a23/final-verification.json`: версия, PID, SHA кода, прежняя база, все 22 frontend-файла совпали с диском. Frontend revision `b6d6d98522e5a1e2`. Все строки семи рабочих таблиц совпали с `runtime/a23/before-install.sqlite3`. Сохранённый успешный A22-разбор Alex не переписан; новая рекомендация появляется только после явного обновления владельцем. Штатный launcher сохранил Keychain. Актуальный handoff — `A23_HANDOFF_RU.md`; предшествующий workflow — `A22_HANDOFF_RU.md`.
 
 Вход сотрудника — `/learner`; справочник — `/learner#learner/company`, материалы наставника — `/mentor#mentor/company` после входа. UI-проверки A19 выполнены на обезличенной копии, не в личном кабинете владельца. Они не заменяют содержательную пользовательскую приёмку. Проверочный сервер 8101 остановлен.
 
@@ -43,7 +43,7 @@
 
 ## Рабочие данные
 
-Последняя сверка A22 через SQLite `mode=ro`: 55 documents, 24 learning_records, 14 users, 31 training_owners, 6 user_preferences, 1 employee_lifecycle, 0 employee_state_events. Все строки семи таблиц до/после запуска совпали с согласованными копиями `runtime/a22/before.sqlite3` и `runtime/a22/before-install.sqlite3`. Новые пользовательские данные относительно A21 сохранены; настоящая попытка Alex не отправлялась и не переанализировалась. Это снимок диагностики, не неизменяемые нормативы.
+Последняя сверка A23 через SQLite `mode=ro`: 55 documents, 25 learning_records, 14 users, 31 training_owners, 6 user_preferences, 1 employee_lifecycle, 0 employee_state_events. Все строки семи таблиц до/после запуска совпали с согласованными копиями `runtime/a23/before.sqlite3` и `runtime/a23/before-install.sqlite3`. Более поздний успешный разбор Alex сохранён, без автоматической переоценки или отправки. Это снимок диагностики, не неизменяемые нормативы.
 
 Основные таблицы: `documents`, `learning_records`, `users`, `auth_sessions`, `training_owners`, `user_preferences`, `metadata`; также `login_limits`, `transcription_usage` и добавленная A20 `employee_lifecycle`, с A21 — `employee_state_events`. A15 хранит учебные записи отдельно от исходных документов. A16 добавляет виды записей настроек/прочтения без миграции старых бесед. Для бесед сохраняются снимки; новая редакция предприятия или сценария не переписывает их.
 
@@ -272,3 +272,5 @@ Backup `runtime/a22/before.sqlite3` и `before-install.sqlite3`; 7 рабочи�
 Снимок Alex проверен: 59 EUR не подтверждают доплату за диагностический выезд (диагностика 90 EUR, 59 EUR относятся к другим услугам); годовая гарантия/бесплатный повторный выезд и конкретные слоты не подтверждены. Запрос различает чёткое сообщение и фактическую правильность, требует цитаты сохранённых материалов для утверждения о подтверждённой политике и не объясняет колебания клиента догадкой. Сохранённый A22-разбор владельца не переписан; для новой оценки требуется явное «Обновить разбор».
 
 5 целевых mock-проверок прошли; Chromium на отдельной обезличенной копии: старый/новый формат, DE/EN/RU, light/dark, обычное/узкое окно, одна панель, доказательные ссылки/фокус. Платных вызовов и автоматической переоценки Alex нет. A22-лимиты, приватность, явная отправка и Actor сохранены. Backup `runtime/a23/before.sqlite3` и `before-install.sqlite3`; 7 таблиц целиком совпали (55/25/14/31/6/1/0). Safari/настоящий Chrome и семантическая точность реального ответа модели не проверены. Подробности — `A23_HANDOFF_RU.md`; снимки — `reports/a23/screenshots/`. Main/merge/push не затронуты; установка фиксируется после запуска.
+
+Подтверждённая установка A23: код `936287fc2208abfb82b6484dcd2e393e8e6fb2a3`, версия `0.13.1-learning-advice`, PID `10332`, frontend revision `b6d6d98522e5a1e2`. Семь рабочих таблиц сохранены целиком (55/25/14/31/6/1/0), 22 frontend-файла совпали с диском. Прежние база и Keychain сохранены, QA 8101 остановлен. Квитанция — `runtime/a23/final-verification.json`. Следующий коммит фиксирует только документацию установки.
