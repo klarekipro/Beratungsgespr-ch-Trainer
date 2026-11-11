@@ -7,12 +7,12 @@
 | Параметр | Проверенное состояние |
 |---|---|
 | Рабочая папка | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech` |
-| Рабочая ветка | `codex/a37-mentor-feedback-composer` (от A36 `81eb907`) |
-| Версия приложения | `0.14.1-mentor-dictation` — frontend A37 активирован на8100 |
-| Коммит установленного кода A37 | `fe28682f90b1833b6ceebd70217cd63770a3f325` |
-| Git | A37 `fe28682` установлен; последующая фиксация только документирует активацию. Main не менялся |
+| Рабочая ветка | `codex/a38-mentor-composer-proportions` (от A37 `f714105`) |
+| Версия приложения | `0.14.1-mentor-dictation` — frontend A38 активирован на8100 |
+| Коммит установленного кода A38 | `459eacec2225538434cb6d95b605cdc6f9518a17` |
+| Git | A38 `459eace` установлен; последующая фиксация только документирует активацию. Main не менялся |
 | Адрес | `http://127.0.0.1:8100` |
-| Процесс на 8100 | Python, PID `32743`, штатный запуск A37 11.11.2026 |
+| Процесс на 8100 | Python, PID `33674`, штатный запуск A38 11.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |
 | cwd процесса | Основная рабочая папка, указанная выше |
 | База | `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard/trainer.sqlite3` |
@@ -481,3 +481,5 @@ Textarea и прежние voice controls теперь в одной рамке:
 Изменённые файлы: frontend/learning.js, frontend/appearance.css, frontend/locales/{de,en,ru}.json, tests/{mentor_feedback_voice_checks,mentor_review_ux_checks,learner_review_compact_checks}.js, PROJECT_STATE.md, CONTINUE_FROM_HERE_RU.md. Main/merge/push не затронуты.
 
 Ручная приёмка: сохранить текущий несохранённый отзыв перед обновлением; открыть Решение наставника. Пустое/короткое поле компактно, микрофон/язык внутри снизу, длинный текст растёт до ограниченной высоты и доступен через внутреннюю прокрутку. Удаление текста возвращает компактный размер. Проверить возврат между вкладками без потери текста и обе темы. Реальная диктовка только по желанию владельца, с прежней возможной оплатой.
+
+Активация A38: код `459eacec2225538434cb6d95b605cdc6f9518a17`, backend0.14.1, PID33674, frontend revision `2a76261750aed5d9`. Backup API `runtime/a38/before-install.sqlite3`; все строки7 защищённых таблиц совпали после штатного запуска,22 frontend-файла побайтно совпали с диском. Квитанция runtime/a38/final-verification.json вне Git.8101 остановлен. Рабочие отзывы/снимки/публикации не редактировались; платных вызовов нет. Последующая фиксация только документационная.
