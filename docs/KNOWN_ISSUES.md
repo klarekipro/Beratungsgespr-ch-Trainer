@@ -1,6 +1,6 @@
 ## PERSONA-LOCALE-001 — исправлен код, проверен DE/EN/RU (12.11.2026)
 
-Persona Studio ранее переводил только UI, показывая raw русские поля и смешанные имена. Новый exact-source display layer локализует7 встроенных профилей; authored/modified fallback явно помечен, optional content_language не меняет старые записи. In-place смена UI сохраняет unsaved draft на языке ввода. Новые live persona versions не активировались. Node7×3 +1 temporary SQLite boundary test +ChromeDE/EN/RU/DE — PASS; screenshots вне Git. Runtime0.15.3 требует загрузки кода; квитанция/подробности: `A38_PERSONA_LOCALIZATION_RU.md`. Все прежние AI-quality/DATA-001 ограничения ниже сохраняются.
+Persona Studio ранее переводил только UI, показывая raw русские поля и смешанные имена. Новый exact-source display layer локализует7 встроенных профилей; authored/modified fallback явно помечен, optional content_language не меняет старые записи. In-place смена UI сохраняет unsaved draft на языке ввода. Новые live persona versions не активировались. Node7×3 +1 temporary SQLite boundary test +ChromeDE/EN/RU/DE — PASS; screenshots вне Git. Код613e13bd70c878b09c4716eefa480aa62daef76a активирован как0.15.3/PID10979, без изменения7 защищённых таблиц и без новых live persona versions;9 HTTP assets совпали. Квитанция/подробности: `A38_PERSONA_LOCALIZATION_RU.md`. Все прежние AI-quality/DATA-001 ограничения ниже сохраняются.
 
 ## A38 — принятый локальный MVP; уточнение DATA-001 (12.11.2026)
 

@@ -1,5 +1,12 @@
 # Продолжение — A35 Release Freeze после A39 / A34 Addendum 2
 
+## Квитанция загрузки кода Persona Studio — 12.11.2026
+
+Код **613e13bd70c878b09c4716eefa480aa62daef76a**, ветка **codex/a38-persona-studio-localization**, штатно загружен: backend **0.15.3-persona-localization**, PID **10979**, frontend revision **e7a03a65a2998f7f**, только127.0.0.1:8100, прежняя runtime/dashboard/trainer.sqlite3. Не путать перезапуск кода с активацией persona definitions: **новые live persona versions не создавались**. Сравнение всех строк7 защищённых таблиц до/после restart — полное равенство. Все7 stored builtin records точно совпали с fingerprints после нормализации,9 HTTP assets побайтно совпали с диском. Backup API перед загрузкой `runtime/persona-localization/before-code-restart.sqlite3`, SHA256 **ab8cf6153d7f36c2dd5257b76554ffa6bae911dcef3e1de67ac507e897cafa6c**; квитанция `runtime/persona-localization/activation-verification.json` вне Git. A37/company5 и E2E-01 PASS сохранены. Синтетический QA8101 остановлен. Paid calls0, main/merge/push/VPS не затронуты. Последующий checkpoint commit только документирует загрузку; повторный restart ради SHA не нужен.
+
+Открыть для ручной приёмки: http://127.0.0.1:8100/mentor#mentor/personas . Скриншоты synthetic Chrome — before-de.png / after-de.png / after-en.png в runtime/persona-localization. Результат не выдаётся за полный новый E2E или browser-проверку рабочей базы: Chrome проверен на отдельной synthetic SQLite, а рабочие данные/asset agreement — read-only. Ручное сохранение правки — отдельная публикация авторской версии; агент его в рабочем приложении не выполнял.
+
+
 ## A38 Persona Studio — локализация DE/EN/RU, 12.11.2026
 
 Новое явно разрешённое исправление после release handoff, без изменений видео. Ветка `codex/a38-persona-studio-localization` от470bb619e3b2c290f00b67d339a539045db53e10; до работы tracked чистые. Фактическая исходная установка0.15.2/PID7427/runtime SHA470bb619e3b2c290f00b67d339a539045db53e10. Основная БД прежняя. Код0.15.3-persona-localization подготовлен/проверен, публикации новых live persona versions нет; сведения о загрузке кода будут в квитанции ниже/отчёте завершения.
