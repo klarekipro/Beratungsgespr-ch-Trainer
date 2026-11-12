@@ -1,3 +1,9 @@
+## A38 — принятый локальный MVP; уточнение DATA-001 (12.11.2026)
+
+Владелец принял MVP/A36/A37; E2E-01 PASS, frontend/active company5/reference A37 подтверждены. Итоговый handoff: `A38_FINAL_RELEASE_RU.md`. Новых функций/AI-вызовов нет, существующие AI-quality issues и ограничения ниже сохранены.
+
+**DATA-001 — OPEN, архив восстановлен не полностью:** A38 read-only проверка COPY_SHA256_MANIFEST:11 из18 файлов доступны и совпали по SHA256,7 отсутствуют; исторический backup_path LOCAL_RAW_ARCHIVE_MANIFEST отсутствует. Прежнее «архив локальный» не доказывает текущую полноту. Текущая рабочая SQLite отдельно защищена новым согласованным A38 backup (integrity OK/FK0), но это не восстановление raw PoC-архива. Нужны7 legacy файлов по манифесту, зашифрованный off-device backup и изолированный restore drill. Старые archive checks не выдавать за PASS; в Git приватные данные не добавлять. Исходный исторический реестр ниже не переписывается.
+
 ## A37-KNOWLEDGE-001 — активация выполнена (12.11.2026)
 
 Владелец одобрил A37; company revision5/reference lindenhaus-a37-v1/materials4a184140966e4d528859d23542ec1e97 активированы. Backend0.15.2-lindenhaus-knowledge/PID54862, код56dd006ea8206dd09128ccacd3c411b94ad9f1f9. Контакты/часы видны сотруднику Chrome DE/EN/RU; исходный DE восстановлен.18 товаров/9 услуг/цены/ограничения сохранены. Backup API и сравнение строк подтвердили только3 разрешённые изменения, история/отзывы/сертификаты неизменны, paid calls0. Квитанция runtime/a37-knowledge/activation-20261112T102746Z/final-verification.json вне Git. Инструкции и отчёт: `A37_COMPANY_KNOWLEDGE_RU.md`.

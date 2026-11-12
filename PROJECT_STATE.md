@@ -1,5 +1,16 @@
 # Beratungsgespräch-Trainer — текущее состояние
 
+## A38 — финальный локальный релиз и разрешённая передача GitHub (12.11.2026)
+
+Владелец принял MVP/A36/A37 и разрешил обычный push safe source/docs в existing private `klarekipro/Beratungsgespr-ch-Trainer`, только рабочая ветка `codex/a39-certificate-design`, без main/merge/force/VPS. Входной HEAD9f0fceb4c63980722a61531dc06b81b3d67f605a; runtime code56dd006ea8206dd09128ccacd3c411b94ad9f1f9 /0.15.2-lindenhaus-knowledge/PID54862/frontend5c211232a7ba5dea. Company revision5/lindenhaus-a37-v1/materials4a184140966e4d528859d23542ec1e97. Source принятых UI/A37 совпал с HEAD,6 static HTTP assets совпали с диском. Приложение не перезапускалось и остаётся localhost8100.
+
+Свежий SQLite Backup API `runtime/final-release/20261112T104001Z/trainer.sqlite3`, SHA256 **7a0ccf100421da6feec34fc5a776b243de91da220c9cff75fd844a998e2cc783**,3112960 bytes, integrity OK/FK0. Manifest/hash/source scan/source.bundle приватные, не Git. node syntax2 + focused mentor/learner JS checks2 + diff-check PASS; AI/массовых тестов/новых разговоров/публикаций/выдач нет. Исходный freeze SHA5b2c1cdb790c131e017649cdf9e29c2ee5369303 сохранён, его старую SQLite поверх новых данных не восстанавливать.
+
+**DATA-001 НЕ закрыт:** локально11/18 legacy PoC файлов совпадают с манифестом,7 отсутствуют; старый backup_path недоступен. Это не текущие MVP-беседы; свежий backup SQLite не заменяет legacy raw-архив. Старые archive tests не запускались и их PASS не заявлен. Нужны восстановление7 файлов и off-device backup/restore drill. E2E-01 PASS — ручное свидетельство владельца, не повторялся агентом; REVIEW-SEM/COACH/ACTOR-CLOSURE/intermittent AI и прочие ограничения сохранены.
+
+Полный release report с составом MVP, limitations, local start/recovery и video/VPS next steps — `docs/A38_FINAL_RELEASE_RU.md`. Точный финальный SHA передаваемого HEAD и результат normal push/remote equality фиксируются в локальном release manifest и итоговом отчёте владельцу. Не запускать start лишь из-за documentation HEAD. Следующие действия — ручная демонстрация/видео по отдельному поручению; VPS и новые функции не начинать автоматически.
+
+
 ## A37 — активировано с разрешения владельца (12.11.2026)
 
 Владелец явно одобрил предложенные учебные сведения и разрешил backup, публикацию подготовленной версии и необходимый restart. **A37 активирован** на прежней ветке `codex/a39-certificate-design`; код/runtime SHA **`56dd006ea8206dd09128ccacd3c411b94ad9f1f9`**, backend **0.15.2-lindenhaus-knowledge**, PID **54862**, frontend revision **5c211232a7ba5dea**, только127.0.0.1:8100. Последующий commit checkpoint меняет только Markdown; запускать launcher повторно ради совпадения documentation HEAD не нужно.
