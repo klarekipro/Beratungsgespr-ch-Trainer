@@ -3,11 +3,21 @@
 Обновлено: 11.11.2026 (Europe/Berlin). Это единая точка входа для продолжения работы. Постоянные правила — в `AGENTS.md`; подробные свидетельства прошлых этапов — в handoff-отчётах. При расхождениях проверять фактические Git, процесс и API, сохраняя различие между реализацией и приёмкой владельцем.
 
 
+## A35.1 — единственное post-freeze изменение навигации, 12.11.2026
+
+По явному поручению владельца после freeze выполнена только правка mentor sidebar: Dashboard → Employees → Conversation Reviews → Scenarios → Customer Persona Builder → Company → AI Configuration. Прежние route IDs/иконки/active states/счётчик очереди/стили/responsive markup сохранены; Company не удалён. `dashboard.text_024`: DE KI-Konfiguration, EN AI Configuration, RU Конфигурация ИИ. Меню сотрудника не менялось.
+
+Ветка прежняя `codex/a39-certificate-design`; исходный HEAD этой правки `bd40f2e6a964eff843a789469b27a2f983619ad4`, tracked-файлы до работы чистые, два прежних untracked-каталога сохранены. **Первоначальный A35 freeze SHA `5b2c1cdb790c131e017649cdf9e29c2ee5369303` остаётся неизменной точкой возврата исходников**, backup/bundle freeze не переписывались. Не восстанавливать старую базу ради возврата меню.
+
+Проверки:27 случаев DE/EN/RU ×7 пунктов + detail review/scenario на реальном nav-фрагменте app.js в Node VM, сравнение прежних route/icon/active/badge markup и learner nav; JSON/node syntax/git diff --check — OK. Четыре изменённых frontend-файла на8100 совпали с диском. База не открывалась и не менялась, платных вызовов0. Backend/auth/provider/workflow/CSS не менялись; PID36973 прежний, перезапуска нет. Startup frontend revisionc47616a39bda842e остаётся fingerprint исходного запуска; после A35.1 это не хэш новых static-файлов. Для просмотра достаточно обновить страницу после сохранения черновика, start не нужен.
+
+Файлы: frontend/app.js, frontend/locales/{de,en,ru}.json и3 checkpoint-документа (PROJECT_STATE/CONTINUE/A35_RELEASE_FREEZE). Точный новый commit SHA — `git rev-parse HEAD` после фиксации и сообщение завершения. Новые browser/DB/AI/полные regression проверки не запускались. Main/merge/push не затронуты. Косметические правки на этом прекращаются; следующий шаг — один полный немецкий разговор владельца с отправкой, публикацией и проверкой получения отзыва.
+
 ## Release freeze A35 — текущий приоритет
 
 11.11.2026: владелец принял основную функциональность/дизайн, сертификат и оба редактируемых ФИО. Сейчас **freeze, без разработки**; немецкий полный цикл запланирован владельцем на12.11.2026 (Europe/Berlin), ещё не выполнен. Существующий A35_HANDOFF про learner UI — более ранний этап с тем же номером.
 
-Авторитетные документы: `docs/A35_RELEASE_FREEZE_RU.md`, `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md`, `docs/A35_VPS_FEASIBILITY_RU.md`, актуализированный `docs/KNOWN_ISSUES.md`. Ветка прежняя `codex/a39-certificate-design`. Исходный recovery HEAD `7d19a231f0833b5a920c8abc365971393653974b`; runtime code SHA/версия/PID ниже не менялись. Различие runtime vs HEAD — только документация, не повод для автоматического restart.
+Авторитетные документы: `docs/A35_RELEASE_FREEZE_RU.md`, `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md`, `docs/A35_VPS_FEASIBILITY_RU.md`, актуализированный `docs/KNOWN_ISSUES.md`. Ветка прежняя `codex/a39-certificate-design`. Исходный recovery HEAD `7d19a231f0833b5a920c8abc365971393653974b`; runtime code SHA/версия/PID ниже не менялись. На момент freeze различие runtime vs HEAD было только документационным; после него разрешена ровно навигационная правка A35.1 выше, без backend restart.
 
 Согласованный snapshot11.11.2026 22:22:00 CET: `runtime/release-freeze/20261111T222200+0100/trainer.sqlite3`,2482176 bytes, SHA-256 `bc2deb68318c9b5fade7670adcd7b0086b3885320fcfc304b93f111f93ee7846`, read-only integrity_check=ok, FK violations0. Supplemental131 audit/review_failure файлов и manifest — там же; source.bundle/checkpoint.json содержат окончательную квитанцию freeze. Это локальная копия на том же Mac; restore/off-device backup не выполнялись.
 
@@ -23,7 +33,7 @@
 | Рабочая ветка | `codex/a39-certificate-design` (от A38 `ebcf40a`) |
 | Версия приложения | `0.15.1-certificate-issuer` — A39 / A34 Addendum 2 активирован на8100 |
 | Коммит установленного кода A39 | `bdc5ef9692d709e1827326647d7d240ebabaeb39` |
-| Git | Runtime `bdc5ef9` установлен; текущий freeze добавляет только документацию. Main не менялся |
+| Git | Runtime backend `bdc5ef9` прежний; после freeze выполнен только frontend A35.1. Main не менялся |
 | Адрес | `http://127.0.0.1:8100` |
 | Процесс на 8100 | Python, PID `36973`, штатный запуск A39 Addendum 2 11.11.2026 |
 | Команда процесса | `scripts/run_installed_dashboard.py --openai --port 8100 --data-dir /Users/admin/Documents/01_AI Business 26/17_BeratungGesprech/runtime/dashboard` |

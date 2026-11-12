@@ -2,7 +2,15 @@
 
 **Freeze checkpoint: `5b2c1cdb790c131e017649cdf9e29c2ee5369303`**, ветка `codex/a39-certificate-design`. Последующий documentation receipt не меняет исходники/runtime.
 
-**Режим: freeze.** Основная функциональность/дизайн и оба ФИО сертификата приняты владельцем. Дальше — его ручной немецкий цикл12.11.2026, не новые функции.
+## A35.1 после freeze — 12.11.2026
+
+В той же ветке `codex/a39-certificate-design` разрешено одно исключение: новый порядок7 пунктов mentor sidebar и название KI-Konfiguration / AI Configuration / Конфигурация ИИ. Company/маршруты/иконки/active/responsive поведение сохранены. База и backend не менялись, PID36973 не перезапускался. Новые static-файлы доступны после обычного обновления страницы; старый startup frontend revision не описывает post-freeze static diff.
+
+Оригинальный freeze SHA **`5b2c1cdb790c131e017649cdf9e29c2ee5369303`** и его backup/bundle остаются rollback reference, без восстановления старой БД. Предыдущий HEAD `bd40f2e6a964eff843a789469b27a2f983619ad4`; новый post-freeze commit определяется `git rev-parse HEAD` и отчётом завершения. Проверено27 route/locale cases, node syntax/diff и4 HTTP static matches; без AI/DB/перезапуска.
+
+**Дальше косметику не продолжать.** Следующий шаг владельца — полный немецкий цикл по `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md`: разговор → явная отправка → оценка/публикация наставника → получение сотрудником. Не выполнять этот разговор/публикацию автоматически.
+
+**Режим: freeze с единственным исключением A35.1 выше.** Основная функциональность/дизайн и оба ФИО сертификата приняты владельцем. Дальше — его ручной немецкий цикл12.11.2026, не новые функции.
 
 - Папка: `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech`.
 - Ветка: `codex/a39-certificate-design`, не переключать на старые A32/A35/main.

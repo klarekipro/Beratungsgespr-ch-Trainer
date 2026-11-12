@@ -145,3 +145,23 @@ PY
 ## Зафиксированный release checkpoint
 
 Freeze commit: `5b2c1cdb790c131e017649cdf9e29c2ee5369303`, ветка `codex/a39-certificate-design`. Зафиксировано 2026-11-11T22:35:03.952965+01:00 (Europe/Berlin). Он содержит принятый source и6 freeze-документов; приложение в commit не менялось. Последующий документационный коммит только записывает этот полный SHA и квитанцию, не меняет baseline/source/runtime. Полный конечный branch HEAD, source bundle size/SHA-256 и результаты сохранности данных находятся в `checkpoint.json` указанной backup directory. Running code остаётся `bdc5ef9692d709e1827326647d7d240ebabaeb39` /PID36973, без restart.
+
+## A35.1 — post-freeze navigation-only exception, 12.11.2026
+
+Отдельное явное поручение владельца после завершения freeze, не новый цикл разработки. Ветка `codex/a39-certificate-design`, исходный HEAD `bd40f2e6a964eff843a789469b27a2f983619ad4`. Первоначальный freeze commit **`5b2c1cdb790c131e017649cdf9e29c2ee5369303`** сохраняется без изменения как rollback reference; его SQLite/manifest/source.bundle остаются исходным snapshot, не перезаписываются A35.1. Возврат старого меню не требует отката пользовательских данных.
+
+Изменены только порядок существующих mentor nav tuples в frontend/app.js и ключ dashboard.text_024 в трёх локалях:
+
+1. Dashboard (`overview`)
+2. Employees (`employees`)
+3. Conversation Reviews (`reviews`)
+4. Scenarios (`scenarios`)
+5. Customer Persona Builder (`personas`)
+6. Company (`company`)
+7. AI Configuration (`setup`): DE **KI-Konfiguration**, EN **AI Configuration**, RU **Конфигурация ИИ**.
+
+Route hashes, icon mapping, active/aria-current/detail highlighting, queue badge, Company, learner sidebar и responsive/CSS markup сохранены. Общий ключ также обеспечивает согласованное название существующего setup-экрана. Иные тексты о сбоях подключения не переименовывались.
+
+Focused verification: Node VM рендерит actual nav expression и actual link template из app.js;27 сочетаний DE/EN/RU ×7 основных views + review/scenario detail проходят, route order/active/icon/badge и неизменность learner nav/разметки проверены. node --check, JSON и git diff --check — OK;4 изменённых static-файла на8100 побайтно совпали с диском. Проверка не загружает рабочие аккаунты и не открывает БД. Backend/app version0.15.1, PID36973 прежние; startup revisionc47616a39bda842e относится к запуску до A35.1, а не к обновлённым static-файлам. Backend restart не выполнялся и для этой правки не нужен. Платных вызовов/публикаций/сертификатов0; никаких backend/provider/auth/workflow/database изменений.
+
+Новый commit содержит4 frontend-файла и3 checkpoint-документа; его полный SHA записан в отчёте завершения и доступен через git rev-parse HEAD. Исходный freeze выше не выдаётся за текущий post-freeze frontend. Main/merge/push не выполнялись. Косметические изменения прекращаются; дальше владелец проходит один немецкий end-to-end цикл с отправкой/публикацией/получением отзыва. Перед обновлением открытой страницы сохранить черновик.
