@@ -24,6 +24,16 @@ from .models import InputModel, Company
 ROOT = Path(__file__).resolve().parents[3] / 'materials/lindenhaus'
 REFERENCES = {lang: json.loads((ROOT/f'reference.{lang}.json').read_text()) for lang in ('de','en','ru')}
 SOURCE_COMPANY = json.loads((ROOT/'company-card.json').read_text())
+KNOWLEDGE = json.loads((ROOT/'company-knowledge.a37.json').read_text())
+
+def company_digest(record):
+    return hashlib.sha256(json.dumps(record,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+
+def knowledge_company(language='de'):
+    """Expected A37 profile; original A17 sources and historical snapshots stay intact."""
+    result=canonical_company()
+    result['description']=REFERENCES.get(language,REFERENCES['de'])['about']+'\n\n'+KNOWLEDGE['additions'].get(language,KNOWLEDGE['additions']['de'])
+    return result
 
 def now(): return datetime.now(timezone.utc).isoformat()
 def reject(message, status=422): raise HTTPException(status, detail={'code':'INVALID_INPUT','message':message})
@@ -43,9 +53,12 @@ def canonical_company():
     return Company.model_validate(c).model_dump()
 
 def localized_company(record, language):
-    if record not in (SOURCE_COMPANY,canonical_company()):return None
+    expected=knowledge_company(); expected['revision']=record.get('revision')
+    added=record==expected
+    if not added and record not in (SOURCE_COMPANY,canonical_company()):return None
     d=REFERENCES.get(language,REFERENCES['de']); result=copy.deepcopy(record)
     result.update(name=d['name'],description=d['about'],services=[service_record(s,language) for s in d['services']])
+    if added:result['description']=knowledge_company(language)['description']
     # Full approved policy in the chosen language, never claim a German translation.
     result['limitations']='\n\n'.join(v for _,v in d['terms'])
     return result
@@ -56,7 +69,8 @@ def initial_materials(previous):
     return r
 
 def reference_for(materials, company, language):
-    if materials and materials.get('translations') and company==canonical_company():
+    bound=bool(materials and materials.get('reference_version')==KNOWLEDGE['version'] and materials.get('reference_company_sha256')==company_digest(company))
+    if materials and materials.get('translations') and (company==canonical_company() or bound):
         return copy.deepcopy(materials['translations'].get(language) or materials['translations']['de'])
     return None
 
