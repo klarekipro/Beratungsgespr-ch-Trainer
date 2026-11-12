@@ -2,15 +2,23 @@
 
 **Freeze checkpoint: `5b2c1cdb790c131e017649cdf9e29c2ee5369303`**, ветка `codex/a39-certificate-design`. Последующий documentation receipt не меняет исходники/runtime.
 
+## Текущий результат — E2E-01: PASS; A36, 12.11.2026
+
+Владелец сообщил об успешном полном немецком E2E: разговор/отправка/публикация/получение отзыва и финальный сертификат доставлены сотруднику. Приёмка больше не ожидает своего первого выполнения. Агент не повторяет её автоматически; точные IDs в сообщении не указаны. Числа0 issued/7 draft ниже — только исторический freeze snapshot, не текущая база; новые результаты не откатывать.
+
+A36 в той же `codex/a39-certificate-design` от HEAD `66bae46544c06ebc1dbd63b58eb5fec2c6d9bbd8`: один существующий блок4 result shortcuts перенесён под heading/intro learner Training, до banner/catalogue. Те же hrefs/фильтры/счётчики/локали, без дубликата внизу, прежний responsive layout с корректировкой отступа. Из кода изменены только frontend/app.js и frontend/portals.css.6 locale/data frontend checks + syntax/diff + HTTP static match — OK; БД не открывалась, PID36973 без restart, paid calls0.
+
+Сохранить исходный freeze SHA `5b2c1cdb790c131e017649cdf9e29c2ee5369303`. Это разрешённая точечная post-freeze UX-правка после E2E, без нового homepage/логики/сертификатов. Новый commit — git rev-parse HEAD / отчёт завершения. Дополнительные косметические/функциональные изменения без нового поручения не начинать.
+
 ## A35.1 после freeze — 12.11.2026
 
 В той же ветке `codex/a39-certificate-design` разрешено одно исключение: новый порядок7 пунктов mentor sidebar и название KI-Konfiguration / AI Configuration / Конфигурация ИИ. Company/маршруты/иконки/active/responsive поведение сохранены. База и backend не менялись, PID36973 не перезапускался. Новые static-файлы доступны после обычного обновления страницы; старый startup frontend revision не описывает post-freeze static diff.
 
 Оригинальный freeze SHA **`5b2c1cdb790c131e017649cdf9e29c2ee5369303`** и его backup/bundle остаются rollback reference, без восстановления старой БД. Предыдущий HEAD `bd40f2e6a964eff843a789469b27a2f983619ad4`; новый post-freeze commit определяется `git rev-parse HEAD` и отчётом завершения. Проверено27 route/locale cases, node syntax/diff и4 HTTP static matches; без AI/DB/перезапуска.
 
-**Дальше косметику не продолжать.** Следующий шаг владельца — полный немецкий цикл по `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md`: разговор → явная отправка → оценка/публикация наставника → получение сотрудником. Не выполнять этот разговор/публикацию автоматически.
+**Исторический следующий шаг A35.1 выполнен владельцем: E2E-01 PASS.** Проверочный цикл описан в `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md`: разговор → явная отправка → оценка/публикация наставника → получение сотрудником. Не выполнять этот разговор/публикацию автоматически.
 
-**Режим: freeze с единственным исключением A35.1 выше.** Основная функциональность/дизайн и оба ФИО сертификата приняты владельцем. Дальше — его ручной немецкий цикл12.11.2026, не новые функции.
+**Режим: freeze с явно разрешёнными UI-исключениями A35.1 и A36 выше.** Основная функциональность/дизайн и оба ФИО сертификата приняты владельцем. Полный немецкий цикл12.11.2026 уже принят владельцем (E2E-01 PASS); новых функций или повторной автоматической приёмки не требуется.
 
 - Папка: `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech`.
 - Ветка: `codex/a39-certificate-design`, не переключать на старые A32/A35/main.
@@ -23,7 +31,7 @@
 
 ## Следующее действие
 
-Владелец проходит `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md`. Подробный freeze/backup/recovery/functional inventory — `docs/A35_RELEASE_FREEZE_RU.md`; VPS только оценён в `docs/A35_VPS_FEASIBILITY_RU.md`, сервер не посещался. Приложение сегодня не останавливалось/не запускалось; новые разговоры/AI/публикации/сертификаты агент не создавал.
+Владелец завершил первый полный цикл по `docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md` (E2E-01 PASS); новые проверки/разработку не запускать без поручения. Подробный freeze/backup/recovery/functional inventory — `docs/A35_RELEASE_FREEZE_RU.md`; VPS только оценён в `docs/A35_VPS_FEASIBILITY_RU.md`, сервер не посещался. Приложение сегодня не останавливалось/не запускалось; новые разговоры/AI/публикации/сертификаты агент не создавал.
 
 Сохранить ограничения: REVIEW-SEM-001, REVIEW-COACH-001, ACTOR-CLOSURE-003, текущие intermittent mentor AI failures; они не исправлены.0 issued/7 draft certificates в backup — learner certificate list ожидаемо пуст. CERT-ADMIN-UI-001: mentor list/revoke/replace UI не подключён к текущему certificate dialog; не обещать это в demo. Нет готового tracked demo video и полного restore drill. Не сбрасывать базу после приёмки, не восстанавливать старую копию поверх новых результатов.
 

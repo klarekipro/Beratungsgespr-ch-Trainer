@@ -49,7 +49,7 @@
 [aria-invalid="true"]{border-color:#a32929!important;outline:2px solid #e5bbb1}
 .ui-section.form-section{padding:0 0 8px}.ui-section.form-section>summary{margin:0 0 14px}
 .ui-section.form-section:not([open])>summary{margin:0}
-.practice-counts{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.practice-counts{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 20px}
 .practice-counts>a{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px}
 .practice-counts strong{font-size:22px}.practice-counts svg{width:16px;height:16px;color:var(--green)}
 .practice-counts>a:hover{border-color:var(--green);background:#f2f6ed}

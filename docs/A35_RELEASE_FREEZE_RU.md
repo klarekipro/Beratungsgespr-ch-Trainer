@@ -1,6 +1,8 @@
 # A35 — Release Freeze, Project Checkpoint & Demo Readiness
 
-**Статус:** безопасный локальный checkpoint для ручной приёмки владельцем. Не финальная немецкая содержательная приёмка и не разрешение на публичный deployment. Новые функции, исправления AI, UI и зависимости в этой задаче не менялись.
+**Обновление12.11.2026:** E2E-01 PASS подтверждён владельцем, включая публикацию/получение отзыва и доставку финального сертификата. После приёмки разрешён только перенос существующих learner result shortcuts (A36, раздел в конце). Ниже сохранено состояние исходного freeze11.11.
+
+**Исходный статус freeze:** безопасный локальный checkpoint для ручной приёмки владельцем. Не финальная немецкая содержательная приёмка и не разрешение на публичный deployment. Новые функции, исправления AI, UI и зависимости в этой задаче не менялись.
 
 Этот A35 — задание release freeze после A39 / сертификата A34 Addendum2. Прежний `A35_HANDOFF_RU.md` про компактный learner UI остаётся историческим документом.
 
@@ -165,3 +167,15 @@ Route hashes, icon mapping, active/aria-current/detail highlighting, queue badge
 Focused verification: Node VM рендерит actual nav expression и actual link template из app.js;27 сочетаний DE/EN/RU ×7 основных views + review/scenario detail проходят, route order/active/icon/badge и неизменность learner nav/разметки проверены. node --check, JSON и git diff --check — OK;4 изменённых static-файла на8100 побайтно совпали с диском. Проверка не загружает рабочие аккаунты и не открывает БД. Backend/app version0.15.1, PID36973 прежние; startup revisionc47616a39bda842e относится к запуску до A35.1, а не к обновлённым static-файлам. Backend restart не выполнялся и для этой правки не нужен. Платных вызовов/публикаций/сертификатов0; никаких backend/provider/auth/workflow/database изменений.
 
 Новый commit содержит4 frontend-файла и3 checkpoint-документа; его полный SHA записан в отчёте завершения и доступен через git rev-parse HEAD. Исходный freeze выше не выдаётся за текущий post-freeze frontend. Main/merge/push не выполнялись. Косметические изменения прекращаются; дальше владелец проходит один немецкий end-to-end цикл с отправкой/публикацией/получением отзыва. Перед обновлением открытой страницы сохранить черновик.
+
+## E2E-01 PASS и A36 — Learner Training result navigation, 12.11.2026
+
+Владелец сообщил: **E2E-01: PASS**, полный немецкий цикл успешно завершён, включая mentor feedback publication/получение отзыва сотрудником и final certificate delivery. Это ручное свидетельство владельца, не новый запуск агентом; IDs не предоставлены. Предыдущий pending gate и0 issued/7 draft в snapshot11.11 — историческая точка, не текущий факт. Backup/source bundle первоначального freeze не переписываются; не откатывать к ним новые данные приёмки.
+
+A36 — отдельная разрешённая небольшая post-freeze UX-правка. Ветка остаётся `codex/a39-certificate-design`, исходный HEAD `66bae46544c06ebc1dbd63b58eb5fec2c6d9bbd8`, tracked до правки чистые. Оригинальный freeze SHA **`5b2c1cdb790c131e017649cdf9e29c2ee5369303`** сохранён как source rollback reference.
+
+В learner practicePage существующая nav.practice-counts перемещена сразу после pageHead(title,intro), перед guidance/open-conversation banner и scenario cards; нижний блок удалён. Все4 прежних hrefs (`#learner/history/active`, `/finished`, `/reviewed`, `/certificates`), labels/localization и вычисления счётчиков сохранены дословно. learning.certificateCount() вызывается один раз, новых счётчиков/homepage нет. Прежний flex-wrap/600px mobile layout сохранён, единственная CSS-поправка — margin блока0 0 20px вместо верхнего22px.
+
+Проверка actual function в Node VM:6 случаев DE/EN/RU × пустая/заполненная история — OK; один блок/позиция/4 ссылки/числа/labels/один certificateCount, неизменность остального function body/responsive CSS. node --check и git diff --check — OK. Два изменённых static-файла побайтно совпали с HTTP8100; PID36973 прежний. Production DB не открывалась, backend/AI/training/auth/accounts/history/certificates не менялись, paid calls0, restart0. Готовность всего продукта не пересчитывалась, E2E не повторялся.
+
+Изменены: frontend/app.js, frontend/portals.css; PROJECT_STATE.md, CONTINUE_FROM_HERE_RU.md, этот report, docs/KNOWN_ISSUES.md и docs/A35_GERMAN_ACCEPTANCE_CHECKLIST_RU.md (фиксация принятого E2E). Точный новый commit SHA — сообщение завершения / git rev-parse HEAD. Main/merge/push не выполнялись. Перед reload сохранить несохранённый ввод; актуальное положение shortcuts проверить на `/learner#learner/practice`.
