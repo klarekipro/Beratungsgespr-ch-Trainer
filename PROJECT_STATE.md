@@ -1,5 +1,14 @@
 # Beratungsgespräch-Trainer — текущее состояние
 
+## A38 Persona Studio — локализация DE/EN/RU, 12.11.2026
+
+Новое явно разрешённое исправление после release handoff, без изменений видео. Ветка `codex/a38-persona-studio-localization` от470bb619e3b2c290f00b67d339a539045db53e10; до работы tracked чистые. Фактическая исходная установка0.15.2/PID7427/runtime SHA470bb619e3b2c290f00b67d339a539045db53e10. Основная БД прежняя. Код0.15.3-persona-localization подготовлен/проверен, публикации новых live persona versions нет; сведения о загрузке кода будут в квитанции ниже/отчёте завершения.
+
+Причина: raw русские seed/stored fields выводились без перевода, старый persona_label не покрывал новые версии, компактный picker его обходил. Решение — локальные переводы7 exact-source профилей по SHA256, включая поведение/ситуацию/первую реплику/факты/темы; авторские/изменённые профили без автоперевода. Optional JSON content_language без SQL migration/backfill. UI/training/content languages разделены. Чистый builtin следует UI; изменённый черновик остаётся на языке ввода с отметкой; только Persona Studio меняет locale без reload. No-op Save не публикует перевод. Actor/prompts не менялись.
+
+Node7×3/locale selector +1 synthetic API/version/snapshot/dossier test и Chrome8101 DE→EN→RU→DE/все5 разделов/реальная unsaved правка — PASS; screenshots before-de/after-de/after-en в runtime/persona-localization вне Git. Платных вызовов0.7 защищённых таблиц live до/после совпали; IDs/версии/назначения/история/сертификаты не переписаны. Backup API runtime/persona-localization/before.sqlite3 SHA256 ab8cf6153d7f36c2dd5257b76554ffa6bae911dcef3e1de67ac507e897cafa6c. Все файлы/дизайн данных/проверки/ручная приёмка/ограничения: `docs/A38_PERSONA_LOCALIZATION_RU.md`. Main/merge/push/VPS не затронуты; предыдущая публикация релиза470bb619 сохранена. DATA-001/AI issues не закрыты.
+
+
 ## A38 — финальный локальный релиз и разрешённая передача GitHub (12.11.2026)
 
 Владелец принял MVP/A36/A37 и разрешил обычный push safe source/docs в existing private `klarekipro/Beratungsgespr-ch-Trainer`, только рабочая ветка `codex/a39-certificate-design`, без main/merge/force/VPS. Входной HEAD9f0fceb4c63980722a61531dc06b81b3d67f605a; runtime code56dd006ea8206dd09128ccacd3c411b94ad9f1f9 /0.15.2-lindenhaus-knowledge/PID54862/frontend5c211232a7ba5dea. Company revision5/lindenhaus-a37-v1/materials4a184140966e4d528859d23542ec1e97. Source принятых UI/A37 совпал с HEAD,6 static HTTP assets совпали с диском. Приложение не перезапускалось и остаётся localhost8100.

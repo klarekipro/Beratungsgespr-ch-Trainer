@@ -1289,5 +1289,13 @@
   "mentor33.certificate_edit": "Edit details",
   "mentor33.certificate_issuer_name": "Issuer Full Name (first and last name)",
   "mentor33.certificate_issuer_hint": "Enter the issuer’s first and last name manually. This is saved only in the certificate; the account name and sign-in details remain unchanged.",
-  "errors.CERTIFICATE_ISSUER_FULL_NAME_REQUIRED": "Enter the certificate issuer’s first and last name."
+  "errors.CERTIFICATE_ISSUER_FULL_NAME_REQUIRED": "Enter the certificate issuer’s first and last name.",
+  "persona38.builtin": "Built-in profile · Content language: {language}. The saved source remains unchanged.",
+  "persona38.authored": "Author content · Content language: {language}. No automatic translation.",
+  "persona38.draft": "Unsaved draft remains in {language}; only the interface has changed.",
+  "persona38.unknown": "Not specified",
+  "persona38.content_language": "Profile content language",
+  "persona38.help": "Content language is independent of training language. Only deliberate saving creates a new profile version.",
+  "persona38.unchanged": "No changes. The localized view is not saved.",
+  "persona38.original_case": "The source card training language remains unchanged. Its opening message is translated here for display only."
 }

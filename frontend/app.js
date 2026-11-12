@@ -81,6 +81,9 @@
   const statusPill = session => session.status==='finished'?`<span class="pill review22-status-pill ${session.review_status==='submitted'?'amber':session.review_status==='reviewed'?'green':'dark'}">${window.TrainerI18n.t(session.review_status==='submitted'?'mentorNav.awaiting':session.review_status==='reviewed'?'mentorNav.reviewed':'review22.status_'+session.review_status)}</span>`:`<span class="pill green">${window.TrainerI18n.t('dashboard.text_007')}</span>`;
   const safeURL = (value) => { try {const u = new URL(value);return ["https:","http:"].includes(u.protocol) ? u.href : "";} catch (_) {return "";} };
   const studio=window.makeMentorStudio({api,esc,icon,toast,render,go});
+  window.TrainerCanChangeLocaleInPlace=()=>state.route.role==='mentor'&&state.route.view==='personas';
+  window.TrainerChangeLocaleInPlace=async()=>{studio.localeChanged();try{window.TrainerMaterials=await api('/api/materials');}finally{render();}};
+
   const draftFor = (id) => state.drafts[id] ||= {text:"",kind:"message",pending:null,error:null,sending:false};
 
   class APIError extends Error {

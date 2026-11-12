@@ -1289,5 +1289,13 @@
   "mentor33.certificate_edit": "Angaben bearbeiten",
   "mentor33.certificate_issuer_name": "Name des Ausstellers",
   "mentor33.certificate_issuer_hint": "Vor- und Nachnamen manuell eingeben. Diese Angabe wird nur im Zertifikat gespeichert; Kontoname und Anmeldung bleiben unverändert.",
-  "errors.CERTIFICATE_ISSUER_FULL_NAME_REQUIRED": "Bitte Vor- und Nachnamen des Ausstellers angeben."
+  "errors.CERTIFICATE_ISSUER_FULL_NAME_REQUIRED": "Bitte Vor- und Nachnamen des Ausstellers angeben.",
+  "persona38.builtin": "Integriertes Profil · Inhaltsprache: {language}. Die gespeicherte Quelle bleibt unverändert.",
+  "persona38.authored": "Autorentext · Inhaltsprache: {language}. Keine automatische Übersetzung.",
+  "persona38.draft": "Ungespeicherter Entwurf bleibt auf {language}; nur die Oberfläche wurde umgestellt.",
+  "persona38.unknown": "Nicht angegeben",
+  "persona38.content_language": "Inhaltsprache des Profils",
+  "persona38.help": "Die Inhaltsprache ist unabhängig von der Trainingssprache. Nur bewusstes Speichern legt eine neue Profilversion an.",
+  "persona38.unchanged": "Keine Änderungen. Die lokalisierte Ansicht wird nicht gespeichert.",
+  "persona38.original_case": "Die Trainingssprache der Quellkarte bleibt unverändert. Die erste Nachricht wird hier nur zur Ansicht übersetzt."
 }

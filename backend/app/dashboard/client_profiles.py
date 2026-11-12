@@ -86,6 +86,7 @@ class SessionModifiers(InputModel):
     verified_experience: ProfileField = Field(default_factory=lambda: ProfileField(status='author_missing'))
 
 class ClientProfile(InputModel):
+    content_language: Literal["de", "en", "ru"] | None = None
     schema_version: Literal[1] = 1
     id: Identifier
     version: int = Field(ge=1)

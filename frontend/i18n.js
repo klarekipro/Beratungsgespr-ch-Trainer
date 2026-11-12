@@ -11,8 +11,9 @@ window.TrainerI18n=(()=>{
    const auth=window.TRAINER_AUTH;
    if(auth&&window.TrainerVoice?.busy()&&!confirm(t('dictation18.leave')))return;
    if(auth){
-     if((window.TrainerHasUnsavedChanges?.()??[...document.querySelectorAll('textarea,input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=search])')].some(el=>el.value.length>0))&&!confirm(t('settings.unsaved'))){apply();return;}
-     try{const r=await fetch('/api/auth/preferences',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRF-Token':auth.csrf},body:JSON.stringify({locale:value})});if(!r.ok)throw new Error();remember(value);window.TrainerLocaleReload=true;location.reload();}
+     const inPlace=window.TrainerCanChangeLocaleInPlace?.()===true;
+     if(!inPlace&&(window.TrainerHasUnsavedChanges?.()??[...document.querySelectorAll('textarea,input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=search])')].some(el=>el.value.length>0))&&!confirm(t('settings.unsaved'))){apply();return;}
+     try{const r=await fetch('/api/auth/preferences',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRF-Token':auth.csrf},body:JSON.stringify({locale:value})});if(!r.ok)throw new Error();remember(value);auth.user.locale=value;if(inPlace){await window.TrainerChangeLocaleInPlace();}else{window.TrainerLocaleReload=true;location.reload();}}
      catch(_){alert(t('settings.save_failed'));apply();}
    }else {explicit=true;remember(value);document.dispatchEvent(new Event('trainer-language'));}
  }
