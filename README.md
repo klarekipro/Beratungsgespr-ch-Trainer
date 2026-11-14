@@ -1,8 +1,14 @@
 # Klare KI Beratungstrainer
 
-**[Demo ansehen · 5:08 Minuten](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)** · [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Videoproduktion](VIDEO_PRODUCTION.md)
+Ein lokal ausführbarer MVP für strukturierte Kundenberatung: Mitarbeitende üben mit einem KI-Kunden, reflektieren ihre Fragen und erhalten eine eigenständige Beurteilung durch den Mentor. **Code, Produktansichten und Demonstration sind veröffentlicht; eine öffentliche Web-Anwendung wird nicht betrieben.**
 
-> Portfolio-Entwurf: Die öffentliche Freigabe ist wegen offener Datenschutzfragen gesperrt. Die Demo erfordert derzeit Repository-Zugriff und wird als Download ausgeliefert; eine anonyme Browser-Wiedergabe ist noch nicht abgenommen. Es gibt keine öffentlich betriebene Web-Anwendung.
+## Demo ansehen
+
+**[▶ Finale Demonstration ansehen / MP4 herunterladen · 05:08](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)**
+
+[![Demo ansehen – Klare KI Beratungstrainer](docs/portfolio/demo-preview.png)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
+
+Der Link führt zum unveränderten Originalfilm im GitHub Release. GitHub kann die Datei als Download ausliefern; dann die MP4 lokal im Browser oder Videoplayer öffnen. [Erste Filmfassung](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4) · [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Produktionsmaterial und Re-Edit](VIDEO_PRODUCTION.md)
 
 ## Erst verstehen, dann beraten
 
@@ -38,7 +44,13 @@ Die KI liefert Hinweise und Belege, keine endgültige Lernentscheidung. Die stru
 
 ## Einblicke in die Anwendung
 
-Die Auswahl von **3–5 aktuellen Original-Screenshots** ist noch offen. Bilder mit Kontonamen, Gesprächsinhalten oder Zertifikatsdaten werden erst nach konkreter öffentlicher Freigabe übernommen. Historische UI-Bilder werden nicht als aktuelle Screenshots ausgegeben.
+Vier Originalansichten aus der freigegebenen Produktdemonstration. Ein Klick öffnet die jeweilige Aufnahme in voller Auflösung.
+
+| Mitarbeitende und Trainingsverlauf | Persona Studio / Kundenstudio |
+|---|---|
+| [![Mentorbereich mit Trainingsverlauf einer Mitarbeiterperson](docs/portfolio/mentor-overview.png)](docs/portfolio/mentor-overview.png) | [![Persona Studio mit Kundenprofilen und getrennten Bearbeitungsbereichen](docs/portfolio/persona-studio.png)](docs/portfolio/persona-studio.png) |
+| **Beratungsgespräch** | **Beurteilung durch den Mentor** |
+| [![Gesprächsprotokoll mit Fragen zu Bedarf und Rahmenbedingungen](docs/portfolio/conversation.png)](docs/portfolio/conversation.png) | [![Phasenbeurteilung und Zugang zum veröffentlichten Mentorfeedback](docs/portfolio/mentor-review.png)](docs/portfolio/mentor-review.png) |
 
 ## Technischer Aufbau
 
@@ -61,6 +73,10 @@ Offene Punkte sind die inhaltliche Genauigkeit einzelner KI-Belege und Coaching-
 
 [Lokale Installation und Betrieb](docs/LOCAL_OPERATIONS_RU.md) · [Release Notes](docs/releases/v0.15.3.md) · [bekannte Einschränkungen](docs/KNOWN_ISSUES.md)
 
+## Mögliche nächste Schritte
+
+Gezieltere KI-Belege und Coaching-Hinweise, ein natürlicherer Gesprächsabschluss, weiterführende Administrationsabläufe sowie eine breitere Browser-, Mikrofon- und Druckprüfung sind mögliche Erweiterungen. Ein späterer begrenzter Pilotbetrieb benötigt eine eigene Betriebs- und Sicherheitsvorbereitung. Diese Punkte sind **nicht Bestandteil der abgenommenen MVP-Funktionalität**.
+
 ## Filme und Produktionsmaterial
 
 - [Finale Demonstration · Sergi 2 · 05:08.23](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
@@ -68,4 +84,4 @@ Offene Punkte sind die inhaltliche Genauigkeit einzelner KI-Belege und Coaching-
 - [Produktionsarchiv ZIP](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/BERATUNGSTRAINER_FINAL_ARCHIVE.zip)
 - [SHA-256](docs/releases/v0.15.3-SHA256SUMS.txt) · [Wiederverwendung und Rekonstruktionsgrenzen](VIDEO_PRODUCTION.md)
 
-Die Originaldateien bleiben unverändert. Eine geprüfte vollständige Neuassemblierung wird nicht behauptet. Die öffentliche Freigabe dieser Materialien steht aus.
+Die Originaldateien bleiben unverändert. Eine geprüfte vollständige Neuassemblierung wird nicht behauptet. Die enthaltenen Demonstrationskonten, Gespräche, Bewertungen und Zertifikatsdaten sind vom Projekteigentümer zur öffentlichen Darstellung freigegeben.
