@@ -78,13 +78,11 @@ Vier Originalansichten aus der freigegebenen Produktdemonstration. Ein Klick öf
 
 [Architektur](docs/architecture/SYSTEM_ARCHITECTURE.md) · [Backend](backend/app/dashboard/) · [Frontend](frontend/) · [fokussierte Tests](tests/dashboard/)
 
-## Stand und Grenzen des MVP
+## Stand des MVP
 
-Version **0.15.3-persona-localization**. Der vollständige deutsche Ablauf mit Mentor-Feedback und Zertifikatszustellung wurde vom Projekteigentümer erfolgreich abgenommen (**E2E-01 PASS**). Das ist keine Zusage allgemeiner Zuverlässigkeit aller KI-Antworten.
+Version **0.15.3-persona-localization**. Der vollständige deutsche Ablauf mit Mentor-Feedback und Zertifikatszustellung wurde vom Projekteigentümer erfolgreich abgenommen (**E2E-01 PASS**).
 
-Offene Punkte sind die inhaltliche Genauigkeit einzelner KI-Belege und Coaching-Hinweise, wiederholte Rückfragen beim Gesprächsabschluss und gelegentliche fehlgeschlagene Auswertungen. Die menschliche Prüfung bleibt notwendig. Eine vollständige Browser-/Mikrofon-/Druckmatrix, erweiterte Administrationsabläufe und ein öffentlicher Betrieb sind nicht abgenommen. Sieben Dateien eines frühen PoC-Archivs fehlen weiterhin (**DATA-001**); dieser historische Bestand ist von den aktuellen MVP-Gesprächen getrennt.
-
-[Lokale Installation und Betrieb](docs/LOCAL_OPERATIONS_RU.md) · [Release Notes](docs/releases/v0.15.3.md) · [bekannte Einschränkungen](docs/KNOWN_ISSUES.md)
+[Lokale Installation und Betrieb](docs/LOCAL_OPERATIONS_RU.md) · [Release Notes](docs/releases/v0.15.3.md)
 
 ## Mögliche nächste Schritte
 
