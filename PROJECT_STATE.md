@@ -1,3 +1,19 @@
+# Final Public Portfolio Release — 14.11.2026
+
+Владелец принял аудит 113 commits / 1186 blob-версий и явно разрешил PUBLIC-показ исходного кода, истории, исторических изображений/PDF, demo accounts/conversations/feedback/certificate data, обоих фильмов и production ZIP в существующем klarekipro/Beratungsgespr-ch-Trainer. Прежний privacy gate снят этим новым решением; блокирующие статусы ниже сохранены как исторический отчёт, не как текущий запрет. Разрешение не распространяется на действующие секреты доступа. Main merge и изменение видимости разрешены, transfer/новый repo/облачный запуск запрещены.
+
+В codex/public-portfolio-preparation завершены немецкий README, четыре UI-кадра и preview из неизменённого финального MP4, VIDEO_PRODUCTION.md и отдельные эксплуатационные заметки. Проверяются только новый diff, локальные ссылки, отсутствие известных секретов/SQLite, сохранность SHA-256 media и история. Приложение8100/PID10979, live SQLite, Keychain и OpenAI-настройки не изменяются; платных вызовов/перекодирования фильма нет. Оригинальный тег v0.15.3 остаётся a23410a84a7c38572260b0fa48411104003b5b05; новый main содержит только документационные/portfolio изменения сверх принятого runtime-кода. Фактический итоговый SHA, PR/merge и anonymous HTTP/download acceptance фиксируются после публикации в финальном отчёте. GitHub-native video attachment исходного MP4 создан в PR4 (без перекодирования), URL включён в README. Release download и attachment — разные URL; anonymous playback проверяется после Public.
+
+---
+
+# Public Portfolio Release — 14.11.2026, BLOCKED
+
+Аудит остановил переключение Public: существующее разрешение на фильмы/сертификат/диалоги было PRIVATE-only, Git содержит персональные author/committer metadata и выдержки конкретных бесед, индивидуальная проверка всех исторических binary assets не завершена. Репозиторий остаётся PRIVATE, main/v0.15.3 сохранены. Публичный релиз НЕ завершён.
+
+В изолированной `codex/public-portfolio-preparation` подготовлены немецкий README (без обещания публичного приложения), VIDEO_PRODUCTION.md, сохранённая инструкция docs/LOCAL_OPERATIONS_RU.md и docs/PUBLIC_RELEASE_AUDIT_RU.md. Скриншоты и anonymous player acceptance остаются открытыми. Проверки: 113 commits / 1186 blobs, common-secret scan, historical ZIP53 и production ZIP93/90hashes, checksum preservation, read-only live status, documentation links/diff-check. Приложение8100/PID10979 и SQLite не менялись; платных вызовов/перекодирования/деплоя/main merge/push/transfer нет. Продолжать публикацию только после устранения privacy blockers по отчёту, не путать этот checkpoint с разрешением Public.
+
+---
+
 # Финальный приватный релиз — 14.11.2026
 
 По новому прямому разрешению владельца готовится интеграция A39 + двух Persona Studio commits в main через отдельную финальную ветку и merge commit. Это явное исключение из прежнего запрета main/merge/push; исторические отчёты ниже сохраняются. Рабочая установка 0.15.3 на localhost8100, SQLite и конфигурация не изменяются. A37 company5 активна; E2E-01 PASS принят владельцем.
