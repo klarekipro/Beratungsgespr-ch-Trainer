@@ -1,3 +1,11 @@
+# PUBLIC Portfolio Release — подтверждённая приёмка 14.11.2026
+
+Существующий klarekipro/Beratungsgespr-ch-Trainer фактически PUBLIC. PR4 слит normal merge b6c0d1488a71487cd968e8b82525c4d82663b99c; v0.15.3 остаётся a23410a84a7c38572260b0fa48411104003b5b05, все прежние ветки/история сохранены. Немецкий README, четыре UI-кадра, preview, GitHub-native browser video и VIDEO_PRODUCTION опубликованы. Дополнительная документационная квитанция не меняет runtime-code или релизный тег.
+
+Anonymous acceptance PASS: страницы repo/README/source/architecture/production/Release/PR HTTP200; PNG bytes совпали; весь final MP4, rev01g MP4 и ZIP скачаны потоково без авторизации с прежними SHA-256; отдельное native video вложение равно final MP4. Browser context с0 initial cookies: воспроизведение реально продвинулось до1,67s, duration308,225717,1920×1080,error=null. Это проверка запуска, не повторная полная5-minute sight/hearing acceptance. Семь защищённых таблиц SQLite совпали с backup;8100/PID10979/0.15.3 сохранены. Paid calls/restart/Keychain/config/transfer/cloud/media re-encode отсутствуют. Подробная квитанция: docs/PUBLIC_RELEASE_ACCEPTANCE.md. Исторические blocked/private статусы ниже superseded явным Owner Approval и этой приёмкой; DATA-001/AI-quality ограничения остаются.
+
+---
+
 # Final Public Portfolio Release — 14.11.2026
 
 Владелец принял аудит 113 commits / 1186 blob-версий и явно разрешил PUBLIC-показ исходного кода, истории, исторических изображений/PDF, demo accounts/conversations/feedback/certificate data, обоих фильмов и production ZIP в существующем klarekipro/Beratungsgespr-ch-Trainer. Прежний privacy gate снят этим новым решением; блокирующие статусы ниже сохранены как исторический отчёт, не как текущий запрет. Разрешение не распространяется на действующие секреты доступа. Main merge и изменение видимости разрешены, transfer/новый repo/облачный запуск запрещены.
