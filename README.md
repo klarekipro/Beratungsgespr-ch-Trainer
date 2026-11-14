@@ -4,7 +4,7 @@ Ein lokal ausführbarer MVP für strukturierte Kundenberatung: Mitarbeitende üb
 
 ## Demo ansehen
 
-**[▶ Finale Demonstration mit Musik · 05:11 · im Browser öffnen](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4)**
+**[▶ Finale Demonstration](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4)**
 
 Diese Fassung verwendet dieselbe Sergi-2-Sprachausgabe wie die finale Produktion aus v0.15.3 und ergänzt eine dezente Hintergrundmusik (MiroMaxMusic – *Technology*, Pixabay Content License). Ducking und EQ-Notch halten die deutsche Sprache gut verständlich; am Ende blendet die Musik ruhig aus. Der Link öffnet die MP4-Datei direkt im Browser-Player — keine Anmeldung erforderlich.
 
