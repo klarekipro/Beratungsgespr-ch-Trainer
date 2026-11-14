@@ -4,18 +4,22 @@ Ein lokal ausführbarer MVP für strukturierte Kundenberatung: Mitarbeitende üb
 
 ## Demo ansehen
 
-https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a
+**[▶ Finale Demonstration mit Musik · 05:11 · im Browser öffnen](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4)**
 
-**[▶ Film im Browser öffnen · 05:08](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a)** · [Original-MP4 herunterladen](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
-
-Der eingebettete Film ist eine unveränderte Kopie der finalen Demonstration auf GitHub. Falls Ihr Browser den eingebetteten Player nicht unterstützt, den Film direkt öffnen oder die Original-MP4 herunterladen. Es ist keine Anmeldung an der Trainingsanwendung erforderlich.
+Diese Fassung verwendet dieselbe Sergi-2-Sprachausgabe wie die finale Produktion aus v0.15.3 und ergänzt eine dezente Hintergrundmusik (MiroMaxMusic – *Technology*, Pixabay Content License). Ducking und EQ-Notch halten die deutsche Sprache gut verständlich; am Ende blendet die Musik ruhig aus. Der Link öffnet die MP4-Datei direkt im Browser-Player — keine Anmeldung erforderlich.
 
 <details>
-<summary>Vorschaubild und weitere Materialien</summary>
+<summary>Vorschaubild, frühere Fassungen und weitere Materialien</summary>
 
 [![Demo ansehen – Klare KI Beratungstrainer](docs/portfolio/demo-preview.png)](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a)
 
-[Erste Filmfassung](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4) · [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Produktionsmaterial und Re-Edit](VIDEO_PRODUCTION.md)
+**Film ohne Hintergrundmusik (fix1, 05:08.23)** — dieselbe Videoabfolge und dieselbe Sprachausgabe, nur ohne Musik:
+
+https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a
+
+[▶ fix1 im Browser öffnen](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a) · [Original-MP4 herunterladen](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
+
+[Erste Filmfassung (rev01g)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4) · [Release v0.16.0 (Musik)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.16.0) · [Release v0.15.3 (ohne Musik)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Produktionsmaterial und Re-Edit](VIDEO_PRODUCTION.md)
 
 </details>
 
@@ -88,9 +92,11 @@ Gezieltere KI-Belege und Coaching-Hinweise, ein natürlicherer Gesprächsabschlu
 
 ## Filme und Produktionsmaterial
 
-- [Finale Demonstration · Sergi 2 · 05:08.23](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
+- [**Finale Demonstration mit Musik · Sergi 2 · 05:11**](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4) — aktuelle Fassung, Pixabay-Musik eingemischt
+- [Musik-Lizenz und Quellenangaben](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/MUSIC_LICENSING.md) · [Mix-Dokumentation v2](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/MIX_PROJECT_v2.md)
+- [Finale Demonstration ohne Musik · Sergi 2 · 05:08.23](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4) — identische Sprachausgabe, vorherige Fassung
 - [Erste Fassung · rev01g · 05:01.37](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4)
 - [Produktionsarchiv ZIP](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/BERATUNGSTRAINER_FINAL_ARCHIVE.zip)
-- [SHA-256](docs/releases/v0.15.3-SHA256SUMS.txt) · [Wiederverwendung und Rekonstruktionsgrenzen](VIDEO_PRODUCTION.md)
+- [SHA-256 v0.16.0](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/v0.16.0-SHA256SUMS.txt) · [SHA-256 v0.15.3](docs/releases/v0.15.3-SHA256SUMS.txt) · [Wiederverwendung und Rekonstruktionsgrenzen](VIDEO_PRODUCTION.md)
 
-Die Originaldateien bleiben unverändert. Eine geprüfte vollständige Neuassemblierung wird nicht behauptet. Die enthaltenen Demonstrationskonten, Gespräche, Bewertungen und Zertifikatsdaten sind vom Projekteigentümer zur öffentlichen Darstellung freigegeben.
+Die Originaldateien von v0.15.3 (fix1, rev01g, Archiv) bleiben unverändert. Eine geprüfte vollständige Neuassemblierung wird nicht behauptet. Die enthaltenen Demonstrationskonten, Gespräche, Bewertungen und Zertifikatsdaten sind vom Projekteigentümer zur öffentlichen Darstellung freigegeben. Die Original-Musik-MP3 (Pixabay-Kandidaten) werden nicht als eigenständige Dateien veröffentlicht; die Musik ist nur als integrierter Audiobestandteil in der Film-MP4 enthalten.

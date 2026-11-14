@@ -1,16 +1,30 @@
 # Videoproduktion und Wiederverwendung
 
-Status: Originalmaterial vollständig erhalten. Der Projekteigentümer hat Filme, Archiv und enthaltene Demonstrationsdaten am 14.11.2026 ausdrücklich zur öffentlichen Veröffentlichung freigegeben. Die folgenden Schritte sind Anleitungen; bei dieser Vorbereitung wurde kein Film neu gerendert, transkodiert oder verändert.
+Status: Originalmaterial vollständig erhalten. Der Projekteigentümer hat Filme, Archiv und enthaltene Demonstrationsdaten am 14.11.2026 ausdrücklich zur öffentlichen Veröffentlichung freigegeben. Die folgenden Schritte sind Anleitungen; bei dieser Vorbereitung wurde kein v0.15.3-Film neu gerendert, transkodiert oder verändert. Für die v0.16.0-Musik-Fassung siehe den eigenen Abschnitt unten.
 
 ## Unveränderte Originale
 
-| Datei | Dauer | SHA-256 |
-|---|---|---|
-| `beratungstrainer_final_sergi2_fix1.mp4` | 05:08.23 | `acf507361f1e18da0698fa6676cd1d7a6cdd8fa44d7e1396541317064095e9d9` |
-| `beratungstrainer_preview_rev01g.mp4` | 05:01.37 | `dc1b812f075cc13a808f43a0d4d344404e5427c58c3151b66a6fb7e3b5149084` |
-| `BERATUNGSTRAINER_FINAL_ARCHIVE.zip` | 93 Dateien | `ccf0900314ae6e5f688fe75bb84151ab4cd77e21367975acca30893bfd34b7f9` |
+| Datei | Release | Dauer | SHA-256 |
+|---|---|---|---|
+| `beratungstrainer_final_sergi2_music_v2.mp4` | v0.16.0 | 05:11.20 | `8709cdb2eef7f66e868f2f740e05e4b2db6dc4fda685adc2c88f09a1b387fce2` |
+| `beratungstrainer_final_sergi2_fix1.mp4` | v0.15.3 | 05:08.23 | `acf507361f1e18da0698fa6676cd1d7a6cdd8fa44d7e1396541317064095e9d9` |
+| `beratungstrainer_preview_rev01g.mp4` | v0.15.3 | 05:01.37 | `dc1b812f075cc13a808f43a0d4d344404e5427c58c3151b66a6fb7e3b5149084` |
+| `BERATUNGSTRAINER_FINAL_ARCHIVE.zip` | v0.15.3 | 93 Dateien | `ccf0900314ae6e5f688fe75bb84151ab4cd77e21367975acca30893bfd34b7f9` |
 
-Download: [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3). Die Release-MP4 werden als Download ausgeliefert. Eine zusätzliche unveränderte Kopie des finalen Films wurde als GitHub-Videoanhang bereitgestellt: [Browser-Video](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a). Der README bettet diese GitHub-Kopie ein; die Release-Dateien bleiben die unveränderten Originale. Die Dateien gehören nicht in Git history.
+Downloads: [Release v0.16.0](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.16.0) (Film mit Musik) · [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) (Originalfilme, Archiv). Die Release-MP4 werden als Download ausgeliefert und spielen im Browser-Player ab. Eine zusätzliche unveränderte Kopie der v0.15.3-fix1-Fassung wurde als GitHub-Videoanhang bereitgestellt: [Browser-Video](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a). Die Dateien gehören nicht in die Git-Historie.
+
+## Musik-Mix v2 (v0.16.0)
+
+Die Musikfassung `beratungstrainer_final_sergi2_music_v2.mp4` verwendet dieselbe Sergi-2-Sprachausgabe wie `fix1.mp4` ohne jede Veränderung der Sprache selbst. Das Videoabspiel wurde um 3 Sekunden Freeze-Frame-Tail erweitert, damit die Musik am Ende ruhig ausklingen kann. Dafür wurde der Videostrom einmal mit libx264 bei CRF 20 re-enkodiert; die visuelle Qualität entspricht dem Originalfilm.
+
+- **Musik:** MiroMaxMusic — *Technology*, Pixabay ID 629725, MP3 44.1 kHz stereo 256 kbps
+- **Quellen-SHA:** `a84920928fe75d0ccdd30021dc0bb9929629a3b479eda57b6c1365a251e497e0`
+- **Lizenz:** Pixabay Content License (kommerzielle Nutzung ohne Attributpflicht), vollständige Angaben in `MUSIC_LICENSING.md` im Release
+- **Pegel:** Musik-Basis −22 dB, Sidechain-Ducking gegen die Stimme (Release 700 ms, kein Pumping), EQ-Notch −3 dB @ 2.5 kHz / −2 dB @ 4 kHz für bessere Sprachverständlichkeit, zusätzlicher Dip −6 dB bei 2:28–2:32 (natürlicher Musik-Swell), sanftes Outro-Swell 306–308.5 s, Fade-out 310–311.2 s
+- **Keine Clippings:** True-Peak −4.3 dBFS, Integrated −23 dB mean, LRA 3.9 LU
+- **Dokumentation:** `MIX_PROJECT_v2.md` im Release enthält alle Pegel und Filter-Parameter zur Reproduktion
+
+Die Original-MP3 der drei Pixabay-Kandidaten werden als eigenständige Dateien nicht veröffentlicht. Das `fix1.mp4`-Original aus v0.15.3 bleibt unverändert.
 
 ## Wiederherstellen
 
