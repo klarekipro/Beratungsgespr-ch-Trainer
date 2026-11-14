@@ -1,0 +1,6 @@
+{
+  "statement": "Ein fester Termin wurde vereinbart.",
+  "verdict": "contradicted",
+  "observation": "Im Gespräch wurde kein Termin bestätigt; dies ist ein Gesprächsergebnis, kein Beleg für Unternehmensbedingungen.",
+  "material_evidence": []
+}

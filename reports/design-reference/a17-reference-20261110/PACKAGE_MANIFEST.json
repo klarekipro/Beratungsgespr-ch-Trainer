@@ -1,0 +1,205 @@
+{
+  "screenshots": {
+    "01-training-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "704557ddeda468742c4d3e72f0f560c359508d34d5bd2732719b5edc491b5266"
+    },
+    "02-training-full.jpg": {
+      "width": 1440,
+      "height": 1623,
+      "sha256": "5e7640270cde8159bf1b44105d382f6bc2b743d6069ac2c6277d6c50583a0275"
+    },
+    "03-active-conversation-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "b2757be7f47f2b1ee44b9870081c12e5cacc305dd2059beadb9d9ca43e113705"
+    },
+    "04-active-materials-unavailable.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "8003b7414aaf740fd1633a155499ffe9f4d61a645ba3f91d83ceb8a8b98f9141"
+    },
+    "05-history-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "9b150c8eda3508b3f10d069fae1c7c19c83e00ef315ba62c50f950fe85a33e57"
+    },
+    "06-history-full.jpg": {
+      "width": 1440,
+      "height": 1033,
+      "sha256": "10c2ce0ff989d945a758d34578d1250141d9680fac912df48acbd67330aa2d90"
+    },
+    "07-learner-feedback-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "fd8ce8cc010caa7ece686be619c39655837f09c23d448004ae2ac1e9a63f6e44"
+    },
+    "08-learner-feedback-full.jpg": {
+      "width": 1440,
+      "height": 2119,
+      "sha256": "1e8b44ac83fabb5f9944537ab7bbf980437c48b5f29e627a6d91d123e0578249"
+    },
+    "09-learner-feedback-lower.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "145b9aca260b3a01cb30829d0978159eb4e28cf98e8d02fee22bfc2b43b78f13"
+    },
+    "10-company-overview.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "e3a7ffd0b7ccf0958ebac2a1e16139e51fe9c36b633a7fdfdbe5d37bf8a1263b"
+    },
+    "11-products-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "30529f70206e9c08ac73ef431a2f7414058057f6ec5e6d444f9ed62d9b822f05"
+    },
+    "12-products-full.jpg": {
+      "width": 1440,
+      "height": 2794,
+      "sha256": "48b0ef92b31d18a1f2995c25a00619f362672939145cf899f01bd4e89e858cf2"
+    },
+    "13-product-search-expanded.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "faa2beb06f28640a1969b2836b0eb1b096a8d7657583a784364f8a772c17bb5e"
+    },
+    "14-services-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "a3f3f84dbf1dda2c1753ec4b05b1d2318cb9fb8113e60e26f354d0b248d4d7a5"
+    },
+    "15-services-full.jpg": {
+      "width": 1440,
+      "height": 1072,
+      "sha256": "7a166cbb93531451047f3d1db6fd26b4ed8531e841d03b79afff206a0f79c2a0"
+    },
+    "16-company-conditions.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "003dd44c2c5313fe8ec21746ee53e6db44c58fcb8283970760cfe5e9b74f5524"
+    },
+    "17-company-documents-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "9340b01aa888bb0d3a0ecef6eaae9a8389f27ea135edba7cb0ec2f26024b76bb"
+    },
+    "18-company-documents-full.jpg": {
+      "width": 1440,
+      "height": 1360,
+      "sha256": "eb52fa911f13842f06ba9d01a9f1bc9b839b9dcfcd8aafb0314ada1f319aa8ce"
+    },
+    "19-mentor-review-queue.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "c2568661e4461fcf2815de737e0c90f4db1811671eb6e76d8e2e36d2b1f43350"
+    },
+    "20-mentor-review-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "7562463e35570d9425f68b9f62831ca483f30a3f25f970db8c33da4de7169a06"
+    },
+    "21-mentor-review-full.jpg": {
+      "width": 1440,
+      "height": 3526,
+      "sha256": "e3405d70c9ced1b38f86d474e56a1e097edcf97d867637a0e342e933362e53b6"
+    },
+    "22-mentor-review-middle.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "41d78ec51c504086af441593db5dab7d8c5e9ec6adb02932159006c1a8b6484f"
+    },
+    "23-mentor-review-feedback-form.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "f29e0e76a69bff485f591c4ed1107b736bf57e853ee6d79fa8afc38a33fd5161"
+    },
+    "24-client-studio-compact-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "b59d5f8727e7723a95eeeb4389466e6b32e532f1676db58206abbcd37708ca56"
+    },
+    "25-client-studio-basic-details.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "8d8aef5905792e92b66536694f714969beb207880a5d7b7af7c8f8bf17d8d66f"
+    },
+    "26-client-studio-facts-top.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "7e5736f83657bab27602aebfeb0155d3a588073b2608d05006fe317612e57cb2"
+    },
+    "27-client-studio-facts-full.jpg": {
+      "width": 1440,
+      "height": 1832,
+      "sha256": "be8b7a8ec058c1dfa2bd2f30364f9780bbd11f2a90d1fab904d69263d668633d"
+    },
+    "28-client-studio-fact-expanded.jpg": {
+      "width": 1440,
+      "height": 900,
+      "sha256": "412cd50dfba880160dd5bb29a06138341788745ec47d47735c7f3b286f6e5963"
+    },
+    "29-active-conversation-full.jpg": {
+      "width": 1440,
+      "height": 1073,
+      "sha256": "f7f2a458b24af6455eb38e545604db40535de4d77b30408863d8c98eb1031867"
+    }
+  },
+  "files_sha256": {
+    "BRANDING.md": "e7d6981c9c1c33fef2cc55bff9e46857215328551d8b3f52ea900f0c6497f720",
+    "CAPTURE_REPORT.md": "a767cb0a4b9308f43176561ca683b2a5dd162c5bae674f3d4816adb4fa9729b3",
+    "README.md": "09cc759269f06785e0858738afc618ef2245091aa53c47adb0a5afb931ff3d96",
+    "SCREEN_MAP.md": "f1d574f63389040f239a0e796eb3fda42b66fb50dbc11f2f0b5b7b10ffbfa334",
+    "SOURCE_MANIFEST.json": "2e040ee85207b2e4043ceb42212a246199c7121fdd451477b60086986440a64c",
+    "assets/logo-mark.html": "710a8412fff65d7176cc154b6bf38014d457de8c354b35dca5e8086ddfaeb1e1",
+    "screenshots/01-training-top.jpg": "704557ddeda468742c4d3e72f0f560c359508d34d5bd2732719b5edc491b5266",
+    "screenshots/02-training-full.jpg": "5e7640270cde8159bf1b44105d382f6bc2b743d6069ac2c6277d6c50583a0275",
+    "screenshots/03-active-conversation-top.jpg": "b2757be7f47f2b1ee44b9870081c12e5cacc305dd2059beadb9d9ca43e113705",
+    "screenshots/04-active-materials-unavailable.jpg": "8003b7414aaf740fd1633a155499ffe9f4d61a645ba3f91d83ceb8a8b98f9141",
+    "screenshots/05-history-top.jpg": "9b150c8eda3508b3f10d069fae1c7c19c83e00ef315ba62c50f950fe85a33e57",
+    "screenshots/06-history-full.jpg": "10c2ce0ff989d945a758d34578d1250141d9680fac912df48acbd67330aa2d90",
+    "screenshots/07-learner-feedback-top.jpg": "fd8ce8cc010caa7ece686be619c39655837f09c23d448004ae2ac1e9a63f6e44",
+    "screenshots/08-learner-feedback-full.jpg": "1e8b44ac83fabb5f9944537ab7bbf980437c48b5f29e627a6d91d123e0578249",
+    "screenshots/09-learner-feedback-lower.jpg": "145b9aca260b3a01cb30829d0978159eb4e28cf98e8d02fee22bfc2b43b78f13",
+    "screenshots/10-company-overview.jpg": "e3a7ffd0b7ccf0958ebac2a1e16139e51fe9c36b633a7fdfdbe5d37bf8a1263b",
+    "screenshots/11-products-top.jpg": "30529f70206e9c08ac73ef431a2f7414058057f6ec5e6d444f9ed62d9b822f05",
+    "screenshots/12-products-full.jpg": "48b0ef92b31d18a1f2995c25a00619f362672939145cf899f01bd4e89e858cf2",
+    "screenshots/13-product-search-expanded.jpg": "faa2beb06f28640a1969b2836b0eb1b096a8d7657583a784364f8a772c17bb5e",
+    "screenshots/14-services-top.jpg": "a3f3f84dbf1dda2c1753ec4b05b1d2318cb9fb8113e60e26f354d0b248d4d7a5",
+    "screenshots/15-services-full.jpg": "7a166cbb93531451047f3d1db6fd26b4ed8531e841d03b79afff206a0f79c2a0",
+    "screenshots/16-company-conditions.jpg": "003dd44c2c5313fe8ec21746ee53e6db44c58fcb8283970760cfe5e9b74f5524",
+    "screenshots/17-company-documents-top.jpg": "9340b01aa888bb0d3a0ecef6eaae9a8389f27ea135edba7cb0ec2f26024b76bb",
+    "screenshots/18-company-documents-full.jpg": "eb52fa911f13842f06ba9d01a9f1bc9b839b9dcfcd8aafb0314ada1f319aa8ce",
+    "screenshots/19-mentor-review-queue.jpg": "c2568661e4461fcf2815de737e0c90f4db1811671eb6e76d8e2e36d2b1f43350",
+    "screenshots/20-mentor-review-top.jpg": "7562463e35570d9425f68b9f62831ca483f30a3f25f970db8c33da4de7169a06",
+    "screenshots/21-mentor-review-full.jpg": "e3405d70c9ced1b38f86d474e56a1e097edcf97d867637a0e342e933362e53b6",
+    "screenshots/22-mentor-review-middle.jpg": "41d78ec51c504086af441593db5dab7d8c5e9ec6adb02932159006c1a8b6484f",
+    "screenshots/23-mentor-review-feedback-form.jpg": "f29e0e76a69bff485f591c4ed1107b736bf57e853ee6d79fa8afc38a33fd5161",
+    "screenshots/24-client-studio-compact-top.jpg": "b59d5f8727e7723a95eeeb4389466e6b32e532f1676db58206abbcd37708ca56",
+    "screenshots/25-client-studio-basic-details.jpg": "8d8aef5905792e92b66536694f714969beb207880a5d7b7af7c8f8bf17d8d66f",
+    "screenshots/26-client-studio-facts-top.jpg": "7e5736f83657bab27602aebfeb0155d3a588073b2608d05006fe317612e57cb2",
+    "screenshots/27-client-studio-facts-full.jpg": "be8b7a8ec058c1dfa2bd2f30364f9780bbd11f2a90d1fab904d69263d668633d",
+    "screenshots/28-client-studio-fact-expanded.jpg": "412cd50dfba880160dd5bb29a06138341788745ec47d47735c7f3b286f6e5963",
+    "screenshots/29-active-conversation-full.jpg": "f7f2a458b24af6455eb38e545604db40535de4d77b30408863d8c98eb1031867",
+    "sources/frontend/README.md": "1eec6b7db902fc19d20bfe97b4a9bf53886bc011079bfd2408b06bc05b89069d",
+    "sources/frontend/app.js": "673ee0c27bd8bf49d8f59fa5600a8b8be3848bb4bbe63a5d70fdaf5ec2f98c6d",
+    "sources/frontend/boot.js": "ff9ae10f3408ba8cff10611bb260394f3eb1b780dbabb899fa9ceee33cce521e",
+    "sources/frontend/company_reference.js": "42637614cfd9cdc4aeb2ed5042a6cf0c8f559f60b1efe64ac8be7da7ca7749fb",
+    "sources/frontend/i18n.js": "3661eb6cbfabbea5f26f0e37258a2793a21700ec53b87d0e8f270032876d5c6e",
+    "sources/frontend/index.html": "959b96845dc623e3d36a4b729399a5995a976dd2b1c1cacdc5a75193d57ad324",
+    "sources/frontend/learning.js": "d2c7b18dfa577ca47f28fe8de7de0fe29d9236c3db2f149b35bfcd813c126374",
+    "sources/frontend/locales/de.json": "0b88e9ddd13fa94ccbe711d959988ee872933384c2649e300a05acd2060152a0",
+    "sources/frontend/locales/en.json": "0b03814541d9b5cebfbcdb53cdec6b0e2dd99032a08e37292d171a284cdf7f24",
+    "sources/frontend/locales/ru.json": "258d407359c0c6589bb8cc703872b77f3d4af1a0a0448c12680e42833ed611d7",
+    "sources/frontend/login.html": "e4b21e8f467006e12542880053af4ca298561ad6313acb63eeefc3e0e858abdb",
+    "sources/frontend/login.js": "19ee25a5a76f2e36519074eec0392abf705dcb6e4cf4b699f6561bf160225a27",
+    "sources/frontend/mentor_studio.js": "1a3e830a21b77c3321f9c12e071f3acbb1649362600c1c21011ac7da08e565f2",
+    "sources/frontend/portals.css": "a1d98dae05f87faa2e0b0ed3c5c82b49c9681f84fcf73ef0694a012c8facc591",
+    "sources/frontend/styles.css": "20eb2621674aaf2851fd1f8cd7419cf510cf89722540bceefe9e42849cdb24db",
+    "sources/frontend/ui_organization.js": "b5623ee04aa544a391f0e8b9ebbfa881e99a37baf4196cc338961c0d85ec96d6",
+    "sources/frontend/voice.js": "5a1a5f422b44eae7335800e2b8946ff53f9e62508e455ccd333470b866bead11"
+  },
+  "working_data_unchanged": true,
+  "external_connection_attempts": 0
+}

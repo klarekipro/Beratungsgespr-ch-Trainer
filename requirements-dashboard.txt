@@ -1,0 +1,7 @@
+# Tested local dashboard runtime; historical research remains separate.
+fastapi==0.141.1
+uvicorn==0.52.1
+pydantic==2.13.4
+httpx==0.28.1
+reportlab==4.4.9
+argon2-cffi==25.1.0

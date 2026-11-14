@@ -1,0 +1,16 @@
+{
+  "id": "analytical",
+  "version": 1,
+  "approval": "technical_draft",
+  "name": "Analytical — рациональный",
+  "character": "Сравнивает аргументы и отделяет факты от предположений.",
+  "speech_style": "Структурированно, без лекций.",
+  "stranger_attitude": "Нейтрален к незнакомому продавцу.",
+  "doubt_behavior": "Уточняет источник утверждения.",
+  "question_style": "Вопросы о причинах и условиях.",
+  "decision_style": "Принимает решения по проверенным данным.",
+  "pressure_reaction": "Возвращает разговор к основаниям.",
+  "typical_expressions": [
+    "Какие данные для этого нужны?"
+  ]
+}

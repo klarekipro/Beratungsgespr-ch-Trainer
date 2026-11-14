@@ -1,0 +1,16 @@
+{
+  "id": "skeptical",
+  "version": 1,
+  "approval": "technical_draft",
+  "name": "Skeptical — недоверчивый",
+  "character": "Скептичен к общим обещаниям, не груб.",
+  "speech_style": "Сдержанные точные фразы.",
+  "stranger_attitude": "Доверяет подтверждениям, не рекламе.",
+  "doubt_behavior": "Проверяет противоречия и основания.",
+  "question_style": "Просит пример или объяснение.",
+  "decision_style": "Не принимает решение на основании лозунга.",
+  "pressure_reaction": "Становится более настороженным.",
+  "typical_expressions": [
+    "Как это можно проверить?"
+  ]
+}

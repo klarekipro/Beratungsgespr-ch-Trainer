@@ -45,6 +45,8 @@ results.json
 /reports/private/
 raw/
 transcripts/
+/runtime/
+/output/
 
 # Future frontend dependencies/build artifacts
 node_modules/

@@ -1,0 +1,752 @@
+{
+  "company": {
+    "id": "training_company",
+    "revision": 1,
+    "name": "TeploService — Übungsunternehmen",
+    "description": "Fiktiver Fachbetrieb zur Erprobung des Beratungstrainers. Er betreut elektrische Haushaltsbacköfen. Alle folgenden Preise und Bedingungen sind für die Übung erfunden und stellen kein Angebot eines realen Unternehmens dar.",
+    "source_url": "",
+    "services": [
+      {
+        "id": "diagnosis",
+        "title": "Diagnose eines elektrischen Backofens",
+        "description": "Prüfung des Geräts und Ermittlung der Störungsursache.",
+        "conditions": "Die Diagnose kostet 90 €; der Vor-Ort-Termin wird gesondert vereinbart; eine Reparatur erfolgt erst nach einem Kostenvoranschlag und Ihrer Zustimmung."
+      },
+      {
+        "id": "repair",
+        "title": "Reparatur eines elektrischen Backofens",
+        "description": "Reparatur unterstützter elektrischer Haushaltsbacköfen.",
+        "conditions": "Eine Reparatur ist nach Diagnose, Kostenvoranschlag und Ihrer Zustimmung möglich."
+      },
+      {
+        "id": "replacement",
+        "title": "Auswahl und Einbau eines neuen elektrischen Backofens",
+        "description": "Auswahl eines kompatiblen Haushaltsmodells und Abstimmung des Einbaus.",
+        "conditions": "Modell, Kompatibilität, endgültiger Preis und Einbautermin werden vor der Bestellung vereinbart."
+      }
+    ],
+    "limitations": "Das Unternehmen betreut ausschließlich elektrische Haushaltsbacköfen. Gasbacköfen und Industrieöfen werden nicht betreut. Ein Vor-Ort-Termin am Tag der Anfrage wird nicht garantiert.",
+    "reviewed": true
+  },
+  "scenarios": [
+    {
+      "id": "oven_uncertain",
+      "revision": 3,
+      "company_id": "training_company",
+      "title": "Der Backofen ist schon wieder kaputt",
+      "customer_name": "Alexej Berger",
+      "public_brief": "Der Kunde berichtet von einem erneuten Defekt seines Backofens. Klären Sie, um welches Gerät es sich handelt und was er von seiner Anfrage erwartet.",
+      "opening": "Guten Tag. Mein Backofen ist schon wieder kaputt.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Gewünschtes Ergebnis und Präferenz für Reparatur oder Ersatz",
+          "value": "Der Backofen soll zuverlässig funktionieren. Ob Reparatur oder Ersatz, habe ich noch nicht entschieden.",
+          "status": "known",
+          "keywords": [
+            "ergebnis",
+            "erreichen",
+            "möchten",
+            "reparatur oder",
+            "ziel"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "equipment",
+          "stage": "needs",
+          "label": "Gerätetyp und Verwendung",
+          "value": "Es ist ein elektrischer Haushaltsbackofen in meiner Küche zu Hause.",
+          "status": "known",
+          "keywords": [
+            "gerät",
+            "ofentyp",
+            "elektrisch",
+            "gas"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "reason",
+          "stage": "needs",
+          "label": "Grund für die Anfrage bei einem anderen Unternehmen",
+          "value": "Der bisherige Techniker ist in den nächsten zwei Wochen nicht verfügbar.",
+          "status": "known",
+          "keywords": [
+            "warum",
+            "bisher",
+            "vorher",
+            "andere firma"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "priority",
+          "stage": "needs",
+          "label": "Wichtige Kriterien bei der Auswahl einer Lösung",
+          "value": "Mir ist wichtig, die Ursache des erneuten Defekts zu verstehen und eine verständliche Einschätzung der Möglichkeiten zu bekommen.",
+          "status": "known",
+          "keywords": [
+            "wichtig",
+            "kriterium",
+            "priorität"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Budget und Abstimmung der Ausgaben",
+          "value": "Das Budget steht noch nicht fest. Zunächst brauche ich eine Kosteneinschätzung.",
+          "status": "undecided",
+          "keywords": [
+            "budget",
+            "kosten",
+            "ausgaben"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Akzeptabler Zeitrahmen",
+          "value": "Ich würde die Sache gern innerhalb einer Woche klären.",
+          "status": "known",
+          "keywords": [
+            "wann",
+            "termin",
+            "woche",
+            "zeit"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "authority",
+          "stage": "capabilities",
+          "label": "Wer trifft die Entscheidung?",
+          "value": "Ich entscheide selbst.",
+          "status": "known",
+          "keywords": [
+            "wer",
+            "entscheidet",
+            "allein"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "symptoms",
+          "stage": "needs",
+          "label": "Beobachtete Symptome: Was ist mit dem Ofen passiert?",
+          "value": "Der Ofen lässt sich nicht mehr einschalten. Seitdem benutze ich ihn nicht mehr.",
+          "status": "known",
+          "keywords": [
+            "passiert",
+            "symptom",
+            "einschalten"
+          ],
+          "required": false,
+          "material": false
+        },
+        {
+          "id": "identification",
+          "stage": "needs",
+          "label": "Modell, Seriennummer und Leistung des Geräts",
+          "value": "Das genaue Modell, die Seriennummer und die Leistung weiß ich gerade nicht. Diese Angaben müssen am Typenschild des Ofens geprüft werden.",
+          "status": "does_not_know",
+          "keywords": [
+            "modell",
+            "seriennummer",
+            "leistung",
+            "typenschild"
+          ],
+          "required": false,
+          "material": false
+        },
+        {
+          "id": "cause",
+          "stage": "needs",
+          "label": "Kennt der Kunde die Ursache der aktuellen Störung?",
+          "value": "Die Ursache der Störung kenne ich nicht. Ein Fachmann hat sie noch nicht festgestellt.",
+          "status": "does_not_know",
+          "keywords": [
+            "ursache",
+            "defekt",
+            "diagnose"
+          ],
+          "required": false,
+          "material": false
+        }
+      ],
+      "allowed_outcomes": [
+        "diagnosis"
+      ],
+      "question_hints": [
+        "Welches Ergebnis möchten Sie erreichen?",
+        "Was für ein Ofen ist es: ein elektrischer Haushaltsbackofen oder ein anderes Gerät?",
+        "Warum haben Sie sich an uns gewandt und nicht an Ihren bisherigen Techniker?",
+        "Was ist Ihnen bei der Wahl einer Lösung besonders wichtig?",
+        "Haben Sie schon ein Budget festgelegt oder möchten Sie zunächst die Kosten der Möglichkeiten erfahren?",
+        "In welchem Zeitraum möchten Sie die Sache klären?",
+        "Wer trifft die endgültige Entscheidung?"
+      ]
+    },
+    {
+      "id": "oven_replacement",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Ein neuer Backofen für die Küche zu Hause",
+      "customer_name": "Marina Weber",
+      "public_brief": "Die Kundin bespricht die Erneuerung ihrer Küche zu Hause. Gehen Sie nicht davon aus, dass Modell und Kaufbedingungen bereits feststehen.",
+      "opening": "Guten Tag. Wir erneuern unsere Küche und möchten klären, wie es mit dem Backofen weitergeht.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Anliegen und gewünschtes Ergebnis",
+          "value": "Wir brauchen einen neuen elektrischen Haushaltsbackofen für die Küche zu Hause.",
+          "status": "known",
+          "keywords": [
+            "ergebnis",
+            "erreichen",
+            "möchten",
+            "ziel"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "reason",
+          "stage": "needs",
+          "label": "Grund für die Anfrage",
+          "value": "Wir brauchen Hilfe bei der Auswahl eines kompatiblen Modells und beim Einbau.",
+          "status": "known",
+          "keywords": [
+            "warum",
+            "grund",
+            "auswahl"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "priority",
+          "stage": "needs",
+          "label": "Wichtige Auswahlkriterien",
+          "value": "Passende Maße und eine verständliche Bedienung sind wichtig.",
+          "status": "known",
+          "keywords": [
+            "wichtig",
+            "kriterium",
+            "maße",
+            "bedienung"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Obergrenze der Gesamtausgaben",
+          "value": "Das Gesamtbudget für Gerät und Einbau beträgt höchstens 2 000 €.",
+          "status": "known",
+          "keywords": [
+            "budget",
+            "kosten",
+            "ausgaben"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Zeitrahmen für Kauf und Einbau",
+          "value": "Wir würden den Einbau gern innerhalb eines Monats vereinbaren.",
+          "status": "known",
+          "keywords": [
+            "wann",
+            "termin",
+            "monat",
+            "einbau"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "authority",
+          "stage": "capabilities",
+          "label": "Beteiligte an der endgültigen Entscheidung",
+          "value": "Die endgültige Entscheidung treffe ich gemeinsam mit meinem Mann.",
+          "status": "known",
+          "keywords": [
+            "wer",
+            "entscheidet",
+            "entscheidung"
+          ],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "replacement"
+      ],
+      "question_hints": [
+        "Welches Ergebnis möchten Sie erreichen?",
+        "Warum haben Sie sich an uns gewandt?",
+        "Welche Auswahlkriterien sind Ihnen wichtig?",
+        "Welches Gesamtbudget haben Sie vorgesehen?",
+        "Bis wann ist der Einbau erforderlich?",
+        "Wer trifft die endgültige Entscheidung?"
+      ]
+    },
+    {
+      "id": "oven_no_fit",
+      "revision": 2,
+      "company_id": "training_company",
+      "title": "Auf der Suche nach einem neuen Reparaturdienst",
+      "customer_name": "Denis Braun",
+      "public_brief": "Der Kunde sucht einen Dienstleister für die Reparatur seines Ofens. Klären Sie Gerät, Anliegen und Rahmenbedingungen.",
+      "opening": "Guten Tag. Ich suche jemanden, der sich um meinen Ofen kümmern kann.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Welches Gerät und welches Ergebnis werden benötigt?",
+          "value": "Ich brauche eine Reparatur für einen industriellen Gasofen.",
+          "status": "known",
+          "keywords": [
+            "gerät",
+            "ofentyp",
+            "ergebnis",
+            "reparatur",
+            "gasofen"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "reason",
+          "stage": "needs",
+          "label": "Grund für die Anfrage bei diesem Unternehmen",
+          "value": "Die bisherige Servicefirma hat die Betreuung in unserer Stadt eingestellt.",
+          "status": "known",
+          "keywords": [
+            "warum",
+            "grund",
+            "bisher"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "priority",
+          "stage": "needs",
+          "label": "Wichtigstes Kriterium für den Dienstleister",
+          "value": "Ich brauche einen Dienstleister, der auf solche Geräte spezialisiert ist.",
+          "status": "known",
+          "keywords": [
+            "wichtig",
+            "kriterium",
+            "spezialisiert"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Was ist über die Kosten bekannt?",
+          "value": "Die Reparaturkosten sind unbekannt. Zunächst brauche ich die Einschätzung eines Fachmanns.",
+          "status": "does_not_know",
+          "keywords": [
+            "budget",
+            "kosten",
+            "ausgaben"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Akzeptable Wartezeit und Entscheidung",
+          "value": "Ich kann bis zu zwei Wochen warten und selbst entscheiden, einen Fachmann zu beauftragen.",
+          "status": "known",
+          "keywords": [
+            "wann",
+            "termin",
+            "warten",
+            "wer",
+            "entscheidung"
+          ],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "symptoms",
+          "stage": "needs",
+          "label": "Beobachtete Symptome: Was ist mit dem Ofen passiert?",
+          "value": "Der Ofen lässt sich nicht mehr einschalten. Seitdem benutze ich ihn nicht mehr.",
+          "status": "known",
+          "keywords": [
+            "passiert",
+            "symptom",
+            "einschalten"
+          ],
+          "required": false,
+          "material": false
+        },
+        {
+          "id": "identification",
+          "stage": "needs",
+          "label": "Modell, Seriennummer und Leistung des Geräts",
+          "value": "Das genaue Modell, die Seriennummer und die Leistung weiß ich gerade nicht. Diese Angaben müssen am Typenschild des Ofens geprüft werden.",
+          "status": "does_not_know",
+          "keywords": [
+            "modell",
+            "seriennummer",
+            "leistung",
+            "typenschild"
+          ],
+          "required": false,
+          "material": false
+        },
+        {
+          "id": "cause",
+          "stage": "needs",
+          "label": "Kennt der Kunde die Ursache der aktuellen Störung?",
+          "value": "Die Ursache der Störung kenne ich nicht. Ein Fachmann hat sie noch nicht festgestellt.",
+          "status": "does_not_know",
+          "keywords": [
+            "ursache",
+            "defekt",
+            "diagnose"
+          ],
+          "required": false,
+          "material": false
+        }
+      ],
+      "allowed_outcomes": [
+        "no_fit"
+      ],
+      "question_hints": [
+        "Welches Gerät muss repariert werden?",
+        "Warum haben Sie sich an uns gewandt?",
+        "Was ist Ihnen bei der Wahl des Dienstleisters besonders wichtig?",
+        "Kennen Sie die voraussichtlichen Reparaturkosten bereits?",
+        "Wie lange können Sie warten und wer entscheidet über die Beauftragung?"
+      ]
+    },
+    {
+      "id": "lindenhaus_backofen",
+      "revision": 2,
+      "company_id": "training_company",
+      "title": "Lindenhaus · Ein neuer Backofen für die Küche",
+      "customer_name": "Mara Weber",
+      "public_brief": "Beraten Sie bei Lindenhaus zur Auswahl eines elektrischen Haushaltsbackofens. Klären Sie Bedarf und Einbaubedingungen, nutzen Sie den hinterlegten Katalog, erläutern Sie den vollständigen Preis und vereinbaren Sie einen begründeten nächsten Schritt.",
+      "opening": "Guten Tag, ich suche einen neuen Backofen für meine Küche. Ich backe regelmäßig und möchte ein Gerät, das sich einfach bedienen lässt.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Nutzung",
+          "value": "Privater Haushalt mit drei Personen. Ich backe zwei- bis dreimal pro Woche Brot, Kuchen und Aufläufe; Umluft und ein Timer sind mir nützlich.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "preferences",
+          "stage": "needs",
+          "label": "Optik und Bedienung",
+          "value": "Bevorzugt mattweiß, ohne Chromakzente, Drehregler und kleines gut lesbares Display. Einfache Bedienung ist wichtiger als Automatikprogramme oder Dampf. Weiß ohne matte Oberfläche ist ein besprechbarer Kompromiss; keine vorab festgelegte Modellwahl.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Gesamtbudget",
+          "value": "Harte Obergrenze 1150 EUR einschließlich Gerät und aller benötigten Leistungen; keine Finanzierung geplant.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "installation",
+          "stage": "capabilities",
+          "label": "Einbausituation",
+          "value": "Ein alter elektrischer Einbaubackofen soll ersetzt werden. Selbst gemessene Nische: 60 cm breit, 60 cm hoch, 56 cm tief. Anschlüsse und Belüftung wurden nicht fachlich geprüft; ein Umbau ist nicht gewünscht.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "services",
+          "stage": "capabilities",
+          "label": "Benötigte Leistungen",
+          "value": "Lieferung, Einbau und Mitnahme eines alten Backofens gewünscht. Wohnung im Erdgeschoss, keine Treppen auf dem bekannten Transportweg; im Übungsgebiet innerhalb 20 km. Zugänglichkeit muss vor Bestätigung geprüft werden.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Zeitbedarf",
+          "value": "Wunsch: innerhalb von drei Wochen; kein bestimmtes Datum gebucht. Werktags nachmittags grundsätzlich möglich, endgültigen Termin gesondert abstimmen. Kein Bedarf an Sofortservice.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Entscheidung",
+          "value": "Ich entscheide und bezahle selbst. Nach verständlichem Vergleich kann ich eine vorläufige Wahl treffen; technische offene Punkte müssen vor verbindlicher Bestellung geklärt sein.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Unbekannte technische Angaben",
+          "value": "Genaue Anschlussdaten, Belüftungsanforderungen und freigegebene Montagekompatibilität kenne ich nicht. Ich habe keine bestätigte Energieklasse oder Garantieangabe für die angebotenen Modelle.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "replacement",
+        "no_fit"
+      ],
+      "question_hints": []
+    },
+    {
+      "id": "lindenhaus_waschmaschine",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Lindenhaus · Die Waschmaschine funktioniert nicht mehr",
+      "customer_name": "Jonas Becker",
+      "public_brief": "Bearbeiten Sie bei Lindenhaus eine Störungsanfrage zu einer Waschmaschine. Klären Sie Beobachtungen und Erwartungen, erklären Sie Umfang, Kosten und Grenzen der Diagnose und vereinbaren Sie einen angemessenen nächsten Schritt ohne Reparaturversprechen.",
+      "opening": "Guten Tag, meine Waschmaschine funktioniert nicht mehr richtig. Sie bleibt vor dem Schleudern stehen, und ich weiß nicht, ob sich eine Reparatur noch lohnt.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Erwartung",
+          "value": "Ich möchte wissen, was defekt ist und welche Kosten sinnvoll wären. Vor einer Reparaturentscheidung brauche ich eine nachvollziehbare Einschätzung. Heute ist kein Neukauf beschlossen.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "equipment",
+          "stage": "needs",
+          "label": "Eigenes Gerät",
+          "value": "Eigene elektrische Haushaltswaschmaschine, freistehend, etwa sechs Jahre alt, 7 kg; private Nutzung für zwei Personen. Keine Gas- oder Industrieanlage.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "symptoms",
+          "stage": "needs",
+          "label": "Beobachteter Verlauf",
+          "value": "Seit zwei Tagen bleibt sie vor dem Schleudern stehen; Wasser bleibt in der Trommel. Bei den letzten Beobachtungen kein Rauch, kein Brandgeruch und kein Wasser auf dem Boden. Ich habe nichts geöffnet oder repariert.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Nicht bekannte Ursache und Daten",
+          "value": "Fehlerursache, genauer Modellcode, Fehlercode, Anschlussdetails und Reparaturpreis sind mir nicht bekannt. Kein Techniker hat eine Diagnose gestellt. Keine belegten Garantieangaben.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Diagnosebudget und Reparatur",
+          "value": "Für eine klar abgegrenzte Diagnose kann ich bis 100 EUR ausgeben. Ein Reparaturbudget habe ich noch nicht festgelegt; das hängt vom Befund und Kostenvoranschlag ab. Keine Reparaturpauschale zugesagt.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Beteiligte und Zögern",
+          "value": "Eine verständlich erklärte Diagnose innerhalb 100 EUR darf ich selbst vorläufig zusagen. Über Reparatur oder Ersatz entscheiden meine Partnerin und ich gemeinsam nach einem Kostenvoranschlag. Ich bin unsicher, nicht grundsätzlich gegen eine Diagnose.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Dringlichkeit und Verfügbarkeit",
+          "value": "Wunsch: Klärung innerhalb einer Woche. Übergangsweise kann ich bei meiner Schwester waschen. Werktags nachmittags grundsätzlich verfügbar; kein bestätigter Termin, kein heutiger Soforteinsatz erforderlich.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "access",
+          "stage": "capabilities",
+          "label": "Zugang",
+          "value": "Im Übungsgebiet innerhalb 20 km, Erdgeschoss. Das Gerät steht im Bad; der Zugang ist nach meiner Beobachtung frei, die technische Zugänglichkeit ist nicht fachlich geprüft.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "diagnosis",
+        "no_fit"
+      ],
+      "question_hints": []
+    },
+    {
+      "id": "lindenhaus_geschirrspueler",
+      "revision": 1,
+      "company_id": "training_company",
+      "title": "Lindenhaus · Ein leiser Geschirrspüler mit begrenztem Budget",
+      "customer_name": "Nina Hoffmann",
+      "public_brief": "Beraten Sie bei Lindenhaus zur Auswahl eines Geschirrspülers. Klären Sie Geräuschwunsch, Einbau, Gesamtbudget und Zeitbedarf. Erläutern Sie einen ehrlichen Kompromiss anhand des Katalogs und schlagen Sie eine umsetzbare Lösung vor.",
+      "opening": "Guten Tag, wir suchen einen möglichst leisen Geschirrspüler für unsere offene Küche. Unser Budget ist allerdings begrenzt.",
+      "language": "de",
+      "facts": [
+        {
+          "id": "goal",
+          "stage": "needs",
+          "label": "Nutzung und Lärm",
+          "value": "Zwei Erwachsene und ein Kind, offene Wohnküche. Wir lassen die Maschine abends laufen. Etwa 40 dB wären ideal, das ist ein Wunsch und keine starre Grenze.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "compromise",
+          "stage": "needs",
+          "label": "Möglicher Kompromiss",
+          "value": "Wenn 40 dB das Gesamtbudget sprengen, kann ich 44 dB erwägen, sofern Bauart, Kosten und Einbau passen. Ich möchte den Unterschied erklärt bekommen; keine feste Modellwahl und kein automatisches Kaufversprechen.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "budget",
+          "stage": "capabilities",
+          "label": "Gesamtbudget",
+          "value": "Harte Obergrenze 900 EUR einschließlich Gerät, Lieferung, Einbau und Mitnahme eines Altgeräts. Keine Finanzierung oder eigenständige Montage vorgesehen.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "installation",
+          "stage": "capabilities",
+          "label": "Bauart und Nische",
+          "value": "Vorhandener vollintegrierter 60-cm-Geschirrspüler soll ersetzt werden. Selbst gemessene Nische: 60 cm breit, 84 cm hoch, 57 cm tief. Eine vorhandene Möbelfront soll bleiben; keine freistehende Maschine und kein Möbelumbau gewünscht.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "unknown",
+          "stage": "capabilities",
+          "label": "Ungeprüfte Front und Anschlüsse",
+          "value": "Kompatibilität der Möbelfront, Befestigung, Belüftung und Anschlüsse kenne ich nicht. Keine fachliche Freigabe. Energieklasse und Verbrauchswerte der neuen Modelle kenne ich ebenfalls nicht.",
+          "status": "does_not_know",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "services",
+          "stage": "capabilities",
+          "label": "Leistungen und Zugang",
+          "value": "Lieferung, integrierter Einbau und Mitnahme eines alten Geschirrspülers benötigt. Übungsgebiet innerhalb 20 km, Erdgeschoss ohne Treppen auf dem bekannten Transportweg; Zugang vor Bestätigung klären.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "timing",
+          "stage": "capabilities",
+          "label": "Zeitwunsch",
+          "value": "Lieber innerhalb von zwei Wochen, aber bis zu fünf Wochen wären nach Rücksprache akzeptabel. Das alte Gerät läuft noch, ist jedoch störend laut. Kein bestimmter Liefertermin vereinbart.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        },
+        {
+          "id": "decision",
+          "stage": "needs",
+          "label": "Gemeinsame Entscheidung",
+          "value": "Mein Partner und ich entscheiden gemeinsam. Ich kann ein Angebot und eine bedingte Empfehlung mitnehmen, aber keinen endgültigen Kauf allein bestätigen. Rücksprache ist keine Ablehnung.",
+          "status": "known",
+          "keywords": [],
+          "required": true,
+          "material": true
+        }
+      ],
+      "allowed_outcomes": [
+        "lh_sv_03",
+        "no_fit"
+      ],
+      "question_hints": []
+    }
+  ],
+  "persona_labels": {
+    "decisive": "Entschlossener Kunde",
+    "indecisive": "Unentschlossener Kunde",
+    "cautious": "Vorsichtiger Kunde",
+    "urgent": "Kunde unter Zeitdruck",
+    "skeptical": "Skeptischer Kunde",
+    "analytical": "Analytischer Kunde",
+    "undecided": "Unentschlossener Kunde"
+  }
+}

@@ -1,0 +1,9 @@
+# Interne Regeln
+
+## Angebot und Bestellung
+
+Vor dem Angebot Bedarf, wesentliche Kriterien, technische Eignung oder offene Prüfung, Gesamtbudget einschließlich Leistungen, Terminbedarf und Entscheidungsbeteiligte klären. Bedarf zusammenfassen und eine begründete Empfehlung geben; nicht allein nach höherem Preis auswählen. Schriftliches Angebot: Produkt-ID, bekannte Merkmale, Leistungen, Gesamtpreis, offene Prüfungen und Lieferstatus; gültig 7 Kalendertage auf diesem Katalogstand, ohne Reservierung. Bestellung erst bei ausdrücklicher Annahme des konkreten Angebots, geklärter Technik und Zustimmung der entscheidungsberechtigten Personen. Interesse, ein Getränk oder Rücksprache mit dem Partner sind keine Bestellung. Offene Entscheidung als Angebot zur Prüfung oder Entscheidung nach Rücksprache kennzeichnen. Nach Annahme kann der Termin noch offen sein; Lieferung oder Einbau nicht als erfolgt darstellen.
+
+## Grenzen und offene Fragen
+
+Nur Katalogpreise und definierte Leistungen anbieten; offene Fragen sammeln und Rückkontakt vereinbaren. Keine Rabatte, Aktionen, kostenlosen Einbau, festen Termine oder Reparaturerfolge erfinden; Abweichungen brauchen dokumentierte Freigabe. Nicht hinterlegte Angaben sind unbekannt. Keine Energieklasse, Verbrauchswerte, Programmdauer oder freiwillige Garantie aus Preis, Marke oder Kapazität ableiten. Rechtliche Ansprüche und Herstellergarantien an die zuständige Stelle geben; keine Dauer oder Deckung erfinden. Diese Übungsregeln sind keine vollständigen AGB oder Rechtsauskunft. Pausen, Vergleichsangebote und gemeinsame Entscheidungen respektieren. Getränke ohne Kaufbedingung; kein persönlicher oder familiärer Druck. Offene Fragen und Gesamtpreis zusammenfassen, Rückkontakt nur mit Zustimmung. Keine fiktiven Kontaktdaten als erfasst darstellen.

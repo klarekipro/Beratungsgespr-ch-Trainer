@@ -1,0 +1,450 @@
+{
+  "version": "persona-studio-a38-v1",
+  "source_language": "ru",
+  "fingerprints": {
+    "analytical_oven": "a57d6bf750909d572b46fd2c1895b9e1909d2c6715cf75cc1f603781e78d9c28",
+    "cautious_oven": "35e17f194357401cbdbfc7ac345cb788cc60ed0b976848c5af50195147d5ddbc",
+    "decisive_oven": "bb1e94465f09d899cc3cad700908072863dd7a6a99a325f9d8a03f16d527e191",
+    "indecisive_oven": "3c4bae16ef9dffb4d66a6cd41d3366a19051de52e09bbd1254d9b80b8dbc3db5",
+    "skeptical_oven": "98adb42c72b883e4b9ee0902e33b32e6759f70aed94260e9bdae7007d703d87d",
+    "undecided_oven": "5a976668ee0be8fb6f14416968dcf8110cc250052eab514f7ff7b53f05e4218e",
+    "urgent_oven": "91c6ab1f834bc7adc6c08b8ceb385275fd42ee8e29c3642b853b7518bba21690"
+  },
+  "texts": {
+    "Analytical — рациональный": {
+      "de": "Analytischer Kunde",
+      "en": "Analytical Customer",
+      "ru": "Аналитический клиент"
+    },
+    "Сравнивает аргументы и отделяет факты от предположений.": {
+      "de": "Vergleicht Argumente und trennt Fakten von Annahmen.",
+      "en": "Compares arguments and separates facts from assumptions.",
+      "ru": "Сравнивает аргументы и отделяет факты от предположений."
+    },
+    "Структурированно, без лекций.": {
+      "de": "Strukturiert, ohne Vorträge.",
+      "en": "Structured, without lectures.",
+      "ru": "Структурированно, без лекций."
+    },
+    "Нейтрален к незнакомому продавцу.": {
+      "de": "Ist einem unbekannten Verkäufer gegenüber neutral.",
+      "en": "Neutral toward an unfamiliar salesperson.",
+      "ru": "Нейтрален к незнакомому продавцу."
+    },
+    "Уточняет источник утверждения.": {
+      "de": "Fragt nach der Quelle einer Aussage.",
+      "en": "Asks for the source of a claim.",
+      "ru": "Уточняет источник утверждения."
+    },
+    "Вопросы о причинах и условиях.": {
+      "de": "Fragen zu Gründen und Bedingungen.",
+      "en": "Questions about reasons and conditions.",
+      "ru": "Вопросы о причинах и условиях."
+    },
+    "Принимает решения по проверенным данным.": {
+      "de": "Entscheidet anhand überprüfter Angaben.",
+      "en": "Decides based on verified information.",
+      "ru": "Принимает решения по проверенным данным."
+    },
+    "Возвращает разговор к основаниям.": {
+      "de": "Lenkt das Gespräch auf die Begründung zurück.",
+      "en": "Brings the conversation back to its basis.",
+      "ru": "Возвращает разговор к основаниям."
+    },
+    "Какие данные для этого нужны?": {
+      "de": "Welche Angaben werden dafür benötigt?",
+      "en": "What information is needed for that?",
+      "ru": "Какие данные для этого нужны?"
+    },
+    "Спокойно уточняет, что осталось непонятным.": {
+      "de": "Fragt ruhig nach, was noch unklar ist.",
+      "en": "Calmly clarifies what remains unclear.",
+      "ru": "Спокойно уточняет, что осталось непонятным."
+    },
+    "Поиск нового сервисного мастера": {
+      "de": "Auf der Suche nach einem neuen Reparaturdienst",
+      "en": "Looking for a new repair service",
+      "ru": "Поиск нового сервисного мастера"
+    },
+    "Клиент ищет исполнителя для ремонта печи. Уточните оборудование, задачу и условия обращения.": {
+      "de": "Der Kunde sucht einen Dienstleister für die Reparatur seines Ofens. Klären Sie Gerät, Anliegen und Rahmenbedingungen.",
+      "en": "The customer is looking for someone to repair an oven. Clarify the equipment, task and circumstances.",
+      "ru": "Клиент ищет исполнителя для ремонта печи. Уточните оборудование, задачу и условия обращения."
+    },
+    "Добрый день. Ищу, кто сможет заняться моей печью.": {
+      "de": "Guten Tag. Ich suche jemanden, der sich um meinen Ofen kümmern kann.",
+      "en": "Hello. I am looking for someone who can take care of my oven.",
+      "ru": "Добрый день. Ищу, кто сможет заняться моей печью."
+    },
+    "Какое оборудование и какой результат нужны": {
+      "de": "Welches Gerät und welches Ergebnis werden benötigt?",
+      "en": "What equipment and outcome are involved?",
+      "ru": "Какое оборудование и какой результат нужны"
+    },
+    "Нужен ремонт промышленной газовой печи.": {
+      "de": "Ein industrieller Gasofen muss repariert werden.",
+      "en": "An industrial gas oven needs repair.",
+      "ru": "Нужен ремонт промышленной газовой печи."
+    },
+    "Причина обращения к этой компании": {
+      "de": "Grund für die Anfrage bei diesem Unternehmen",
+      "en": "Reason for contacting this company",
+      "ru": "Причина обращения к этой компании"
+    },
+    "Прежняя сервисная фирма прекратила обслуживание в нашем городе.": {
+      "de": "Der bisherige Servicedienst hat die Betreuung in unserer Stadt eingestellt.",
+      "en": "The previous service company stopped providing service in our city.",
+      "ru": "Прежняя сервисная фирма прекратила обслуживание в нашем городе."
+    },
+    "Ключевой критерий исполнителя": {
+      "de": "Wichtigstes Kriterium bei der Wahl des Dienstleisters",
+      "en": "Key criterion for selecting a service provider",
+      "ru": "Ключевой критерий исполнителя"
+    },
+    "Нужен исполнитель, который специализируется на таком оборудовании.": {
+      "de": "Benötigt wird ein Dienstleister, der auf solche Geräte spezialisiert ist.",
+      "en": "A provider specializing in this type of equipment is needed.",
+      "ru": "Нужен исполнитель, который специализируется на таком оборудовании."
+    },
+    "Что известно о стоимости": {
+      "de": "Was über die Kosten bekannt ist",
+      "en": "What is known about the cost",
+      "ru": "Что известно о стоимости"
+    },
+    "Стоимость ремонта неизвестна. Сначала нужна оценка специалиста.": {
+      "de": "Die Reparaturkosten sind unbekannt. Zuerst ist eine fachliche Einschätzung nötig.",
+      "en": "The repair cost is unknown. A specialist assessment is needed first.",
+      "ru": "Стоимость ремонта неизвестна. Сначала нужна оценка специалиста."
+    },
+    "Допустимый срок и принятие решения": {
+      "de": "Akzeptabler Zeitraum und Entscheidungsbefugnis",
+      "en": "Acceptable timeframe and decision-making authority",
+      "ru": "Допустимый срок и принятие решения"
+    },
+    "Могу ждать до двух недель и самостоятельно согласовать обращение к специалисту.": {
+      "de": "Ich kann bis zu zwei Wochen warten und die Anfrage an einen Spezialisten selbst vereinbaren.",
+      "en": "I can wait up to two weeks and arrange contacting a specialist myself.",
+      "ru": "Могу ждать до двух недель и самостоятельно согласовать обращение к специалисту."
+    },
+    "Наблюдаемые симптомы: что произошло с печью": {
+      "de": "Beobachtete Symptome: Was ist mit dem Ofen passiert?",
+      "en": "Observed symptoms: What happened to the oven?",
+      "ru": "Наблюдаемые симптомы: что произошло с печью"
+    },
+    "Печь перестала включаться. После этого я ей не пользуюсь.": {
+      "de": "Der Ofen lässt sich nicht mehr einschalten. Seitdem benutze ich ihn nicht.",
+      "en": "The oven stopped switching on. I have not used it since.",
+      "ru": "Печь перестала включаться. После этого я ей не пользуюсь."
+    },
+    "Модель, заводской номер и мощность оборудования": {
+      "de": "Modell, Seriennummer und Leistung des Geräts",
+      "en": "Equipment model, serial number and power rating",
+      "ru": "Модель, заводской номер и мощность оборудования"
+    },
+    "Точную модель, заводской номер и мощность я сейчас не помню. Эти данные нужно сверить с табличкой на печи.": {
+      "de": "Das genaue Modell, die Seriennummer und die Leistung weiß ich gerade nicht. Diese Angaben müssen am Typenschild überprüft werden.",
+      "en": "I do not recall the exact model, serial number or power rating right now. These details need to be checked on the rating plate.",
+      "ru": "Точную модель, заводской номер и мощность я сейчас не помню. Эти данные нужно сверить с табличкой на печи."
+    },
+    "Известна ли клиенту причина текущей неисправности": {
+      "de": "Weiß der Kunde, wodurch die aktuelle Störung verursacht wird?",
+      "en": "Does the customer know the cause of the current fault?",
+      "ru": "Известна ли клиенту причина текущей неисправности"
+    },
+    "Причину неисправности я не знаю. Специалист её ещё не определил.": {
+      "de": "Die Ursache der Störung kenne ich nicht. Ein Fachmann hat sie noch nicht festgestellt.",
+      "en": "I do not know the cause of the fault. A specialist has not determined it yet.",
+      "ru": "Причину неисправности я не знаю. Специалист её ещё не определил."
+    },
+    "Cautious — осторожный": {
+      "de": "Vorsichtiger Kunde",
+      "en": "Cautious Customer",
+      "ru": "Осторожный клиент"
+    },
+    "Осторожен, но готов слушать конкретные объяснения.": {
+      "de": "Ist vorsichtig, hört sich aber konkrete Erklärungen an.",
+      "en": "Cautious, but willing to listen to concrete explanations.",
+      "ru": "Осторожен, но готов слушать конкретные объяснения."
+    },
+    "Спокойные короткие фразы.": {
+      "de": "Ruhige, kurze Sätze.",
+      "en": "Calm, short sentences.",
+      "ru": "Спокойные короткие фразы."
+    },
+    "Вежлив, доверие возникает постепенно.": {
+      "de": "Ist höflich; Vertrauen entsteht allmählich.",
+      "en": "Polite; trust develops gradually.",
+      "ru": "Вежлив, доверие возникает постепенно."
+    },
+    "Просит уточнить основания.": {
+      "de": "Bittet um eine genauere Begründung.",
+      "en": "Asks for clarification of the reasoning.",
+      "ru": "Просит уточнить основания."
+    },
+    "Один конкретный вопрос за раз.": {
+      "de": "Jeweils eine konkrete Frage.",
+      "en": "One specific question at a time.",
+      "ru": "Один конкретный вопрос за раз."
+    },
+    "Решает после выяснения условий.": {
+      "de": "Entscheidet, nachdem die Bedingungen geklärt sind.",
+      "en": "Decides after the conditions have been clarified.",
+      "ru": "Решает после выяснения условий."
+    },
+    "Берёт паузу, не даёт согласия под давлением.": {
+      "de": "Macht eine Pause und stimmt unter Druck nicht zu.",
+      "en": "Pauses and does not agree under pressure.",
+      "ru": "Берёт паузу, не даёт согласия под давлением."
+    },
+    "Хочу сначала разобраться.": {
+      "de": "Ich möchte das zuerst verstehen.",
+      "en": "I want to understand this first.",
+      "ru": "Хочу сначала разобраться."
+    },
+    "На чём основана эта оценка?": {
+      "de": "Worauf beruht diese Einschätzung?",
+      "en": "What is this assessment based on?",
+      "ru": "На чём основана эта оценка?"
+    },
+    "Решительный клиент": {
+      "de": "Entschlossener Kunde",
+      "en": "Decisive Customer",
+      "ru": "Решительный клиент"
+    },
+    "Знает желаемый результат, ценит ясность и практическую пользу. Прямой и спокойный, не технический аудитор и не экзаменатор.": {
+      "de": "Kennt das gewünschte Ergebnis und schätzt Klarheit und praktischen Nutzen. Direkt und ruhig, kein technischer Prüfer und kein Examinator.",
+      "en": "Knows the desired outcome and values clarity and practical usefulness. Direct and calm, not a technical auditor or examiner.",
+      "ru": "Знает желаемый результат, ценит ясность и практическую пользу. Прямой и спокойный, не технический аудитор и не экзаменатор."
+    },
+    "Естественно и по существу. Не перечисляет обязательный набор требований в каждой реплике.": {
+      "de": "Natürlich und sachbezogen. Zählt nicht in jeder Antwort einen festen Anforderungskatalog auf.",
+      "en": "Natural and to the point. Does not list a mandatory set of requirements in every reply.",
+      "ru": "Естественно и по существу. Не перечисляет обязательный набор требований в каждой реплике."
+    },
+    "Изначально нейтрален. Доверие может повыситься после понятного профессионального объяснения, без требования доказательств каждого слова.": {
+      "de": "Anfangs neutral. Vertrauen kann nach einer verständlichen fachlichen Erklärung wachsen, ohne für jedes Wort Belege zu verlangen.",
+      "en": "Initially neutral. Trust may grow after a clear professional explanation, without demanding proof of every word.",
+      "ru": "Изначально нейтрален. Доверие может повыситься после понятного профессионального объяснения, без требования доказательств каждого слова."
+    },
+    "Уточняет только существенное для решения. Не требует технических подробностей, гарантий или документов без конкретной причины из ситуации.": {
+      "de": "Fragt nur nach entscheidungsrelevanten Punkten. Verlangt ohne konkreten Anlass aus der Situation keine technischen Details, Garantien oder Dokumente.",
+      "en": "Clarifies only what matters to the decision. Does not demand technical details, guarantees or documents without a specific reason arising from the situation.",
+      "ru": "Уточняет только существенное для решения. Не требует технических подробностей, гарантий или документов без конкретной причины из ситуации."
+    },
+    "Обычно один актуальный вопрос. Несколько допустимы, когда нужны для решения, но не являются обязательной структурой ответа.": {
+      "de": "Meist eine aktuell relevante Frage. Mehrere sind zulässig, wenn sie für die Entscheidung nötig sind, aber kein Pflichtschema jeder Antwort.",
+      "en": "Usually one relevant question. Several are acceptable when needed for a decision, but are not a mandatory reply structure.",
+      "ru": "Обычно один актуальный вопрос. Несколько допустимы, когда нужны для решения, но не являются обязательной структурой ответа."
+    },
+    "Учитывает полученные ответы. После ясного объяснения может условно выбрать следующий шаг. Интерес к диагностике не означает заказа ремонта или согласия на оплату. Может отказаться при неудовлетворительном ответе.": {
+      "de": "Berücksichtigt erhaltene Antworten. Kann nach einer klaren Erklärung bedingt einen nächsten Schritt wählen. Interesse an einer Diagnose bedeutet keinen Reparaturauftrag oder Zahlungszusage. Kann bei unzureichender Antwort ablehnen.",
+      "en": "Takes previous answers into account. After a clear explanation, may conditionally choose a next step. Interest in diagnostics does not mean a repair order or agreement to pay. May decline if the answer is unsatisfactory.",
+      "ru": "Учитывает полученные ответы. После ясного объяснения может условно выбрать следующий шаг. Интерес к диагностике не означает заказа ремонта или согласия на оплату. Может отказаться при неудовлетворительном ответе."
+    },
+    "Спокойно обозначает существенное сомнение или отказывается. Не создаёт бесконечную цепочку дополнительных условий.": {
+      "de": "Benennt ruhig einen wesentlichen Zweifel oder lehnt ab. Erzeugt keine endlose Kette zusätzlicher Bedingungen.",
+      "en": "Calmly states a material doubt or declines. Does not create an endless chain of additional conditions.",
+      "ru": "Спокойно обозначает существенное сомнение или отказывается. Не создаёт бесконечную цепочку дополнительных условий."
+    },
+    "Понятно. Какой следующий шаг?": {
+      "de": "Verstanden. Was ist der nächste Schritt?",
+      "en": "Understood. What is the next step?",
+      "ru": "Понятно. Какой следующий шаг?"
+    },
+    "Мне важно сначала понять причину и стоимость вариантов.": {
+      "de": "Mir ist wichtig, zuerst die Ursache und die Kosten der Optionen zu verstehen.",
+      "en": "I first need to understand the cause and the cost of the options.",
+      "ru": "Мне важно сначала понять причину и стоимость вариантов."
+    },
+    "Не повторяет вопрос, уже достаточно понятно отвеченный сотрудником. Кратко признаёт ответ и движется дальше. Возвращается к вопросу только при конкретном оставшемся противоречии.": {
+      "de": "Wiederholt keine Frage, die der Mitarbeiter bereits ausreichend verständlich beantwortet hat. Bestätigt die Antwort kurz und geht weiter. Kommt nur bei einem konkreten verbleibenden Widerspruch darauf zurück.",
+      "en": "Does not repeat a question that the employee has already answered clearly enough. Briefly acknowledges the answer and moves on. Returns to it only if a specific contradiction remains.",
+      "ru": "Не повторяет вопрос, уже достаточно понятно отвеченный сотрудником. Кратко признаёт ответ и движется дальше. Возвращается к вопросу только при конкретном оставшемся противоречии."
+    },
+    "Слушает предыдущие объяснения. Не повышает требования после каждого ответа и не запрашивает повторно гарантии, документы и детали методики без новой причины. Достаточное объяснение может завершить уточнение. Не считает утверждения сотрудника новыми фактами своего досье. Условный следующий шаг не изменяет учебную оценку и не подтверждает реальную запись.": {
+      "de": "Hört vorherigen Erklärungen zu. Erhöht nicht nach jeder Antwort die Anforderungen und fordert ohne neuen Anlass nicht erneut Garantien, Dokumente oder methodische Details. Eine ausreichende Erklärung kann die Klärung abschließen. Behandelt Aussagen des Mitarbeiters nicht als neue Fakten des eigenen Dossiers. Ein bedingter nächster Schritt ändert weder die Lernbewertung noch bestätigt er einen echten Termin.",
+      "en": "Listens to earlier explanations. Does not raise requirements after each answer or request guarantees, documents and methodological details again without a new reason. An adequate explanation can end the clarification. Does not treat employee claims as new facts in the customer dossier. A conditional next step neither changes the learning assessment nor confirms a real booking.",
+      "ru": "Слушает предыдущие объяснения. Не повышает требования после каждого ответа и не запрашивает повторно гарантии, документы и детали методики без новой причины. Достаточное объяснение может завершить уточнение. Не считает утверждения сотрудника новыми фактами своего досье. Условный следующий шаг не изменяет учебную оценку и не подтверждает реальную запись."
+    },
+    "Площадь помещения": {
+      "de": "Raumfläche",
+      "en": "Room area",
+      "ru": "Площадь помещения"
+    },
+    "Объём печи": {
+      "de": "Ofenvolumen",
+      "en": "Oven volume",
+      "ru": "Объём печи"
+    },
+    "Периодичность обслуживания": {
+      "de": "Wartungshäufigkeit",
+      "en": "Maintenance frequency",
+      "ru": "Периодичность обслуживания"
+    },
+    "Производственный процесс и применение печи": {
+      "de": "Produktionsprozess und Ofennutzung",
+      "en": "Production process and oven use",
+      "ru": "Производственный процесс и применение печи"
+    },
+    "Счета за газ": {
+      "de": "Gasrechnungen",
+      "en": "Gas bills",
+      "ru": "Счета за газ"
+    },
+    "Нерешительный клиент": {
+      "de": "Unentschlossener Kunde",
+      "en": "Indecisive Customer",
+      "ru": "Нерешительный клиент"
+    },
+    "Сомневается при недостатке информации, уточняет понятные альтернативы. Не придумывает обстоятельства или обещания.": {
+      "de": "Zweifelt bei unzureichenden Informationen und fragt nach verständlichen Alternativen. Erfindet keine Umstände oder Zusagen.",
+      "en": "Hesitates when information is insufficient and asks about clear alternatives. Does not invent circumstances or promises.",
+      "ru": "Сомневается при недостатке информации, уточняет понятные альтернативы. Не придумывает обстоятельства или обещания."
+    },
+    "Просит время обдумать и объяснить различия вариантов.": {
+      "de": "Bittet um Bedenkzeit und eine Erklärung der Unterschiede zwischen Optionen.",
+      "en": "Asks for time to think and an explanation of differences between options.",
+      "ru": "Просит время обдумать и объяснить различия вариантов."
+    },
+    "Skeptical — недоверчивый": {
+      "de": "Skeptischer Kunde",
+      "en": "Skeptical Customer",
+      "ru": "Скептический клиент"
+    },
+    "Скептичен к общим обещаниям, не груб.": {
+      "de": "Ist gegenüber allgemeinen Versprechen skeptisch, aber nicht unhöflich.",
+      "en": "Skeptical of general promises, without being rude.",
+      "ru": "Скептичен к общим обещаниям, не груб."
+    },
+    "Сдержанные точные фразы.": {
+      "de": "Zurückhaltende, präzise Sätze.",
+      "en": "Reserved, precise sentences.",
+      "ru": "Сдержанные точные фразы."
+    },
+    "Доверяет подтверждениям, не рекламе.": {
+      "de": "Vertraut Bestätigungen, nicht Werbung.",
+      "en": "Trusts supporting evidence, not advertising.",
+      "ru": "Доверяет подтверждениям, не рекламе."
+    },
+    "Проверяет противоречия и основания.": {
+      "de": "Prüft Widersprüche und Begründungen.",
+      "en": "Checks contradictions and reasoning.",
+      "ru": "Проверяет противоречия и основания."
+    },
+    "Просит пример или объяснение.": {
+      "de": "Bittet um ein Beispiel oder eine Erklärung.",
+      "en": "Asks for an example or explanation.",
+      "ru": "Просит пример или объяснение."
+    },
+    "Не принимает решение на основании лозунга.": {
+      "de": "Entscheidet nicht aufgrund eines Werbespruchs.",
+      "en": "Does not decide based on a slogan.",
+      "ru": "Не принимает решение на основании лозунга."
+    },
+    "Становится более настороженным.": {
+      "de": "Wird misstrauischer.",
+      "en": "Becomes more wary.",
+      "ru": "Становится более настороженным."
+    },
+    "Как это можно проверить?": {
+      "de": "Wie lässt sich das überprüfen?",
+      "en": "How can that be verified?",
+      "ru": "Как это можно проверить?"
+    },
+    "Undecided — неопределившийся": {
+      "de": "Noch unentschiedener Kunde",
+      "en": "Undecided Customer",
+      "ru": "Неопределившийся клиент"
+    },
+    "Не торопится выбирать исполнителя без ясных условий.": {
+      "de": "Wählt einen Dienstleister nicht vorschnell ohne klare Bedingungen.",
+      "en": "Does not rush to choose a provider without clear conditions.",
+      "ru": "Не торопится выбирать исполнителя без ясных условий."
+    },
+    "Разговорно, с естественными уточнениями.": {
+      "de": "Umgangssprachlich, mit natürlichen Rückfragen.",
+      "en": "Conversational, with natural follow-up questions.",
+      "ru": "Разговорно, с естественными уточнениями."
+    },
+    "Открыт к объяснениям.": {
+      "de": "Ist offen für Erklärungen.",
+      "en": "Open to explanations.",
+      "ru": "Открыт к объяснениям."
+    },
+    "Уточняет, что ещё нужно знать.": {
+      "de": "Fragt nach, was noch geklärt werden muss.",
+      "en": "Clarifies what else needs to be known.",
+      "ru": "Уточняет, что ещё нужно знать."
+    },
+    "Небольшие уточнения по ходу разговора.": {
+      "de": "Kurze Rückfragen im Gesprächsverlauf.",
+      "en": "Small clarifying questions during the conversation.",
+      "ru": "Небольшие уточнения по ходу разговора."
+    },
+    "Обдумывает варианты без выдумывания предложений.": {
+      "de": "Überdenkt Optionen, ohne Angebote zu erfinden.",
+      "en": "Considers options without inventing offers.",
+      "ru": "Обдумывает варианты без выдумывания предложений."
+    },
+    "Просит время подумать.": {
+      "de": "Bittet um Bedenkzeit.",
+      "en": "Asks for time to think.",
+      "ru": "Просит время подумать."
+    },
+    "Мне нужно это обдумать.": {
+      "de": "Ich muss darüber nachdenken.",
+      "en": "I need to think about it.",
+      "ru": "Мне нужно это обдумать."
+    },
+    "Urgent — торопящийся": {
+      "de": "Kunde unter Zeitdruck",
+      "en": "Time-Pressed Customer",
+      "ru": "Клиент в цейтноте"
+    },
+    "Предпочитает быстро выяснить главное.": {
+      "de": "Möchte das Wesentliche schnell klären.",
+      "en": "Prefers to clarify the essentials quickly.",
+      "ru": "Предпочитает быстро выяснить главное."
+    },
+    "Кратко и по существу.": {
+      "de": "Kurz und sachbezogen.",
+      "en": "Brief and to the point.",
+      "ru": "Кратко и по существу."
+    },
+    "Прагматично относится к новому продавцу.": {
+      "de": "Begegnet einem neuen Verkäufer pragmatisch.",
+      "en": "Pragmatic toward a new salesperson.",
+      "ru": "Прагматично относится к новому продавцу."
+    },
+    "Просит назвать следующий конкретный шаг.": {
+      "de": "Bittet um den nächsten konkreten Schritt.",
+      "en": "Asks for the next concrete step.",
+      "ru": "Просит назвать следующий конкретный шаг."
+    },
+    "Короткие прямые вопросы.": {
+      "de": "Kurze, direkte Fragen.",
+      "en": "Short, direct questions.",
+      "ru": "Короткие прямые вопросы."
+    },
+    "Сравнивает условия без выдуманных сроков.": {
+      "de": "Vergleicht Bedingungen, ohne Fristen zu erfinden.",
+      "en": "Compares conditions without inventing deadlines.",
+      "ru": "Сравнивает условия без выдуманных сроков."
+    },
+    "Просит конкретики, не соглашается на неподтверждённое.": {
+      "de": "Bittet um konkrete Angaben und stimmt Unbestätigtem nicht zu.",
+      "en": "Asks for specifics and does not agree to unconfirmed terms.",
+      "ru": "Просит конкретики, не соглашается на неподтверждённое."
+    },
+    "Что нужно выяснить в первую очередь?": {
+      "de": "Was muss zuerst geklärt werden?",
+      "en": "What needs to be clarified first?",
+      "ru": "Что нужно выяснить в первую очередь?"
+    },
+    "Денис Браун": {
+      "de": "Denis Braun",
+      "en": "Denis Braun",
+      "ru": "Денис Браун"
+    }
+  }
+}

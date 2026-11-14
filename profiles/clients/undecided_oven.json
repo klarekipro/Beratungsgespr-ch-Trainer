@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "id": "undecided_oven",
+  "version": 1,
+  "persona_id": "undecided",
+  "scenario_id": "industrial_oven",
+  "modifiers": {
+    "version": 1
+  }
+}

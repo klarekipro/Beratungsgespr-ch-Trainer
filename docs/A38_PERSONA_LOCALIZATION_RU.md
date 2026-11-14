@@ -1,0 +1,81 @@
+# A38 — Persona Studio DE/EN/RU (после финального release handoff)
+
+12.11.2026. Это отдельное явно порученное исправление локализации, не продолжение косметики/видео и не исторический A38 composer. Ветка `codex/a38-persona-studio-localization`, исходный HEAD **470bb619e3b2c290f00b67d339a539045db53e10**. Main не меняется, push этой новой ветки в задании не запрошен.
+
+## Квитанция загрузки кода Persona Studio — 12.11.2026
+
+Код **613e13bd70c878b09c4716eefa480aa62daef76a**, ветка **codex/a38-persona-studio-localization**, штатно загружен: backend **0.15.3-persona-localization**, PID **10979**, frontend revision **e7a03a65a2998f7f**, только127.0.0.1:8100, прежняя runtime/dashboard/trainer.sqlite3. Не путать перезапуск кода с активацией persona definitions: **новые live persona versions не создавались**. Сравнение всех строк7 защищённых таблиц до/после restart — полное равенство. Все7 stored builtin records точно совпали с fingerprints после нормализации,9 HTTP assets побайтно совпали с диском. Backup API перед загрузкой `runtime/persona-localization/before-code-restart.sqlite3`, SHA256 **ab8cf6153d7f36c2dd5257b76554ffa6bae911dcef3e1de67ac507e897cafa6c**; квитанция `runtime/persona-localization/activation-verification.json` вне Git. A37/company5 и E2E-01 PASS сохранены. Синтетический QA8101 остановлен. Paid calls0, main/merge/push/VPS не затронуты. Последующий checkpoint commit только документирует загрузку; повторный restart ради SHA не нужен.
+
+Открыть для ручной приёмки: http://127.0.0.1:8100/mentor#mentor/personas . Скриншоты synthetic Chrome — before-de.png / after-de.png / after-en.png в runtime/persona-localization. Результат не выдаётся за полный новый E2E или browser-проверку рабочей базы: Chrome проверен на отдельной synthetic SQLite, а рабочие данные/asset agreement — read-only. Ручное сохранение правки — отдельная публикация авторской версии; агент его в рабочем приложении не выполнял.
+
+## Причина
+
+1. Исходные профили profiles/personas и сохранённые client_profile содержат русские тексты. Семь активных записей совпали с каноническими исходниками после нормализации отсутствующих пустых arrays; это не ошибочный перевод пользовательских правок.
+2. /api/mentor/client-profiles правильно отдаёт оригинальные author-controlled данные. Редактор выводил их непосредственно в полях. Заголовки формы переводились отдельным словарём, содержимое — нет.
+3. Прежний persona_label в materials ограничен точным набором старых исходников и не покрывает decisive v2/indecisive. Компактный studio-client-picker вообще использовал raw persona.name, обходя даже старый перевод имён.
+4. i18n.selectLocale перезагружал страницу после подтверждения потери изменений; память черновика редактора терялась. Само предупреждение не сохраняло ввод.
+
+## Решение / данные
+
+Новый статический словарь `frontend/persona_localization.json`, version **persona-studio-a38-v1**:7 SHA256 канонических встроенных профилей и87 уникальных исходных строк с DE/EN/RU представлениями. Переводы подготовлены вручную, без API-перевода, новых качеств характера или изменения методологии. В частности, industrial gas oven остаётся промышленной газовой печью из исходного учебного досье; это не новая услуга Lindenhaus.
+
+`frontend/persona_localization.js` сравнивает полный нормализованный профиль и его версии с fingerprint. Исключаются только available и описательная content_language; отсутствующие пустые characteristics/additional_information нормализуются. Совпадения только ID/имени недостаточно. Изменённый/новой версии/авторский профиль не переводится. При новом встроенном source нужен согласованный новый словарь; по старому ID ничего не угадывается.
+
+Локализуются имя, характер, стиль речи, отношение к продавцу, сомнения, вопросы, решение, давление, реакция на повторы, дополнительные указания, типичные выражения; заголовок/описание/первая реплика/имя клиента исходной ситуации, подписи и значения фактов, неизвестные темы. Собственные имена транслитерированы по существующим material translations. Психологические enum-коды и остальные ID/status/version не меняются; их видимые подписи используют текущий UI-словарь. Переведены также имена всех7 профилей в компактном picker. Услуги в вариантах завершения берутся из существующей локализованной TrainerMaterials.company, не из русской raw карточки.
+
+Исходные profiles/*.json и client_profile SQL-записи не перезаписаны. Локализованная копия находится только в памяти редактора. Просмотр и смена UI не вызывают PUT профиля. Нажатие «Сохранить новую версию» без правок — no-op с пояснением, не публикация перевода.
+
+Добавлен один совместимый optional JSON-field `ClientProfile.content_language`: de/en/ru/null. SQL schema/migration не нужны, исторические записи не дополняются. Автор указывает язык в обычной форме; при неизвестном языке показывается «Не указан», без автоопределения и заимствования языка тренировки. Встроенный перевод помечен как встроенный, авторский профиль — как оригинальный без автоматического перевода.
+
+**Языки разделены:**
+
+- UI language переводит заголовки и чистое встроенное представление.
+- Content language относится к текущему тексту редактора/сохранённой авторской версии.
+- Training language исходной карточки/выбранной новой беседы остаётся прежним кодом; переведённая для просмотра первая реплика не меняет существующий разговор.
+
+Если черновик уже изменён, смена UI **сохраняет весь черновик на языке ввода**, не переводя авторский текст, с явной отметкой языка черновика. Чистый профиль следует UI. Для других редакторов прежнее подтверждение несохранённых изменений сохранено. In-place hook действует только на Mentor → Personas, обновляет словари/материалы и перерисовывает страницу без reload. Редактирование и явное сохранение по-прежнему создаёт версию существующим механизмом; после такого сохранения текст текущего языка становится авторским содержимым, которое не переводится автоматически. Агент новых live persona versions не сохранял.
+
+## Проверки
+
+- `node tests/persona_localization_checks.js`:7 исходных профилей ×3 языка; все показываемые поля, отсутствие кириллицы в DE/EN, стабильные IDs/versions/training language/outcomes, неизвестный/авторский fallback, чтение sparse legacy profile; реальный i18n selector без reload и с прежней защитой других страниц — PASS.
+- Один focused unittest `tests.dashboard.test_persona_studio_localization`: locale PUT/GET не меняет профили/разговор/learning snapshot/dossier; явное versioned save с content_language работает только в synthetic SQLite и не меняет старую попытку/feedback/certificate; employee403 — PASS.
+- Импорт server изолирован TRAINER_DATA_DIR=runtime/persona-localization/test-bootstrap, providers — локальные doubles. Массовых тестов/диалогов/платных вызовов нет.
+- Сохранены текущие validation limits: все21 переведенных профиля валидны через ClientProfile; не расширялись длины/число полей.
+- Chrome, синтетический localhost8101, без копирования live БД: выбран decisive v2; проверены все5 разделов, DE → EN → RU → DE, немецкие имена всех7 в picker, сохранность раскрытых разделов; дополнительная собственная QA-правка пережила DE→EN с правильным уведомлением. Профиль не сохранялся.
+- Сравнение7 защищённых таблиц live SQLite до/после разработки — полное равенство. Реальные беседы/снимки/оценки/сертификаты/назначения/профили не менялись. Actor architecture/prompts не затрагивались; dossier не содержит company/services/rubric. Реальных actor/analyst запросов нет.
+- node --check затронутых JS, JSON parse и git diff --check — PASS. Полный E2E не повторялся, прежний E2E-01 PASS остаётся свидетельством владельца.
+
+Команды:
+
+```sh
+node tests/persona_localization_checks.js
+TRAINER_DATA_DIR="$PWD/runtime/persona-localization/test-bootstrap" TRAINER_AUDIT_DIR='' OPENAI_API_KEY=synthetic-not-real .venv/bin/python -m unittest tests.dashboard.test_persona_studio_localization -v
+```
+
+Скриншоты синтетического кабинета находятся вне Git в `runtime/persona-localization/`:
+
+- before-de.png — немецкий UI с русским именем/исходным поведением до исправления.
+- after-de.png — немецкое имя и поведенческие поля.
+- after-en.png — английское имя и поведенческие поля.
+
+## Изменённые файлы
+
+- backend/app/dashboard/client_profiles.py — optional content language.
+- backend/app/dashboard/server.py — версия0.15.3-persona-localization и frontend fingerprint новых assets.
+- frontend/persona_localization.js, frontend/persona_localization.json — точный source matching и локальные переводы.
+- frontend/mentor_studio.js — локализованный draft/picker, отметки языка, отсутствие no-op публикации.
+- frontend/boot.js — загрузка helper перед Studio.
+- frontend/app.js, frontend/i18n.js — scoped in-place locale change и сохранность черновика.
+- frontend/locales/de.json, en.json, ru.json — новые отметки языка/пояснения.
+- tests/persona_localization_checks.js, tests/dashboard/test_persona_studio_localization.py — focused проверки.
+- docs/A38_PERSONA_LOCALIZATION_RU.md, PROJECT_STATE.md, CONTINUE_FROM_HERE_RU.md, docs/KNOWN_ISSUES.md — handoff/checkpoint.
+
+## Установка / откат / приёмка
+
+Миграция и активация новых persona definitions не требуются. Для загрузки optional backend field и обновлённого frontend fingerprint требуется штатный restart **кода**. Он не должен публиковать или менять записи профилей. Сохранённый рабочий backup SQLite API: `runtime/persona-localization/before.sqlite3`, SHA256 **ab8cf6153d7f36c2dd5257b76554ffa6bae911dcef3e1de67ac507e897cafa6c**, integrity OK,0700/0600. Перед restart — свежая согласованная копия и повторная сверка защищённых таблиц; итоговая квитанция активации добавляется ниже.
+
+Откат только кода — вернуть предыдущий проверенный commit в отдельной ветке/папке и согласованно перезапустить. Базу ради UI-отката не восстанавливать. Если владелец позже сохранит новый content_language в авторской версии, старый backend не поддерживает этот новый optional input при повторном импорте; не откатывать данные и не терять созданные версии. Restore SQLite — отдельное решение владельца, свежий backup и staging, без перезаписи новых разговоров старым файлом.
+
+Ручная приёмка владельцем: открыть Mentor → Kundenstudio; без сохранения переключить DE/EN/RU/DE и7 имён; открыть5 разделов. Затем ввести собственный текст и переключить UI: текст должен сохраниться с исходным языком черновика. Не нажимать Save для проверки перевода — это отдельное решение о новой авторской версии. Для авторского/импортированного профиля проверить отсутствие перевода и указанный/неизвестный язык. Язык существующей учебной беседы не меняется.
+
+Ограничения: авторские версии автоматически не переводятся; язык старого авторского текста без metadata неизвестен, пока автор не укажет его. Полная browser/OS/print матрица не выполнялась. DATA-001 (7 отсутствующих legacy файлов), REVIEW-SEM/COACH/ACTOR-CLOSURE/intermittent AI и остальные принятые ограничения остаются открытыми. Push/merge/VPS/video не выполнялись в этом задании.
