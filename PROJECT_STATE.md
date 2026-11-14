@@ -1,3 +1,11 @@
+# Public Portfolio Release — 14.11.2026, BLOCKED
+
+Аудит остановил переключение Public: существующее разрешение на фильмы/сертификат/диалоги было PRIVATE-only, Git содержит персональные author/committer metadata и выдержки конкретных бесед, индивидуальная проверка всех исторических binary assets не завершена. Репозиторий остаётся PRIVATE, main/v0.15.3 сохранены. Публичный релиз НЕ завершён.
+
+В изолированной `codex/public-portfolio-preparation` подготовлены немецкий README (без обещания публичного приложения), VIDEO_PRODUCTION.md, сохранённая инструкция docs/LOCAL_OPERATIONS_RU.md и docs/PUBLIC_RELEASE_AUDIT_RU.md. Скриншоты и anonymous player acceptance остаются открытыми. Проверки: 113 commits / 1186 blobs, common-secret scan, historical ZIP53 и production ZIP93/90hashes, checksum preservation, read-only live status, documentation links/diff-check. Приложение8100/PID10979 и SQLite не менялись; платных вызовов/перекодирования/деплоя/main merge/push/transfer нет. Продолжать публикацию только после устранения privacy blockers по отчёту, не путать этот checkpoint с разрешением Public.
+
+---
+
 # Финальный приватный релиз — 14.11.2026
 
 По новому прямому разрешению владельца готовится интеграция A39 + двух Persona Studio commits в main через отдельную финальную ветку и merge commit. Это явное исключение из прежнего запрета main/merge/push; исторические отчёты ниже сохраняются. Рабочая установка 0.15.3 на localhost8100, SQLite и конфигурация не изменяются. A37 company5 активна; E2E-01 PASS принят владельцем.

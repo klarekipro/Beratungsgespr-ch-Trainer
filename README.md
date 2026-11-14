@@ -1,64 +1,71 @@
 # Klare KI Beratungstrainer
 
-Private MVP для практики консультаций с клиентами. Релиз **v0.15.3**, версия приложения **0.15.3-persona-localization**. Это локальное приложение, а не готовый публичный SaaS. История A01–A39 сохранена; текущая реализация включает последующие исправления Persona Studio.
+**[Demo ansehen · 5:08 Minuten](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)** · [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Videoproduktion](VIDEO_PRODUCTION.md)
 
-## Возможности
+> Portfolio-Entwurf: Die öffentliche Freigabe ist wegen offener Datenschutzfragen gesperrt. Die Demo erfordert derzeit Repository-Zugriff und wird als Download ausgeliefert; eine anonyme Browser-Wiedergabe ist noch nicht abgenommen. Es gibt keine öffentlich betriebene Web-Anwendung.
 
-- **Сотрудник:** выбирает сценарий и клиента, ведёт разговор, завершает его, читает предварительный ИИ-разбор, отправляет наставнику и получает опубликованный отзыв и выданный сертификат. Результаты доступны сразу под заголовком страницы тренировок.
-- **Наставник:** управляет сотрудниками, сценариями, Persona Studio и материалами предприятия; проверяет разговор, выставляет структурированную оценку и явно публикует отзыв. Приватный ИИ-разбор наставника сотруднику не показывается.
-- **Три этапа:** выявление потребностей → возможности и ограничения компании → обоснованное итоговое предложение или действие. Отсутствие покупки само по себе не означает учебную неудачу.
-- **Persona Studio:** семь встроенных профилей с согласованными представлениями DE/EN/RU. Авторские и изменённые тексты автоматически не переводятся; переключение интерфейса не переписывает сохранённые версии и снимки.
-- **DE / EN / RU:** язык интерфейса отделён от языка тренировки и авторского содержания. Исторические беседы не переводятся задним числом.
-- **Компактная проверка:** вкладки, отдельные просмотрщики документов, PDF/TXT-экспорты, диктовка с проверкой текста перед публикацией. Экспорт не требует нового ИИ-вызова.
-- **Сертификаты:** отдельное решение наставника с подтверждением. ФИО получателя и выдающего редактируются до выдачи и сохраняются неизменными вместе с PDF. Unicode поддерживается встроенными шрифтами. Сертификат фиксирует учебное решение наставника, а не государственную квалификацию.
-- **Lindenhaus A37:** вымышленное предприятие, 18 товаров, 9 услуг, согласованные цены и ограничения, контакты и часы консультаций DE/EN/RU. Принятая локальная активация: company revision **5**, reference **lindenhaus-a37-v1**, materials **4a184140966e4d528859d23542ec1e97**. Исходники: `materials/lindenhaus/`; процедуры и границы активации: [A37](docs/A37_COMPANY_KNOWLEDGE_RU.md). Клон Git не содержит рабочую БД и не воспроизводит её активные версии автоматически.
+## Erst verstehen, dann beraten
 
-ИИ-оценка предварительная. Завершение разговора, отправка наставнику, публикация отзыва, коммерческий исход и выдача сертификата — самостоятельные действия и состояния. Окончательное учебное решение принимает наставник.
+Ein Produkt zu kennen reicht für gute Beratung nicht aus. Entscheidend ist, die richtigen Fragen zu stellen: Was braucht die Kundin oder der Kunde tatsächlich? Welche Bedingungen sind bereits geklärt? Was kann das Unternehmen leisten, und welche Zusagen wären unbegründet?
 
-## Локальная установка и запуск
+Der Beratungstrainer bietet einen geschützten Übungsablauf mit einem KI-Kunden und einer menschlichen Mentorin oder einem Mentor. Mitarbeitende können Gespräche führen, ihre Fragen und Vorschläge reflektieren und gezieltes Feedback erhalten. Auch ein Gespräch ohne Kauf kann fachlich sinnvoll abgeschlossen sein.
 
-Рабочая установка владельца на Mac: `/Users/admin/Documents/01_AI Business 26/17_BeratungGesprech`, база `runtime/dashboard/trainer.sqlite3`, адреса [сотрудника](http://127.0.0.1:8100/learner) и [наставника](http://127.0.0.1:8100/mentor). Если приложение уже работает, просто откройте адрес: launcher может перезапустить процесс при отличии документационного HEAD. Финализация релиза его не перезапускала.
+## Drei Schritte einer strukturierten Beratung
 
-Для **новой отдельной установки** нужны Python 3.11+ (принятая Mac-установка использует 3.14), Git и приватный доступ к репозиторию:
+| Schritt | Was trainiert wird |
+|---|---|
+| **Bedarf klären** | Anliegen, Rahmenbedingungen, Prioritäten und offene Fragen ermitteln. |
+| **Möglichkeiten erklären** | Leistungen und Grenzen des Unternehmens anhand vorhandener Informationen verständlich darstellen. |
+| **Nächsten Schritt begründen** | Ein passendes Angebot oder eine nachvollziehbare nächste Handlung vorschlagen, ohne einen Abschluss zu erzwingen. |
 
-```sh
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements-dashboard.txt
-.venv/bin/python scripts/setup_mentor.py
-.venv/bin/python scripts/serve_dashboard.py --port 8100
-```
+## Mitarbeitende, KI-Kunde und Mentor
 
-Первоначальная настройка создаёт наставника только в новой базе; пароля по умолчанию нет. Сотрудников создаёт наставник. Не выполняйте настройку поверх восстановленных данных. При переносе данных сохраните также приватную конфигурацию установки по отдельной процедуре.
+Mitarbeitende wählen ein Szenario und ein Kundenprofil. Der KI-Kunde erhält die für seine Rolle freigegebenen Informationen; interner Katalog und Bewertungsraster werden ihm nicht als Wissen mitgegeben. Das Gespräch wird mit den zugehörigen Szenario-, Profil- und Unternehmensständen gespeichert.
 
-Для новых ИИ-разговоров нужен настроенный провайдер. В интерактивном терминале `scripts/serve_dashboard.py --port 8100 --openai` запрашивает ключ скрытым вводом. Без ключа можно читать сохранённые материалы; новые ИИ-разговоры не становятся бесплатными. На существующем Mac штатный `START_TRAINER.command` / `.venv/bin/python scripts/local_installation.py start --no-browser` использует механизм локальной установки и Keychain. Не сохраняйте ключ в Git, URL или shell history.
+Nach dem Gespräch unterstützt eine **vorläufige KI-Auswertung** die Reflexion. Abschluss, Einreichung zur Prüfung und kommerzielles Ergebnis bleiben getrennte Zustände. Der Mentor liest Gespräch und Belege, bewertet die Beratung und veröffentlicht ausdrücklich das Feedback für die lernende Person. Seine private KI-Auswertung wird dabei nicht mitveröffentlicht. Längere Dokumente öffnen in eigenen Ansichten; PDF-/TXT-Exporte benötigen keine neuen KI-Aufrufe.
 
-Для диктовки нужны разрешение микрофона, интернет и доступный провайдер; возможна стоимость. PDF требует доступного Unicode-шрифта (Arial/DejaVu). Poppler (`pdftotext`) нужен для PDF-проверок; Node — для focused frontend checks, сборка frontend не нужна. Установка под VPS/HTTPS требует отдельной подготовки.
+## Mehrsprachigkeit und Persona Studio
 
-## Данные, backup и восстановление
+Die Oberfläche unterstützt **Deutsch, Englisch und Russisch**. Oberflächensprache, Trainingssprache und Sprache selbst verfasster Inhalte sind getrennt. Historische Gespräche werden nicht nachträglich übersetzt oder mit neuen Materialien überschrieben.
 
-Git содержит код и документацию, **не** рабочую SQLite, аккаунты, приватные беседы, отзывы, сертификаты, ключи или runtime. Перед восстановлением остановите приложение штатно и сохраните отдельную актуальную копию; старую БД нельзя накладывать поверх новых результатов.
+Im Persona Studio lassen sich Kundenprofile bearbeiten und versionieren. Sieben unveränderte integrierte Profile besitzen abgestimmte DE-/EN-/RU-Darstellungen. Eigene oder veränderte Texte werden nicht ungefragt automatisch übersetzt.
 
-Проверенные локальные копии финализации находятся вне репозитория в `/Users/admin/Documents/KlareKI-private-backups/20261114T182504Z/`: `all-local-refs.bundle`, `trainer.sqlite3`, `manifest.json`. SQLite создана через Backup API; integrity OK, foreign key errors 0. Полные SHA-256 и процедура — [release notes](docs/releases/v0.15.3.md). **Они находятся на том же физическом диске и не защищают от его отказа.** Это осознанное решение владельца; внешняя копия и реальное восстановление на другой машине остаются будущими задачами.
+Das fiktive Unternehmen **Lindenhaus** bildet den Trainingskontext: 18 Produkte, 9 Dienstleistungen sowie Preise, Bedingungen, Kontaktangaben und Beratungszeiten. Die `.example`-Kontakte sind keine echten Kontaktmöglichkeiten.
 
-## Демонстрация и Release
+## Bewertung und Zertifikate
 
-E2E-01 **PASS**: владелец завершил полный немецкий цикл, включая отправку наставнику, публикацию и получение отзыва, доставку сертификата. Это свидетельство владельца, а не повторный платный тест агента.
+Die KI liefert Hinweise und Belege, keine endgültige Lernentscheidung. Die strukturierte Beurteilung und das veröffentlichte Feedback liegen beim Mentor. Ein Zertifikat wird separat mit ausdrücklicher Bestätigung ausgestellt. Empfänger- und Ausstellername sind vor der Ausstellung bearbeitbar; die ausgestellte Fassung bewahrt Namen und PDF als unveränderlichen Stand. Das Zertifikat dokumentiert die Beurteilung innerhalb dieses Trainings und ist keine staatlich anerkannte Qualifikation.
 
-Приватный [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) содержит фильмы и производственный архив. Требуется GitHub-доступ к private repository:
+## Einblicke in die Anwendung
 
-- [beratungstrainer_final_sergi2_fix1.mp4](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
-- [beratungstrainer_preview_rev01g.mp4](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4)
-- [BERATUNGSTRAINER_FINAL_ARCHIVE.zip](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/BERATUNGSTRAINER_FINAL_ARCHIVE.zip)
+Die Auswahl von **3–5 aktuellen Original-Screenshots** ist noch offen. Bilder mit Kontonamen, Gesprächsinhalten oder Zertifikatsdaten werden erst nach konkreter öffentlicher Freigabe übernommen. Historische UI-Bilder werden nicht als aktuelle Screenshots ausgegeben.
 
-Контрольные суммы: [SHA256SUMS](docs/releases/v0.15.3-SHA256SUMS.txt). Демонстрационные аккаунты, диалоги, отзывы и сертификат в этих материалах подтверждены владельцем для приватной публикации. Разрешение на публичное распространение не предоставлено. Медиа не входят в Git history.
+## Technischer Aufbau
 
-## Ограничения MVP и развитие
+| Bereich | Umsetzung |
+|---|---|
+| Backend | Python, FastAPI, Pydantic, Uvicorn |
+| Speicherung | SQLite, versionierte Lernobjekte, gesprächsspezifische Snapshots |
+| Frontend | HTML, CSS und JavaScript ohne erforderlichen Frontend-Build |
+| KI | serverseitige OpenAI-Anbindung für Kundenrolle, Auswertungen und Spracherkennung; Aufrufe können Kosten verursachen |
+| Zugriff | getrennte Mitarbeiter-/Mentor-Bereiche, Rollenprüfung, Argon2-Passworthashes |
+| Dokumente | PDF-Erstellung mit ReportLab und Unicode-Schriften |
 
-- **DATA-001 OPEN:** семь из 18 исторических PoC-файлов отсутствуют; 11 совпали с манифестом. Это отдельный ранний архив, а не потеря текущих MVP-бесед. SQLite backup его не восстанавливает и не блокирует принятый актуальный MVP.
-- Открыты REVIEW-SEM-001, REVIEW-COACH-001, ACTOR-CLOSURE-003 и периодические отказы ИИ-разбора: структурно валидная ссылка не всегда подтверждает тезис, советы могут повторять уже выясненное, клиент может затягивать завершение. Ручная проверка обязательна.
-- Полная матрица браузеров, печати и микрофонов не принята; VPS-пилот и публичная безопасность не проверены.
-- Интерфейс списка/отзыва/замены сертификатов наставника, отдельная support-панель и версия исправления опубликованного отзыва остаются backlog, даже если часть API уже существует.
+[Architektur](docs/architecture/SYSTEM_ARCHITECTURE.md) · [Backend](backend/app/dashboard/) · [Frontend](frontend/) · [fokussierte Tests](tests/dashboard/)
 
-Реестр: [KNOWN_ISSUES](docs/KNOWN_ISSUES.md). Будущие направления: восстановление PoC-архива, внешние backup/restore drills, качество ИИ, административные процессы, отдельный ограниченный VPS-пилот. Это планы, не обещания реализованных функций. Финальные фильмы готовы для приватной презентации; новых рендеров релиз не требует.
+## Stand und Grenzen des MVP
 
-Перенос в `Herman879/beratungstrainer` пока **не выполнен**. После одобренного нативного Transfer нужно проверить доступы и assets, обновить ссылки и отдельно согласовать доверенный URL локального updater; текущий updater привязан к исходному репозиторию.
+Version **0.15.3-persona-localization**. Der vollständige deutsche Ablauf mit Mentor-Feedback und Zertifikatszustellung wurde vom Projekteigentümer erfolgreich abgenommen (**E2E-01 PASS**). Das ist keine Zusage allgemeiner Zuverlässigkeit aller KI-Antworten.
+
+Offene Punkte sind die inhaltliche Genauigkeit einzelner KI-Belege und Coaching-Hinweise, wiederholte Rückfragen beim Gesprächsabschluss und gelegentliche fehlgeschlagene Auswertungen. Die menschliche Prüfung bleibt notwendig. Eine vollständige Browser-/Mikrofon-/Druckmatrix, erweiterte Administrationsabläufe und ein öffentlicher Betrieb sind nicht abgenommen. Sieben Dateien eines frühen PoC-Archivs fehlen weiterhin (**DATA-001**); dieser historische Bestand ist von den aktuellen MVP-Gesprächen getrennt.
+
+[Lokale Installation und Betrieb](docs/LOCAL_OPERATIONS_RU.md) · [Release Notes](docs/releases/v0.15.3.md) · [bekannte Einschränkungen](docs/KNOWN_ISSUES.md)
+
+## Filme und Produktionsmaterial
+
+- [Finale Demonstration · Sergi 2 · 05:08.23](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
+- [Erste Fassung · rev01g · 05:01.37](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4)
+- [Produktionsarchiv ZIP](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/BERATUNGSTRAINER_FINAL_ARCHIVE.zip)
+- [SHA-256](docs/releases/v0.15.3-SHA256SUMS.txt) · [Wiederverwendung und Rekonstruktionsgrenzen](VIDEO_PRODUCTION.md)
+
+Die Originaldateien bleiben unverändert. Eine geprüfte vollständige Neuassemblierung wird nicht behauptet. Die öffentliche Freigabe dieser Materialien steht aus.
