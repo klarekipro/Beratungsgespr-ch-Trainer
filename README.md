@@ -90,11 +90,10 @@ Gezieltere KI-Belege und Coaching-Hinweise, ein natürlicherer Gesprächsabschlu
 
 ## Filme und Produktionsmaterial
 
-- [**Finale Demonstration mit Musik · Sergi 2 · 05:11**](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4) — aktuelle Fassung, Pixabay-Musik eingemischt
-- [Musik-Lizenz und Quellenangaben](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/MUSIC_LICENSING.md) · [Mix-Dokumentation v2](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/MIX_PROJECT_v2.md)
-- [Finale Demonstration ohne Musik · Sergi 2 · 05:08.23](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4) — identische Sprachausgabe, vorherige Fassung
-- [Erste Fassung · rev01g · 05:01.37](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4)
+- [**Finale Demonstration**](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4) — aktuelle Fassung
+- [Vorherige Fassung · 05:08.23](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4) — identische Sprachausgabe
+- [Erste Fassung · 05:01.37](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4)
 - [Produktionsarchiv ZIP](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/BERATUNGSTRAINER_FINAL_ARCHIVE.zip)
-- [SHA-256 v0.16.0](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/v0.16.0-SHA256SUMS.txt) · [SHA-256 v0.15.3](docs/releases/v0.15.3-SHA256SUMS.txt) · [Wiederverwendung und Rekonstruktionsgrenzen](VIDEO_PRODUCTION.md)
+- [SHA-256 v0.16.0](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/v0.16.0-SHA256SUMS.txt) · [SHA-256 v0.15.3](docs/releases/v0.15.3-SHA256SUMS.txt) · [Wiederverwendung](VIDEO_PRODUCTION.md)
 
-Die Originaldateien von v0.15.3 (fix1, rev01g, Archiv) bleiben unverändert. Eine geprüfte vollständige Neuassemblierung wird nicht behauptet. Die enthaltenen Demonstrationskonten, Gespräche, Bewertungen und Zertifikatsdaten sind vom Projekteigentümer zur öffentlichen Darstellung freigegeben. Die Original-Musik-MP3 (Pixabay-Kandidaten) werden nicht als eigenständige Dateien veröffentlicht; die Musik ist nur als integrierter Audiobestandteil in der Film-MP4 enthalten.
+Die Originaldateien von v0.15.3 (fix1, rev01g, Archiv) bleiben unverändert. Die enthaltenen Demonstrationskonten, Gespräche, Bewertungen und Zertifikatsdaten sind vom Projekteigentümer zur öffentlichen Darstellung freigegeben.
