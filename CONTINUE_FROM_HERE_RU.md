@@ -1,3 +1,11 @@
+# Продолжение после final private release
+
+По новому прямому разрешению владельца готовится интеграция A39 + двух Persona Studio commits в main через отдельную финальную ветку и merge commit. Это явное исключение из прежнего запрета main/merge/push; исторические отчёты ниже сохраняются. Рабочая установка 0.15.3 на localhost8100, SQLite и конфигурация не изменяются. A37 company5 активна; E2E-01 PASS принят владельцем.
+
+Отчёт, backup/recovery, media/privacy scope и подготовка Transfer: [v0.15.3](docs/releases/v0.15.3.md). DATA-001 и AI-quality issues OPEN. DEMO-RECORDING-001 заменён готовыми двумя фильмами и производственным архивом; OPS-BACKUP-001 остаётся OPEN для off-device backup. Владелец принял проверенные локальные копии на том же диске как достаточные для релиза. Transfer в Herman879 НЕ выполняется. Не запускать приложение повторно ради documentation SHA.
+
+---
+
 # Продолжение — A35 Release Freeze после A39 / A34 Addendum 2
 
 ## Квитанция загрузки кода Persona Studio — 12.11.2026

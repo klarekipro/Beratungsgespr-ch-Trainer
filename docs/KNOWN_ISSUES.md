@@ -1,3 +1,11 @@
+# Актуализация финального private release — 14.11.2026
+
+По новому прямому разрешению владельца готовится интеграция A39 + двух Persona Studio commits в main через отдельную финальную ветку и merge commit. Это явное исключение из прежнего запрета main/merge/push; исторические отчёты ниже сохраняются. Рабочая установка 0.15.3 на localhost8100, SQLite и конфигурация не изменяются. A37 company5 активна; E2E-01 PASS принят владельцем.
+
+Отчёт, backup/recovery, media/privacy scope и подготовка Transfer: [v0.15.3](releases/v0.15.3.md). DATA-001 и AI-quality issues OPEN. DEMO-RECORDING-001 заменён готовыми двумя фильмами и производственным архивом; OPS-BACKUP-001 остаётся OPEN для off-device backup. Владелец принял проверенные локальные копии на том же диске как достаточные для релиза. Transfer в Herman879 НЕ выполняется. Не запускать приложение повторно ради documentation SHA.
+
+---
+
 ## PERSONA-LOCALE-001 — исправлен код, проверен DE/EN/RU (12.11.2026)
 
 Persona Studio ранее переводил только UI, показывая raw русские поля и смешанные имена. Новый exact-source display layer локализует7 встроенных профилей; authored/modified fallback явно помечен, optional content_language не меняет старые записи. In-place смена UI сохраняет unsaved draft на языке ввода. Новые live persona versions не активировались. Node7×3 +1 temporary SQLite boundary test +ChromeDE/EN/RU/DE — PASS; screenshots вне Git. Код613e13bd70c878b09c4716eefa480aa62daef76a активирован как0.15.3/PID10979, без изменения7 защищённых таблиц и без новых live persona versions;9 HTTP assets совпали. Квитанция/подробности: `A38_PERSONA_LOCALIZATION_RU.md`. Все прежние AI-quality/DATA-001 ограничения ниже сохраняются.
