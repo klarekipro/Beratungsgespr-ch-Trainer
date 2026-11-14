@@ -10,7 +10,7 @@ Status: Originalmaterial vollständig erhalten. Der Projekteigentümer hat Filme
 | `beratungstrainer_preview_rev01g.mp4` | 05:01.37 | `dc1b812f075cc13a808f43a0d4d344404e5427c58c3151b66a6fb7e3b5149084` |
 | `BERATUNGSTRAINER_FINAL_ARCHIVE.zip` | 93 Dateien | `ccf0900314ae6e5f688fe75bb84151ab4cd77e21367975acca30893bfd34b7f9` |
 
-Download: [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3). MP4-Assets werden als Attachment ausgeliefert; das ist kein geprüfter Inline-Player. Die Dateien gehören nicht in Git history.
+Download: [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3). Die Release-MP4 werden als Download ausgeliefert. Eine zusätzliche unveränderte Kopie des finalen Films wurde als GitHub-Videoanhang bereitgestellt: [Browser-Video](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a). Der README bettet diese GitHub-Kopie ein; die Release-Dateien bleiben die unveränderten Originale. Die Dateien gehören nicht in Git history.
 
 ## Wiederherstellen
 

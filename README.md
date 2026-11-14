@@ -4,11 +4,20 @@ Ein lokal ausführbarer MVP für strukturierte Kundenberatung: Mitarbeitende üb
 
 ## Demo ansehen
 
-**[▶ Finale Demonstration ansehen / MP4 herunterladen · 05:08](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)**
+https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a
 
-[![Demo ansehen – Klare KI Beratungstrainer](docs/portfolio/demo-preview.png)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
+**[▶ Film im Browser öffnen · 05:08](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a)** · [Original-MP4 herunterladen](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
 
-Der Link führt zum unveränderten Originalfilm im GitHub Release. GitHub kann die Datei als Download ausliefern; dann die MP4 lokal im Browser oder Videoplayer öffnen. [Erste Filmfassung](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4) · [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Produktionsmaterial und Re-Edit](VIDEO_PRODUCTION.md)
+Der eingebettete Film ist eine unveränderte Kopie der finalen Demonstration auf GitHub. Falls Ihr Browser den eingebetteten Player nicht unterstützt, den Film direkt öffnen oder die Original-MP4 herunterladen. Es ist keine Anmeldung an der Trainingsanwendung erforderlich.
+
+<details>
+<summary>Vorschaubild und weitere Materialien</summary>
+
+[![Demo ansehen – Klare KI Beratungstrainer](docs/portfolio/demo-preview.png)](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a)
+
+[Erste Filmfassung](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4) · [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Produktionsmaterial und Re-Edit](VIDEO_PRODUCTION.md)
+
+</details>
 
 ## Erst verstehen, dann beraten
 
