@@ -4,9 +4,15 @@ Ein lokal ausführbarer MVP für strukturierte Kundenberatung: Mitarbeitende üb
 
 ## Demo ansehen
 
-**[▶ Finale Demonstration](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4)**
+**[▶ Finale Demonstration](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/beratungstrainer_final_sergi2_music_pacing_v5.mp4)**
 
-Diese Fassung verwendet dieselbe Sergi-2-Sprachausgabe wie die finale Produktion aus v0.15.3 und ergänzt eine dezente Hintergrundmusik (MiroMaxMusic – *Technology*, Pixabay Content License). Ducking und EQ-Notch halten die deutsche Sprache gut verständlich; am Ende blendet die Musik ruhig aus. Der Link öffnet die MP4-Datei direkt im Browser-Player — keine Anmeldung erforderlich.
+Vollständige Produktdemonstration. Der Link öffnet die MP4-Datei direkt im Browser-Player — keine Anmeldung erforderlich.
+
+## Kurzvideo · 60 Sekunden
+
+**[▶ Promo-Video · 60 s · mit Untertiteln](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/beratungstrainer_promo_P05_de_untertitel.mp4)**
+
+Kompakte Vorstellung. Für Präsentationen mit Ton steht zusätzlich eine [Fassung ohne feste Untertitel](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/beratungstrainer_promo_P05_de_ohne_untertitel.mp4) sowie eine [externe SRT-Datei](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/beratungstrainer_promo_P05_de.srt) bereit. Mehr erfahren: https://klare-ki.de
 
 <details>
 <summary>Vorschaubild, frühere Fassungen und weitere Materialien</summary>
@@ -19,7 +25,7 @@ https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a
 
 [▶ fix1 im Browser öffnen](https://github.com/user-attachments/assets/5b0ce12f-7d88-4dd9-83ae-2ece50a4428a) · [Original-MP4 herunterladen](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4)
 
-[Erste Filmfassung (rev01g)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4) · [Release v0.16.0 (Musik)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.16.0) · [Release v0.15.3 (ohne Musik)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Produktionsmaterial und Re-Edit](VIDEO_PRODUCTION.md)
+[Erste Filmfassung (rev01g)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4) · [Musikversion V2](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4) · [Release v0.17.0 (V5 + Promo)](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.17.0) · [Release v0.16.0](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.16.0) · [Release v0.15.3](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/tag/v0.15.3) · [Produktionsmaterial und Re-Edit](VIDEO_PRODUCTION.md)
 
 </details>
 
@@ -90,10 +96,12 @@ Gezieltere KI-Belege und Coaching-Hinweise, ein natürlicherer Gesprächsabschlu
 
 ## Filme und Produktionsmaterial
 
-- [**Finale Demonstration**](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4) — aktuelle Fassung
-- [Vorherige Fassung · 05:08.23](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4) — identische Sprachausgabe
-- [Erste Fassung · 05:01.37](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4)
-- [Produktionsarchiv ZIP](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/BERATUNGSTRAINER_FINAL_ARCHIVE.zip)
-- [SHA-256 v0.16.0](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/v0.16.0-SHA256SUMS.txt) · [SHA-256 v0.15.3](docs/releases/v0.15.3-SHA256SUMS.txt) · [Wiederverwendung](VIDEO_PRODUCTION.md)
+- [**Finale Demonstration · 05:24**](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/beratungstrainer_final_sergi2_music_pacing_v5.mp4) — aktuelle Fassung (V5)
+- [**Kurzvideo · 60 s · mit Untertiteln**](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/beratungstrainer_promo_P05_de_untertitel.mp4) · [ohne Untertitel](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/beratungstrainer_promo_P05_de_ohne_untertitel.mp4) · [SRT](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/beratungstrainer_promo_P05_de.srt)
+- [Musikversion V2 · 05:11](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/beratungstrainer_final_sergi2_music_v2.mp4) — vorherige Musik-Fassung
+- [Fassung ohne Musik · 05:08](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_final_sergi2_fix1.mp4) — identische Sprachausgabe
+- [Erste Fassung · 05:01](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/beratungstrainer_preview_rev01g.mp4)
+- [Produktionsarchiv ZIP](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.15.3/BERATUNGSTRAINER_FINAL_ARCHIVE.zip) · [Clean Masters Manifest](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/CLEAN_MASTERS_MANIFEST.md)
+- [SHA-256 v0.17.0](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.17.0/v0.17.0-SHA256SUMS.txt) · [SHA-256 v0.16.0](https://github.com/klarekipro/Beratungsgespr-ch-Trainer/releases/download/v0.16.0/v0.16.0-SHA256SUMS.txt) · [SHA-256 v0.15.3](docs/releases/v0.15.3-SHA256SUMS.txt) · [Wiederverwendung](VIDEO_PRODUCTION.md)
 
 Die Originaldateien von v0.15.3 (fix1, rev01g, Archiv) bleiben unverändert. Die enthaltenen Demonstrationskonten, Gespräche, Bewertungen und Zertifikatsdaten sind vom Projekteigentümer zur öffentlichen Darstellung freigegeben.
