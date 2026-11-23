@@ -9,18 +9,20 @@
 5. После отдельного разрешения настроить один hostname, Access с проверкой JWT на origin, закрытый origin, Secure cookies, точный allowed host и доверенный HTTPS proxy.
 6. Подтвердить нужные tests, квоты/model availability, backup/restore на staging; затем получить отдельное разрешение на pilot deploy.
 
+Владелец подтвердил уже оплаченный VPS/сервер. Используем его как основной target без создания нового сервера; до реализации проверяем ОС/архитектуру, ресурсы, изоляцию и backup без передачи секретов. Linux/Python profile ниже предварительный до сверки с фактическим хостом.
+
 В этой миссии выполнены аудит, документация и локальная проверка примеров. **Merge, deployment, новые ресурсы, перенос данных/секретов не выполнялись.** Пилот ещё не активирован. Конкретные изменения и критерии приёмки приведены ниже.
 
 23.11.2026, Europe/Berlin. MISSION 06. Source: `klarekipro/Beratungsgespr-ch-Trainer`, audited main `332a4f4d7f919fc570d9e8d44de2d9be326e7677`. Working branch: `codex/mission-06-cloudflare-readiness`. Planning/audit only; no push, merge, deployment, data transfer, new remote repository, cloud resource or secret transmission.
 
-Selected proposal: **B**, one native FastAPI process serving current frontend/API behind one Cloudflare-protected hostname. No Kubernetes, second API service, D1 migration, new database server or separate Pages/CORS setup is needed for the first small pilot.
+Selected proposal: **B**, one native FastAPI process on the **owner-confirmed already-paid VPS/server**, serving current frontend/API behind one Cloudflare-protected hostname. No remote host inspection/login was performed; verify OS/architecture/capacity before treating the provisional Linux profile as applicable. No Kubernetes, second API service, D1 migration, new database server or separate Pages/CORS setup is needed for the first small pilot.
 
 ## Ordered implementation plan
 
 | Step | Concrete change / acceptance | Current state |
 |---|---|---|
 | 1: stabilize the test contract | Update tests/functional/test_portals.py:148 to assert private-before-submit and mentor-visible-after-submit. Preserve existing auth/CSRF/ownership behavior. Run the failed test and explicit submission/privacy cases, no paid AI | Existing test **FAIL**, diagnosis confirmed; no app/test source fix applied in this planning mission |
-| 2: reproducible native environment | Produce a full Python 3.14 Linux transitive/hash lock and SBOM, retain six direct pins until compatibility/advisories justify changes; install only reviewed binary wheels in an isolated build. Package ffprobe, Poppler and licensed DejaVu fonts. Do not move the Mac venv | **BLOCKED** pending approved runtime/build preparation |
+| 2: reproducible native environment | Verify the existing VPS OS/architecture, spare capacity, persistent disk and isolation, then produce the matching reviewed Python 3.14 transitive/hash lock and SBOM (provisional target: Linux), retain six direct pins until compatibility/advisories justify changes; install only reviewed binary wheels in an isolated build. Package ffprobe, Poppler and licensed DejaVu fonts. Do not move the Mac venv | **BLOCKED** pending approved runtime/build preparation |
 | 3: source/ownership | Owner approves private shared-repository plan and exact source/history/licensing. Keep original untouched | **BLOCKED**; no repository, mirror or transfer |
 | 4: pilot launcher | Add a separate native/pilot launcher or service unit; do not alter the macOS Keychain launcher. One Uvicorn worker, explicit immutable build SHA, dedicated unprivileged user, private persistent data directory and separate temp/log paths | Proposed only |
 | 5: edge configuration | Owner approves one hostname, named-user Access rules and Tunnel. Validate application tokens at cloudflared or a reviewed origin verifier; origin reachable only through the intended proxy. Keep existing app accounts and CSRF | **NOT VERIFIED**; no cloud resources/policies created |
@@ -58,10 +60,10 @@ Do not install a workflow which publishes on every main push. Deployment remains
 
 ## Least-cost sequence
 
-Fix the stale test and lock the native environment first; only then approve host/Access/shared-repo steps. Reuse a paid capable VM if confirmed. Otherwise get an owner-approved current quote; no server purchase is implicit. Use the eligible free Access tier, no optional D1/R2 service for B, and a small separately capped AI budget. Do not create cloud resources just to prove syntax.
+Fix the stale test and lock the native environment first; only then approve host/Access/shared-repo steps. Reuse the already-paid VPS confirmed by the owner. Verify its capacity and compatibility first; no additional VM is planned. Only if it is unsuitable should a separate owner-approved alternative/cost estimate be prepared. Use the eligible free Access tier, no optional D1/R2 service for B, and a small separately capped AI budget. Do not create cloud resources just to prove syntax.
 
 ## Required decisions
 
-Owner approves source transfer/target rights, host and uptime budget, named users/retention, pilot hostname/Access, AI model availability/budget and a backup/restore window. Until those gates are evidenced, the result is a prepared plan with **BLOCKED pilot activation**, not a finished cloud deployment.
+Owner has confirmed the paid host; OS/capacity/uptime and any incremental services still need verification. Owner approves source transfer/target rights, named users/retention, pilot hostname/Access, AI model availability/budget and a backup/restore window. Until those gates are evidenced, the result is a prepared plan with **BLOCKED pilot activation**, not a finished cloud deployment.
 
 References: [FastAPI proxy trust](https://fastapi.tiangolo.com/advanced/behind-a-proxy/), [Cloudflare origin token validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/), [feasibility/costs](TRAINER_CLOUDFLARE_FEASIBILITY.md), [security audit](TRAINER_SECURITY_AUDIT.md), [shared repo plan](SHARED_REPOSITORY_PLAN.md).

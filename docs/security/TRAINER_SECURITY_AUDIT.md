@@ -6,7 +6,7 @@
 
 Фактически: Gitleaks PASS для 16 опубликованных корней истории; OSV PASS для 24 установленных Python-пакетов; ограниченный Semgrep PASS для 60 исходных единиц. Из трёх текущих security-тестов два PASS, один FAIL: он ошибочно ожидает доступ наставника после finish без submit. Дополнительный тест подтвердил правильный контракт приватности; отдельные PDF/Unicode и mocked AI-wire проверки PASS. Рабочая БД не использовалась, платных AI-вызовов нет.
 
-Перед пилотом нужны исправление ожидания теста, Linux transitive/hash lock, проверенная настройка HTTPS/Access/proxy, отдельное хранилище и restore-проверка. Модель snapshot помечена Deprecated; её доступность не проверялась платным вызовом и модель не заменялась. Ни лицензия на перенос всего проекта/медиа, ни полная PII-проверка истории не сертифицированы.
+Владелец подтвердил оплаченный VPS/сервер; ОС, ресурсы, изоляция и backup хоста пока не проверялись. Перед пилотом нужны исправление ожидания теста, соответствующий целевому хосту transitive/hash lock, проверенная настройка HTTPS/Access/proxy, отдельное хранилище и restore-проверка. Модель snapshot помечена Deprecated; её доступность не проверялась платным вызовом и модель не заменялась. Ни лицензия на перенос всего проекта/медиа, ни полная PII-проверка истории не сертифицированы.
 
 23.11.2026, Europe/Berlin. MISSION 06. Source: `klarekipro/Beratungsgespr-ch-Trainer`, audited main `332a4f4d7f919fc570d9e8d44de2d9be326e7677`. Working branch: `codex/mission-06-cloudflare-readiness`. Planning/audit only; no push, merge, deployment, data transfer, new remote repository, cloud resource or secret transmission.
 
