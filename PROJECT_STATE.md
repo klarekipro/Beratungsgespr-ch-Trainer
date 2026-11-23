@@ -8,6 +8,8 @@
 
 Gitleaks PASS (16 опубликованных branch/tag roots,0 findings); OSV PASS (24 installed packages,0 findings; только snapshot существующей Mac-среды); Semgrep CE PASS (60/60 исходных единиц,6 ограниченных локальных правил). Исходные 3 targeted security tests:2 PASS/1 FAIL на устаревшем mentor history assertion до submit. Отдельные privacy-contract/PDF Unicode tests2 и mocked AI-wire test1 PASS, failed regression не скрыт и не исправлялся в этой планирующей задаче. Все тесты — на synthetic temporary SQLite, network attempts0, paid calls0. Два YAML-примера прошли имеющиеся actionlint/zizmor; runtime адаптер/hosted CI не установлен и NOT VERIFIED. Новых инструментов не устанавливалось.
 
+Доступ к приложению не требует GitHub seats или обязательного нового shared repo: для пилота достаточно одобренного source SHA существующего проекта; совместная разработка — отдельная разрешаемая задача.
+
 Владелец дополнительно подтвердил наличие оплаченного VPS/сервера: основной вариант B использует его без новой аренды; ОС/архитектура/свободная ёмкость/изоляция/backup не проверялись, удалённого входа/изменений нет.
 
 Проверено19 доступных repos; точная организация klareki-lab, active admin, Team plan. Trainer сейчас public; visibility не менялась. Реальный Linux lock, cloud origin/proxy/Access, off-host restore, бюджет/seat increment и live availability Deprecated model snapshot остаются NOT VERIFIED/BLOCKED для активации. Создание shared repo/перенос истории и deployment требуют отдельного подтверждения. Main/merge/push, внешние ресурсы, Cloudflare, Neon, production secrets/БД не менялись. Внутренние raw/API/test evidence хранятся вне worktree/Git; в commit входят только выбранные документы/примеры и этот checkpoint.

@@ -4,7 +4,7 @@
 
 1. Исправить устаревшее ожидание privacy-теста: finish остаётся приватным, submit открывает беседу наставнику.
 2. Зафиксировать native Linux Python dependency lock/SBOM, ffprobe/Poppler и Unicode-шрифты; сохранить Actor и бизнес-логику.
-3. После разрешения владельца подготовить отдельный private shared repo и отдельную synthetic pilot SQLite; рабочие данные не переносить.
+3. Зафиксировать утверждённый SHA существующего проекта и отдельную synthetic pilot SQLite. Private shared repo — независимая опция для совместной разработки после разрешения, не обязательное условие доступа к самому пилоту.
 4. Добавить отдельный native launcher: один процесс, постоянный private volume, точный source SHA и серверный secret manager вместо переноса macOS Keychain.
 5. После отдельного разрешения настроить один hostname, Access с проверкой JWT на origin, закрытый origin, Secure cookies, точный allowed host и доверенный HTTPS proxy.
 6. Подтвердить нужные tests, квоты/model availability, backup/restore на staging; затем получить отдельное разрешение на pilot deploy.
@@ -15,7 +15,7 @@
 
 23.11.2026, Europe/Berlin. MISSION 06. Source: `klarekipro/Beratungsgespr-ch-Trainer`, audited main `332a4f4d7f919fc570d9e8d44de2d9be326e7677`. Working branch: `codex/mission-06-cloudflare-readiness`. Planning/audit only; no push, merge, deployment, data transfer, new remote repository, cloud resource or secret transmission.
 
-Selected proposal: **B**, one native FastAPI process on the **owner-confirmed already-paid VPS/server**, serving current frontend/API behind one Cloudflare-protected hostname. No remote host inspection/login was performed; verify OS/architecture/capacity before treating the provisional Linux profile as applicable. No Kubernetes, second API service, D1 migration, new database server or separate Pages/CORS setup is needed for the first small pilot.
+Selected proposal: **B**, one native FastAPI process on the **owner-confirmed already-paid VPS/server**, serving current frontend/API behind one Cloudflare-protected hostname. No remote host inspection/login was performed; verify OS/architecture/capacity before treating the provisional Linux profile as applicable. No Kubernetes, second API service, D1 migration, new database server, new GitHub repo or separate Pages/CORS setup is needed just to run the first small pilot. App users need named Access/app accounts, not GitHub development seats.
 
 ## Ordered implementation plan
 
@@ -23,7 +23,7 @@ Selected proposal: **B**, one native FastAPI process on the **owner-confirmed al
 |---|---|---|
 | 1: stabilize the test contract | Update tests/functional/test_portals.py:148 to assert private-before-submit and mentor-visible-after-submit. Preserve existing auth/CSRF/ownership behavior. Run the failed test and explicit submission/privacy cases, no paid AI | Existing test **FAIL**, diagnosis confirmed; no app/test source fix applied in this planning mission |
 | 2: reproducible native environment | Verify the existing VPS OS/architecture, spare capacity, persistent disk and isolation, then produce the matching reviewed Python 3.14 transitive/hash lock and SBOM (provisional target: Linux), retain six direct pins until compatibility/advisories justify changes; install only reviewed binary wheels in an isolated build. Package ffprobe, Poppler and licensed DejaVu fonts. Do not move the Mac venv | **BLOCKED** pending approved runtime/build preparation |
-| 3: source/ownership | Owner approves private shared-repository plan and exact source/history/licensing. Keep original untouched | **BLOCKED**; no repository, mirror or transfer |
+| 3: source/ownership | Owner approves the pilot source SHA and permitted teaching content from the existing project. A new private development repo is a separate optional workstream under SHARED_REPOSITORY_PLAN.md, not required just to use the app | Source/deployment approval pending; no new repo/mirror/transfer |
 | 4: pilot launcher | Add a separate native/pilot launcher or service unit; do not alter the macOS Keychain launcher. One Uvicorn worker, explicit immutable build SHA, dedicated unprivileged user, private persistent data directory and separate temp/log paths | Proposed only |
 | 5: edge configuration | Owner approves one hostname, named-user Access rules and Tunnel. Validate application tokens at cloudflared or a reviewed origin verifier; origin reachable only through the intended proxy. Keep existing app accounts and CSRF | **NOT VERIFIED**; no cloud resources/policies created |
 | 6: HTTPS/proxy acceptance | TRAINER_REMOTE_HTTPS=1; exact TRAINER_ALLOWED_HOSTS; trusted forwarded scheme/client source restricted to the actual proxy IP. Same hostname for frontend and /api; no-store for authenticated/API/export routes, no edge-cache override | Native HTTPS unit case PASS; actual Cloudflare path **NOT VERIFIED** |

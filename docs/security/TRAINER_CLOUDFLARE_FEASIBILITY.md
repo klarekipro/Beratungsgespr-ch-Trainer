@@ -22,6 +22,8 @@ flowchart LR
     S --> B[Encrypted off-host backup]
 ```
 
+For minimal pilot scope, use an approved immutable source SHA from the existing project. A new private shared development repo is optional and separately approved; application users do not need GitHub collaborator seats.
+
 ## Compatibility and necessary changes
 
 | Concern | A: Python Workers + D1/R2 | B: native FastAPI + Cloudflare edge |

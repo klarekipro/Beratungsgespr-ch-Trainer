@@ -20,6 +20,8 @@ Current source tree has 561 tracked files, no tracked runtime paths or SQLite/da
 
 The confirmed organization is klareki-lab, active admin membership and Team plan. Existing paid seats do not prove an additional colleague is free: verify actual member/outside-collaborator billing before inviting anyone. Personal-repo collaboration is another ownership option, but plan/enforcement/billing must be checked separately rather than assumed.
 
+Pilot app access and GitHub code collaboration are independent. The small pilot may use an owner-approved immutable source SHA from the existing project; its app users do not need GitHub seats. Do not create this new development repo or add paid seats merely to let a colleague use Trainer.
+
 ## Approval packet before any external creation
 
 Owner chooses exact private owner/name, maintainers/collaborators, source commit, history strategy, internal licensing terms and approved data/media list. Record written approval covering code transfer and any incremental seat/resource costs. Do not use shared passwords or forward an existing OpenAI key.
