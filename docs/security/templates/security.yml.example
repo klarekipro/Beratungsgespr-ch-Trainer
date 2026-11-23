@@ -1,0 +1,83 @@
+# INACTIVE REFERENCE: not installed in .github/workflows.
+# Requires a reviewed profile-aware baseline adapter; missing code/config fails BLOCKED.
+name: Klare KI Security
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Explicitly refresh all applicable checks
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: kk-security-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  security:
+    name: Security gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    env:
+      KK_SECURITY_PROFILE: .security/profile.json
+      JSC_HOSTED_APPROVED: ${{ vars.KK_SECURITY_HOSTED_APPROVED }}
+      KK_FORCE: ${{ inputs.force || false }}
+    steps:
+      - name: Check out candidate without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify activation and adapter availability
+        run: |
+          if [[ "$JSC_HOSTED_APPROVED" != 'true' ]]; then
+            echo 'Security: BLOCKED; budget/activation not confirmed.' >> "$GITHUB_STEP_SUMMARY"
+            exit 2
+          fi
+          if [[ ! -f tools/security/run.py || ! -f "$KK_SECURITY_PROFILE" ]]; then
+            echo 'Security: BLOCKED; reviewed profile adapter missing.' >> "$GITHUB_STEP_SUMMARY"
+            exit 2
+          fi
+      - name: Plan actual scanner input identities
+        id: plan
+        run: python3 tools/security/run.py plan --profile "$KK_SECURITY_PROFILE" --output "$RUNNER_TEMP/kk-reports"
+      - name: Restore small receipts in this trust scope
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/kk-receipts
+          key: kk-security-v1-${{ github.event.pull_request.number || github.ref_name }}-${{ steps.plan.outputs.key }}
+          restore-keys: kk-security-v1-${{ github.event.pull_request.number || github.ref_name }}-
+      - name: Execute changed applicable checks or verify receipts
+        id: scan
+        run: |
+          args=()
+          if [[ "$KK_FORCE" == 'true' ]]; then args+=(--force); fi
+          python3 tools/security/run.py smart --profile "$KK_SECURITY_PROFILE" --tools-dir "$RUNNER_TEMP/kk-tools" --receipts-dir "$RUNNER_TEMP/kk-receipts" --output "$RUNNER_TEMP/kk-reports" "${args[@]}"
+      - name: Save sanitized receipts only
+        if: ${{ !cancelled() && steps.scan.outputs.executed_count != '' && steps.scan.outputs.executed_count != '0' }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/kk-receipts
+          key: kk-security-v1-${{ github.event.pull_request.number || github.ref_name }}-${{ steps.plan.outputs.key }}
+      - name: Publish only new sanitized evidence
+        if: ${{ !cancelled() && steps.scan.outputs.executed_count != '' && steps.scan.outputs.executed_count != '0' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: security-redacted-${{ github.run_id }}
+          path: ${{ runner.temp }}/kk-reports
+          if-no-files-found: error
+          retention-days: 7
+      - name: Fail closed and publish gate summary
+        if: ${{ !cancelled() }}
+        run: |
+          if [[ ! -f "$RUNNER_TEMP/kk-reports/summary.md" ]]; then
+            echo 'Security: BLOCKED; complete mandatory evidence missing.' >> "$GITHUB_STEP_SUMMARY"
+            exit 2
+          fi
+          cat "$RUNNER_TEMP/kk-reports/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          python3 tools/security/run.py gate --profile "$KK_SECURITY_PROFILE" --output "$RUNNER_TEMP/kk-reports"

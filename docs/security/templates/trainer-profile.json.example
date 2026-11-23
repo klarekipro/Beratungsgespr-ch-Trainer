@@ -1,0 +1,78 @@
+{
+  "schema": "proposal-v1",
+  "profile": "trainer-native-python",
+  "activation_state": "NOT INSTALLED",
+  "audited_source_sha": "332a4f4d7f919fc570d9e8d44de2d9be326e7677",
+  "required_checks": [
+    "secrets",
+    "sast",
+    "dependencies",
+    "workflows",
+    "tests",
+    "selftest"
+  ],
+  "source_roots": [
+    "backend/",
+    "frontend/",
+    "scripts/"
+  ],
+  "sast_exclude": [
+    "tests/",
+    "research/",
+    "reports/",
+    "runtime/",
+    "docs/"
+  ],
+  "python": {
+    "implementation": "CPython",
+    "version": "3.14",
+    "direct_requirements": "requirements-dashboard.txt",
+    "required_linux_hash_lock": "requirements-linux.lock",
+    "required_runtime_sbom": "sbom/runtime.cdx.json",
+    "allow_source_builds": false,
+    "missing_lock_or_graph_status": "BLOCKED"
+  },
+  "javascript": {
+    "kind": "first-party browser modules",
+    "package_manifest": null,
+    "npm_check_required": false,
+    "scope_reason": "No npm manifest or third-party frontend runtime package graph found; do not invent zero-package PASS"
+  },
+  "tests": {
+    "network": "denied",
+    "data": "fresh synthetic temporary SQLite only",
+    "server_import_requires_isolated_data_dir": true,
+    "real_api_keys_allowed": false,
+    "required_current_cases": [
+      "tests.functional.test_portals.PortalSmoke.test_real_login_reset_deactivation_and_no_header_impersonation",
+      "tests.functional.test_portals.PortalSmoke.test_cross_employee_all_paths_and_redacted_exports",
+      "tests.functional.test_portals.PortalSmoke.test_csrf_logout_expiry_rate_and_cookie_flags",
+      "tests.dashboard.test_certificate_design.CertificateDesign.test_unicode_layout_one_page_fonts_and_safe_failure",
+      "tests.dashboard.test_simple_actor.SimpleActorSmoke.test_single_responses_request_no_storage_or_verifier"
+    ],
+    "known_failure": "TEST-001 remains required until its finish/submit assertion is corrected; no exclusion"
+  },
+  "policy": {
+    "receipt_max_age_days": 7,
+    "artifact_retention_days": 7,
+    "reuse_statuses": [
+      "PASS",
+      "FAIL"
+    ],
+    "raw_secret_or_conversation_reports_allowed": false,
+    "dependency_advisories_separate": true,
+    "new_suppressions": []
+  },
+  "adapter_contract": {
+    "review_required": true,
+    "implementation_status": "NOT VERIFIED / not installed",
+    "commands_required": [
+      "plan --profile",
+      "smart --profile",
+      "gate --profile",
+      "advisories --profile",
+      "gate --advisory-only"
+    ],
+    "must_not_treat_reference_yaml_as_working_ci": true
+  }
+}
