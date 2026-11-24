@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "stack": "FastAPI, SQLite WAL, ReportLab, Argon2, native browser frontend",
+  "sast_roots": [
+    "backend/",
+    "frontend/",
+    "scripts/",
+    "deploy/pilot/",
+    "tools/security/"
+  ],
+  "not_runtime": [
+    "research/",
+    "reports/",
+    "docs/"
+  ],
+  "mandatory": [
+    "secrets",
+    "sast",
+    "dependencies",
+    "workflows",
+    "tests",
+    "selftest"
+  ],
+  "native_advisories": "untriaged or unknown severity is blocking; no blanket exceptions",
+  "ai": "mocked, network disabled; no training-quality or live-model acceptance inferred"
+}

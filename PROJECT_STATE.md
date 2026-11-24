@@ -1,3 +1,19 @@
+## MISSION 06.1 — Linux compatibility and offline CI qualification, 24.11.2026
+
+Linux certificate long-name fixture exposed a container font-path mismatch; corrected Linux font configuration, preserved certificate layout/test limits. Frontend voice mocks now include the already-existing auth/me identity/CSRF preflight, with changed-account denial regression; local Node6 PASS. Actor/voice/finish/submit production logic unchanged. Native dependency gate remains FAIL (371 unknown-severity Debian matches), not hidden. Detailed current acceptance: docs/security/TRAINER_061_VALIDATION.md; final full Linux/hosted evidence follows actual execution.
+
+---
+
+## MISSION 06.1 — owner export contract и deployment preparation, 24.11.2026
+
+Владелец подтвердил: коммерческий исход и соответствие услугам компании должны входить в TXT/PDF. В working branch `learning_exports.report_text` теперь использует canonical UI labels и включает company_fit из опубликованной человеческой оценки. Сохранённые беседы/оценки/frozen issued certificates не переписываются; finish/submit/Actor logic не менялись. Targeted regression PASS; bounded Mac suite20 tests PASS, network attempts0, paid calls0, только synthetic SQLite.
+
+Подготовлены Linux amd64 Dockerfile/hash-lock23 wheels, отдельный launch/ASGI/health, isolated Compose без host ports, quota preflight, backup/restore tool и Python Security CI. Dependency image реально собран и проверен: CPython3.14.7/SQLite3.54.1, Liberation Sans/DejaVu/Poppler/ffprobe. Updated native SBOM254 components: PyPI advisory matches0, Debian495 matches (371 not assigned,120 unimportant,4 low); неизвестные остаются blocking, suppressions не добавлены. Семантика этой оценки и границы CI — docs/security/TRAINER_SECURITY_CI.md.
+
+Remote VPS только read-only metadata; private resource report вне Git. Никаких server build/pull/up/restart, CF resources, transfer данных/секретов, original working SQLite или8100 restart. Финальная Linux app suite и hosted PR validation ещё подлежат фиксации. Нормальная activation BLOCKED до native triage, dedicated capped persistent storage, peak admission, actual Access/JWT path, encrypted off-host restore и budget/model acceptance.
+
+---
+
 ## MISSION 06.1 — test contract checkpoint, 24.11.2026
 
 В ветке `codex/mission-06-cloudflare-readiness` исправлены test-only ожидания finish/submit: finish остаётся приватным; submit открывает доступ наставнику, другой сотрудник по-прежнему получает404. Два соседних mentor-review сценария теперь явно вызывают submit; статическая locale-проверка больше не принимает динамический key prefix за законченный literal. Логика backend/Actor не менялась.

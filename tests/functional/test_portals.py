@@ -232,6 +232,19 @@ class PortalSmoke(unittest.TestCase):
         text=c.get('/api/sessions/'+sid+'/export.txt').text
         for value in ['Частично выполнено','Диагностика предварительно согласована','За пределами услуг компании',body['note']]:self.assertIn(value,text)
         self.assertTrue(c.get('/api/sessions/'+sid+'/export.pdf').content.startswith(b'%PDF'))
+        # Owner-confirmed export contract: the same published human assessment in TXT/PDF.
+        # Mentor may select framing language; learner retains the training-language contract.
+        # Rendering exports must not rewrite frozen source records or infer a skill score.
+        source_before=copy.deepcopy(self.app.state.store.get_session(sid))
+        import subprocess
+        for language in ['de','en','ru']:
+            labels=json.loads((Path(__file__).resolve().parents[2]/'frontend/locales'/f'{language}.json').read_text())
+            txt=self.m.get('/api/sessions/'+sid+'/export.txt?language='+language).text
+            pdf=self.m.get('/api/sessions/'+sid+'/export.pdf?language='+language).content
+            extracted=' '.join(subprocess.check_output(['pdftotext','-layout','-','-'],input=pdf).decode().split())
+            for key in ['review.outcome.diagnosis_tentative','review.fit.outside_scope']:
+                self.assertIn(labels[key],txt);self.assertIn(labels[key],extracted)
+        self.assertEqual(self.app.state.store.get_session(sid),source_before)
         # A new pair still uses v2. The original v1 archive remains accessible.
         self.assertEqual(self.training(c)['client_profile']['persona_version'],2)
         self.assertEqual(old_profile,self.app.state.store._get('client_profile_version','decisive_oven:v1'))

@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "reviewed_on": "2026-11-23",
+  "binaries": {
+    "gitleaks": {
+      "version": "8.30.1",
+      "license": "MIT",
+      "license_url": "https://github.com/gitleaks/gitleaks/blob/v8.30.1/LICENSE",
+      "version_args": [
+        "version"
+      ],
+      "assets": {
+        "darwin-arm64": {
+          "name": "gitleaks_8.30.1_darwin_arm64.tar.gz",
+          "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_darwin_arm64.tar.gz",
+          "sha256": "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5"
+        },
+        "linux-amd64": {
+          "name": "gitleaks_8.30.1_linux_x64.tar.gz",
+          "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz",
+          "sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+        }
+      }
+    },
+    "osv-scanner": {
+      "version": "2.7.1",
+      "license": "Apache-2.0",
+      "license_url": "https://github.com/google/osv-scanner/blob/v2.7.1/LICENSE",
+      "version_args": [
+        "--version"
+      ],
+      "assets": {
+        "darwin-arm64": {
+          "name": "osv-scanner_darwin_arm64",
+          "url": "https://github.com/google/osv-scanner/releases/download/v2.7.1/osv-scanner_darwin_arm64",
+          "sha256": "b22c02877a811c8f78956e8643efa554932b7378f590d13f8e97d4e9448a29f3"
+        },
+        "linux-amd64": {
+          "name": "osv-scanner_linux_amd64",
+          "url": "https://github.com/google/osv-scanner/releases/download/v2.7.1/osv-scanner_linux_amd64",
+          "sha256": "fb7dab19a8bd9bbe5c3189f09d4b7ee1820c9553a23bac202648a56efd2f6ee8"
+        }
+      }
+    },
+    "actionlint": {
+      "version": "1.7.12",
+      "license": "MIT",
+      "license_url": "https://github.com/rhysd/actionlint/blob/v1.7.12/LICENSE.txt",
+      "version_args": [
+        "-version"
+      ],
+      "assets": {
+        "darwin-arm64": {
+          "name": "actionlint_1.7.12_darwin_arm64.tar.gz",
+          "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_darwin_arm64.tar.gz",
+          "sha256": "aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f"
+        },
+        "linux-amd64": {
+          "name": "actionlint_1.7.12_linux_amd64.tar.gz",
+          "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz",
+          "sha256": "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+        }
+      }
+    },
+    "zizmor": {
+      "version": "1.33.1",
+      "license": "MIT",
+      "license_url": "https://github.com/zizmorcore/zizmor/blob/v1.33.1/LICENSE",
+      "version_args": [
+        "--version"
+      ],
+      "assets": {
+        "darwin-arm64": {
+          "name": "zizmor-aarch64-apple-darwin.tar.gz",
+          "url": "https://github.com/zizmorcore/zizmor/releases/download/v1.33.1/zizmor-aarch64-apple-darwin.tar.gz",
+          "sha256": "68516d45723aac36e9c87c47d56e8418009fcb919c6ceb44514d85b9d0c1c011"
+        },
+        "linux-amd64": {
+          "name": "zizmor-x86_64-unknown-linux-gnu.tar.gz",
+          "url": "https://github.com/zizmorcore/zizmor/releases/download/v1.33.1/zizmor-x86_64-unknown-linux-gnu.tar.gz",
+          "sha256": "3e6a301c7a820a2501915f5a9de8c0486da82bdec7965f068477538a98743d43"
+        }
+      }
+    }
+  },
+  "images": {
+    "semgrep": "semgrep/semgrep:1.186.0@sha256:6e1b04340e60e910fbb4ddbf3c857ab0918f064417ad5ac530014ccb3cf8c8f1",
+    "node": "node:22-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a"
+  },
+  "semgrep_license": "LGPL-2.1 CE; --oss-only; no platform token; local rules and network disabled"
+}

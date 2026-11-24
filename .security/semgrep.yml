@@ -1,0 +1,121 @@
+rules:
+  - id: jsc-python-shell-injection
+    languages: [python]
+    message: Avoid shell=True when invoking external programs.
+    severity: ERROR
+    metadata: {jsc_severity: HIGH}
+    pattern-either:
+      - pattern: subprocess.run(..., shell=True, ...)
+      - pattern: subprocess.Popen(..., shell=True, ...)
+      - pattern: subprocess.check_output(..., shell=True, ...)
+      - pattern: os.system(...)
+  - id: jsc-python-code-evaluation
+    languages: [python]
+    message: Dynamic evaluation requires security review.
+    severity: ERROR
+    metadata: {jsc_severity: HIGH}
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+  - id: jsc-js-browser-input-to-html
+    languages: [javascript]
+    mode: taint
+    message: Browser-controlled data reaches an HTML execution sink.
+    severity: ERROR
+    metadata: {jsc_severity: HIGH}
+    pattern-sources:
+      - pattern-either:
+          - pattern: location.search
+          - pattern: location.hash
+          - pattern: window.location.search
+          - pattern: window.location.hash
+          - pattern: $EVENT.data
+    pattern-sinks:
+      - pattern-either:
+          - pattern: $ELEMENT.innerHTML = $VALUE
+          - pattern: $ELEMENT.outerHTML = $VALUE
+          - pattern: document.write(...)
+          - pattern: $ELEMENT.insertAdjacentHTML(...)
+    pattern-sanitizers:
+      - pattern: c2EscapeHTML(...)
+      - pattern: c2vEsc(...)
+  - id: jsc-js-browser-input-to-eval
+    languages: [javascript]
+    mode: taint
+    message: Browser-controlled data reaches JavaScript evaluation.
+    severity: ERROR
+    metadata: {jsc_severity: HIGH}
+    pattern-sources:
+      - pattern-either:
+          - pattern: location.search
+          - pattern: location.hash
+          - pattern: window.location.search
+          - pattern: window.location.hash
+          - pattern: $EVENT.data
+    pattern-sinks:
+      - pattern-either:
+          - pattern: eval(...)
+          - pattern: new Function(...)
+  - id: jsc-js-secret-logging
+    languages: [javascript]
+    message: A database credential is included in application logs.
+    severity: ERROR
+    metadata: {jsc_severity: HIGH}
+    pattern-either:
+      - pattern: console.log(..., $ENV.NEON_URL, ...)
+      - pattern: console.error(..., $ENV.NEON_URL, ...)
+      - pattern: console.log(..., $ENV.GEMINI_API_KEY, ...)
+      - pattern: console.error(..., $ENV.GEMINI_API_KEY, ...)
+  - id: jsc-js-dynamic-sql
+    languages: [javascript]
+    message: Concatenated SQL should use bound parameters.
+    severity: WARNING
+    metadata: {jsc_severity: MEDIUM}
+    patterns:
+      - pattern: $PREFIX + $VALUE
+      - pattern-not: $PREFIX + "..."
+      - metavariable-regex:
+          metavariable: $PREFIX
+          regex: '(?i)^["\x27](?:SELECT|INSERT|UPDATE|DELETE)\b'
+  - id: trainer-python-secret-logging
+    languages: [python]
+    message: Server API key must not reach logs
+    severity: ERROR
+    metadata: {jsc_severity: HIGH}
+    mode: taint
+    pattern-sources:
+      - pattern-either:
+          - pattern: os.environ['OPENAI_API_KEY']
+          - pattern: os.environ.get('OPENAI_API_KEY', ...)
+          - pattern: os.getenv('OPENAI_API_KEY', ...)
+    pattern-sinks:
+      - pattern-either:
+          - pattern: print(...)
+          - pattern: $LOG.info(...)
+          - pattern: $LOG.debug(...)
+          - pattern: $LOG.warning(...)
+          - pattern: $LOG.error(...)
+          - pattern: $LOG.exception(...)
+          - pattern: $LOG.critical(...)
+  - id: trainer-python-disabled-tls
+    languages: [python]
+    message: Do not disable TLS validation
+    severity: ERROR
+    metadata: {jsc_severity: HIGH}
+    pattern-either:
+      - pattern: httpx.$CLIENT(..., verify=False, ...)
+      - pattern: requests.$METHOD(..., verify=False, ...)
+      - pattern: ssl._create_unverified_context(...)
+  - id: trainer-python-request-to-sql
+    languages: [python]
+    message: Request data must not become SQL syntax; use bound parameters
+    severity: ERROR
+    metadata: {jsc_severity: HIGH}
+    mode: taint
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQUEST.query_params
+          - pattern: $REQUEST.path_params
+          - pattern: $REQUEST.json(...)
+    pattern-sinks:
+      - pattern: $DB.execute($SQL)

@@ -1,0 +1,27 @@
+# Lightweight advisory refresh only, independent of source changes.
+name: Runtime dependency advisories
+on:
+  schedule:
+    - cron: '17 7 * * *'
+      timezone: Europe/Berlin
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: trainer-advisories
+  cancel-in-progress: true
+jobs:
+  advisories:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Review candidate runtime advisories without executing application code
+        run: |
+          python3 tools/security/run.py bootstrap --tools-dir "$RUNNER_TEMP/trainer-tools" --only-dependencies
+          python3 tools/security/run.py dependencies --tools-dir "$RUNNER_TEMP/trainer-tools" --output "$RUNNER_TEMP/trainer-advisories"
+      - name: Publish sanitized advisory summary without billed artifacts
+        if: ${{ !cancelled() }}
+        run: python3 tools/security/summary.py "$RUNNER_TEMP/trainer-advisories" >> "$GITHUB_STEP_SUMMARY"

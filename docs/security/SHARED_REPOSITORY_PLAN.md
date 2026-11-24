@@ -1,3 +1,15 @@
+## MISSION 06.1 — передача проверенной пилотной версии, без выполнения
+
+Точное назначение — `klareki-lab`. Оригинал `klarekipro/Beratungsgespr-ch-Trainer` остаётся на месте, с прежней visibility/history/tags/releases; не выполняются transfer, mirror, удаление или создание второго repo. Новый private collaborative repo — отдельное решение владельца, не prerequisite доступа к pilot app.
+
+Перед таким решением нужен manifest проверенной версии: source SHA, image ID/digest, Python lock/SBOM hashes, CI run results, restore drill и owner acceptance. До закрытия native findings и Access/storage gates эта версия не считается принятой для publication. Существующий v0.15.3 не перемещается/не перетегируется; новый pilot release создаётся только по отдельному разрешению.
+
+Владелец выбирает проверенный code snapshot с явной атрибуцией/source commit link либо отдельно рассмотренную историю. Это разные варианты, не автоматическое копирование всех старых веток/media. Проверить авторство/право на teaching materials и project license; отсутствие LICENSE не превращать в разрешение назначить лицензию произвольно. Не переносить runtime/SQLite/conversations/users/demo accounts, exports, private audit/diagnostics, .env/ключи, server credentials и локальные captures. Для pilot — новые именованные пользователи и отдельные synthetic acceptance records. Очистку/фильтрацию истории проводить только на отдельной разрешённой копии, не переписывая оригинал.
+
+Нынешний Docker/CI package portable, не содержит зависимостей на private sergjuri repos или VPS runner. При переходе в private org заново проверяются доступ/entitlements/Actions budget/required checks; public free-runner модель не переносится как обещание бесплатного private compute. Source/Release/acceptance manifest и license review подтверждаются владельцем **до** создания repo/загрузки кода.
+
+---
+
 # Shared Repository Plan — owner decision required
 
 ## Решение и границы

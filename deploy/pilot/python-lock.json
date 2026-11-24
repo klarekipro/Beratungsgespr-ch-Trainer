@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "python": "3.14.7",
+  "platform": "linux/amd64",
+  "source": "https://pypi.org/",
+  "packages": [
+    {
+      "name": "annotated-doc",
+      "version": "0.0.7",
+      "sha256": "6bc31bbbec6dfaaedc1676dbc11dbda96fe22a2b5c400e9ebad113fec44a9dc6",
+      "wheel": "annotated_doc-0.0.7-py3-none-any.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "sha256": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0",
+      "wheel": "annotated_types-0.8.0-py3-none-any.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "anyio",
+      "version": "4.16.0",
+      "sha256": "c66ae634e0b8228396b801741beb3294326d4b6102f7bba4041c0dfb58c29026",
+      "wheel": "anyio-4.16.0-py3-none-any.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "argon2-cffi",
+      "version": "25.1.0",
+      "sha256": "fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741",
+      "wheel": "argon2_cffi-25.1.0-py3-none-any.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "argon2-cffi-bindings",
+      "version": "26.2.0",
+      "sha256": "2d475baecbcb506e40ab1cb05a84c9cc913a8950061a4045fd0ec0eb54aa7fa2",
+      "wheel": "argon2_cffi_bindings-26.2.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "certifi",
+      "version": "2026.11.20",
+      "sha256": "7422df25243767b9877031a2248cb14d09ddac9beee846f4cef3d5c9191d488f",
+      "wheel": "certifi-2026.11.20-py3-none-any.whl",
+      "license": "MPL-2.0"
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1",
+      "sha256": "b0431303acaea1089ad4b3e9ce4e6518193def1118d4073ca848635ee4ea2e96",
+      "wheel": "cffi-2.1.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "license": "MIT-0"
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.5.3",
+      "sha256": "ee9de080e8d6221bbe4ba2667367b1cee0f47a53f60ffc5e431b698cd2f2b214",
+      "wheel": "charset_normalizer-3.5.3-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "click",
+      "version": "8.5.1",
+      "sha256": "8bb5376d2006950386f8c6427613334a2acadc5f559cb80e638d00b4df957e37",
+      "wheel": "click-8.5.1-py3-none-any.whl",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "name": "fastapi",
+      "version": "0.141.1",
+      "sha256": "bfb91aa2d334c61cb35ba9a116fc123b3d3df31640b801cf57a7a78ec3f603b3",
+      "wheel": "fastapi-0.141.1-py3-none-any.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0",
+      "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86",
+      "wheel": "h11-0.16.0-py3-none-any.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9",
+      "sha256": "2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55",
+      "wheel": "httpcore-1.0.9-py3-none-any.whl",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1",
+      "sha256": "d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad",
+      "wheel": "httpx-0.28.1-py3-none-any.whl",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "name": "idna",
+      "version": "3.20",
+      "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c",
+      "wheel": "idna-3.20-py3-none-any.whl",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "name": "pillow",
+      "version": "13.0.0",
+      "sha256": "e91c2b1cbeae768c98752e67e717e283d68dae45717b41f2d91eaee648e37b7d",
+      "wheel": "pillow-13.0.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "license": "MIT-CMU"
+    },
+    {
+      "name": "pycparser",
+      "version": "3.12",
+      "sha256": "a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e",
+      "wheel": "pycparser-3.12-py3-none-any.whl",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "name": "pydantic",
+      "version": "2.13.4",
+      "sha256": "45a282cde31d808236fd7ea9d919b128653c8b38b393d1c4ab335c62924d9aba",
+      "wheel": "pydantic-2.13.4-py3-none-any.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.46.4",
+      "sha256": "7a5f930472650a82629163023e630d160863fce524c616f4e5186e5de9d9a49b",
+      "wheel": "pydantic_core-2.46.4-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "reportlab",
+      "version": "4.4.9",
+      "sha256": "68e2d103ae8041a37714e8896ec9b79a1c1e911d68c3bd2ea17546568cf17bfd",
+      "wheel": "reportlab-4.4.9-py3-none-any.whl",
+      "license": "BSD license (see license.txt for details), Copyright (c) 2000-2025, ReportLab Inc."
+    },
+    {
+      "name": "starlette",
+      "version": "1.10.0",
+      "sha256": "478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4",
+      "wheel": "starlette-1.10.0-py3-none-any.whl",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.5",
+      "sha256": "bc210535442b39e1bf2805e0c7a17dfd6a4ace760c84c7f7d16245d23a6b1c39",
+      "wheel": "typing_inspection-0.4.5-py3-none-any.whl",
+      "license": "MIT"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0",
+      "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+      "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
+      "license": "PSF-2.0"
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.52.1",
+      "sha256": "e4403f9d93188cf9d1088e9f40e3acd12630e2df8675316704379a7fc20fff6a",
+      "wheel": "uvicorn-0.52.1-py3-none-any.whl",
+      "license": "BSD-3-Clause"
+    }
+  ]
+}

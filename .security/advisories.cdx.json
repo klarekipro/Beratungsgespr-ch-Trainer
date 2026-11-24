@@ -1,0 +1,1543 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "properties": [
+      {
+        "name": "trainer.scope",
+        "value": "candidate-runtime-not-yet-deployed"
+      },
+      {
+        "name": "trainer.custom_sqlite",
+        "value": "3.54.1; upstream source checksum verified; separate from Debian sqlite package"
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "pip",
+      "version": "26.2.1",
+      "purl": "pkg:pypi/pip@26.2.1"
+    },
+    {
+      "type": "library",
+      "name": "starlette",
+      "version": "1.10.0",
+      "purl": "pkg:pypi/starlette@1.10.0"
+    },
+    {
+      "type": "library",
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "purl": "pkg:pypi/annotated-types@0.8.0"
+    },
+    {
+      "type": "library",
+      "name": "pydantic-core",
+      "version": "2.46.4",
+      "purl": "pkg:pypi/pydantic-core@2.46.4"
+    },
+    {
+      "type": "library",
+      "name": "cffi",
+      "version": "2.1.1",
+      "purl": "pkg:pypi/cffi@2.1.1"
+    },
+    {
+      "type": "library",
+      "name": "click",
+      "version": "8.5.1",
+      "purl": "pkg:pypi/click@8.5.1"
+    },
+    {
+      "type": "library",
+      "name": "certifi",
+      "version": "2026.11.20",
+      "purl": "pkg:pypi/certifi@2026.11.20"
+    },
+    {
+      "type": "library",
+      "name": "httpcore",
+      "version": "1.0.9",
+      "purl": "pkg:pypi/httpcore@1.0.9"
+    },
+    {
+      "type": "library",
+      "name": "idna",
+      "version": "3.20",
+      "purl": "pkg:pypi/idna@3.20"
+    },
+    {
+      "type": "library",
+      "name": "fastapi",
+      "version": "0.141.1",
+      "purl": "pkg:pypi/fastapi@0.141.1"
+    },
+    {
+      "type": "library",
+      "name": "reportlab",
+      "version": "4.4.9",
+      "purl": "pkg:pypi/reportlab@4.4.9"
+    },
+    {
+      "type": "library",
+      "name": "pillow",
+      "version": "13.0.0",
+      "purl": "pkg:pypi/pillow@13.0.0"
+    },
+    {
+      "type": "library",
+      "name": "pydantic",
+      "version": "2.13.4",
+      "purl": "pkg:pypi/pydantic@2.13.4"
+    },
+    {
+      "type": "library",
+      "name": "argon2-cffi",
+      "version": "25.1.0",
+      "purl": "pkg:pypi/argon2-cffi@25.1.0"
+    },
+    {
+      "type": "library",
+      "name": "typing-inspection",
+      "version": "0.4.5",
+      "purl": "pkg:pypi/typing-inspection@0.4.5"
+    },
+    {
+      "type": "library",
+      "name": "annotated-doc",
+      "version": "0.0.7",
+      "purl": "pkg:pypi/annotated-doc@0.0.7"
+    },
+    {
+      "type": "library",
+      "name": "httpx",
+      "version": "0.28.1",
+      "purl": "pkg:pypi/httpx@0.28.1"
+    },
+    {
+      "type": "library",
+      "name": "charset-normalizer",
+      "version": "3.5.3",
+      "purl": "pkg:pypi/charset-normalizer@3.5.3"
+    },
+    {
+      "type": "library",
+      "name": "h11",
+      "version": "0.16.0",
+      "purl": "pkg:pypi/h11@0.16.0"
+    },
+    {
+      "type": "library",
+      "name": "anyio",
+      "version": "4.16.0",
+      "purl": "pkg:pypi/anyio@4.16.0"
+    },
+    {
+      "type": "library",
+      "name": "typing-extensions",
+      "version": "4.16.0",
+      "purl": "pkg:pypi/typing-extensions@4.16.0"
+    },
+    {
+      "type": "library",
+      "name": "pycparser",
+      "version": "3.12",
+      "purl": "pkg:pypi/pycparser@3.12"
+    },
+    {
+      "type": "library",
+      "name": "argon2-cffi-bindings",
+      "version": "26.2.0",
+      "purl": "pkg:pypi/argon2-cffi-bindings@26.2.0"
+    },
+    {
+      "type": "library",
+      "name": "uvicorn",
+      "version": "0.52.1",
+      "purl": "pkg:pypi/uvicorn@0.52.1"
+    },
+    {
+      "type": "library",
+      "name": "acl",
+      "version": "2.3.2-2",
+      "purl": "pkg:deb/debian/acl@2.3.2-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "adduser",
+      "version": "3.152",
+      "purl": "pkg:deb/debian/adduser@3.152?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "alsa-lib",
+      "version": "1.2.14-1+deb13u1",
+      "purl": "pkg:deb/debian/alsa-lib@1.2.14-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "aom",
+      "version": "3.12.1-1+deb13u1",
+      "purl": "pkg:deb/debian/aom@3.12.1-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "apt",
+      "version": "3.0.4",
+      "purl": "pkg:deb/debian/apt@3.0.4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "attr",
+      "version": "1:2.5.2-3",
+      "purl": "pkg:deb/debian/attr@1%3A2.5.2-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "audit",
+      "version": "1:4.0.2-2+deb13u1",
+      "purl": "pkg:deb/debian/audit@1%3A4.0.2-2%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "base-files",
+      "version": "13.8+deb13u8",
+      "purl": "pkg:deb/debian/base-files@13.8%2Bdeb13u8?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "base-passwd",
+      "version": "3.6.7",
+      "purl": "pkg:deb/debian/base-passwd@3.6.7?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "bash",
+      "version": "5.2.37-2",
+      "purl": "pkg:deb/debian/bash@5.2.37-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "brotli",
+      "version": "1.1.0-2+deb13u1",
+      "purl": "pkg:deb/debian/brotli@1.1.0-2%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "bzip2",
+      "version": "1.0.8-6",
+      "purl": "pkg:deb/debian/bzip2@1.0.8-6?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "ca-certificates",
+      "version": "20250419+deb13u1",
+      "purl": "pkg:deb/debian/ca-certificates@20250419%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "cairo",
+      "version": "1.18.4-1",
+      "purl": "pkg:deb/debian/cairo@1.18.4-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "cdebconf",
+      "version": "0.280",
+      "purl": "pkg:deb/debian/cdebconf@0.280?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "chromaprint",
+      "version": "1.5.1-7",
+      "purl": "pkg:deb/debian/chromaprint@1.5.1-7?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "cjson",
+      "version": "1.7.18-3.1+deb13u1",
+      "purl": "pkg:deb/debian/cjson@1.7.18-3.1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "codec2",
+      "version": "1.2.0-3",
+      "purl": "pkg:deb/debian/codec2@1.2.0-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "coreutils",
+      "version": "9.7-3",
+      "purl": "pkg:deb/debian/coreutils@9.7-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "curl",
+      "version": "8.14.1-2+deb13u7",
+      "purl": "pkg:deb/debian/curl@8.14.1-2%2Bdeb13u7?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "cyrus-sasl2",
+      "version": "2.1.28+dfsg1-9",
+      "purl": "pkg:deb/debian/cyrus-sasl2@2.1.28%2Bdfsg1-9?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "dash",
+      "version": "0.5.12-12",
+      "purl": "pkg:deb/debian/dash@0.5.12-12?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "dav1d",
+      "version": "1.5.1-1",
+      "purl": "pkg:deb/debian/dav1d@1.5.1-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "db5.3",
+      "version": "5.3.28+dfsg2-9",
+      "purl": "pkg:deb/debian/db5.3@5.3.28%2Bdfsg2-9?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "dbus",
+      "version": "1.16.2-2",
+      "purl": "pkg:deb/debian/dbus@1.16.2-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "debconf",
+      "version": "1.5.91",
+      "purl": "pkg:deb/debian/debconf@1.5.91?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "debian-archive-keyring",
+      "version": "2025.1",
+      "purl": "pkg:deb/debian/debian-archive-keyring@2025.1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "debianutils",
+      "version": "5.23.2",
+      "purl": "pkg:deb/debian/debianutils@5.23.2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "diffutils",
+      "version": "1:3.10-4",
+      "purl": "pkg:deb/debian/diffutils@1%3A3.10-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "dpkg",
+      "version": "1.22.22",
+      "purl": "pkg:deb/debian/dpkg@1.22.22?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "e2fsprogs",
+      "version": "1.47.2-3",
+      "purl": "pkg:deb/debian/e2fsprogs@1.47.2-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "elfutils",
+      "version": "0.192-4",
+      "purl": "pkg:deb/debian/elfutils@0.192-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "expat",
+      "version": "2.9.0-1~deb13u1",
+      "purl": "pkg:deb/debian/expat@2.9.0-1~deb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "ffmpeg",
+      "version": "7:7.1.5-0+deb13u1",
+      "purl": "pkg:deb/debian/ffmpeg@7%3A7.1.5-0%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "fftw3",
+      "version": "3.3.10-2",
+      "purl": "pkg:deb/debian/fftw3@3.3.10-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "findutils",
+      "version": "4.10.0-3",
+      "purl": "pkg:deb/debian/findutils@4.10.0-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "flac",
+      "version": "1.5.0+ds-2",
+      "purl": "pkg:deb/debian/flac@1.5.0%2Bds-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "flite",
+      "version": "2.2-7",
+      "purl": "pkg:deb/debian/flite@2.2-7?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "fontconfig",
+      "version": "2.15.0-2.3",
+      "purl": "pkg:deb/debian/fontconfig@2.15.0-2.3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "fonts-dejavu",
+      "version": "2.37-8",
+      "purl": "pkg:deb/debian/fonts-dejavu@2.37-8?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "fonts-liberation",
+      "version": "1:2.1.5-3",
+      "purl": "pkg:deb/debian/fonts-liberation@1%3A2.1.5-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "freetype",
+      "version": "2.13.3+dfsg-1+deb13u2",
+      "purl": "pkg:deb/debian/freetype@2.13.3%2Bdfsg-1%2Bdeb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "fribidi",
+      "version": "1.0.16-1",
+      "purl": "pkg:deb/debian/fribidi@1.0.16-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "game-music-emu",
+      "version": "0.6.3-7",
+      "purl": "pkg:deb/debian/game-music-emu@0.6.3-7?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "gcc-14",
+      "version": "14.2.0-19",
+      "purl": "pkg:deb/debian/gcc-14@14.2.0-19?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "gdbm",
+      "version": "1.24-2",
+      "purl": "pkg:deb/debian/gdbm@1.24-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "gdk-pixbuf",
+      "version": "2.42.12+dfsg-4+deb13u1",
+      "purl": "pkg:deb/debian/gdk-pixbuf@2.42.12%2Bdfsg-4%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "glib2.0",
+      "version": "2.84.4-3~deb13u5",
+      "purl": "pkg:deb/debian/glib2.0@2.84.4-3~deb13u5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "glibc",
+      "version": "2.41-12+deb13u5",
+      "purl": "pkg:deb/debian/glibc@2.41-12%2Bdeb13u5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "gmp",
+      "version": "2:6.3.0+dfsg-3",
+      "purl": "pkg:deb/debian/gmp@2%3A6.3.0%2Bdfsg-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "gnupg2",
+      "version": "2.4.7-21+deb13u1",
+      "purl": "pkg:deb/debian/gnupg2@2.4.7-21%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "gnutls28",
+      "version": "3.8.9-3+deb13u4",
+      "purl": "pkg:deb/debian/gnutls28@3.8.9-3%2Bdeb13u4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "gpgme1.0",
+      "version": "1.24.2-3+deb13u1",
+      "purl": "pkg:deb/debian/gpgme1.0@1.24.2-3%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "graphite2",
+      "version": "1.3.14-2+deb13u1",
+      "purl": "pkg:deb/debian/graphite2@1.3.14-2%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "grep",
+      "version": "3.11-4",
+      "purl": "pkg:deb/debian/grep@3.11-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "gzip",
+      "version": "1.13-1+deb13u1",
+      "purl": "pkg:deb/debian/gzip@1.13-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "harfbuzz",
+      "version": "10.2.0-1+deb13u1",
+      "purl": "pkg:deb/debian/harfbuzz@10.2.0-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "highway",
+      "version": "1.2.0-2",
+      "purl": "pkg:deb/debian/highway@1.2.0-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "hostname",
+      "version": "3.25",
+      "purl": "pkg:deb/debian/hostname@3.25?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "init-system-helpers",
+      "version": "1.69~deb13u1",
+      "purl": "pkg:deb/debian/init-system-helpers@1.69~deb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "jackd2",
+      "version": "1.9.22~dfsg-4",
+      "purl": "pkg:deb/debian/jackd2@1.9.22~dfsg-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "jbigkit",
+      "version": "2.1-6.1",
+      "purl": "pkg:deb/debian/jbigkit@2.1-6.1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "jpeg-xl",
+      "version": "0.11.2-0.1~deb13u3",
+      "purl": "pkg:deb/debian/jpeg-xl@0.11.2-0.1~deb13u3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "keyutils",
+      "version": "1.6.3-6",
+      "purl": "pkg:deb/debian/keyutils@1.6.3-6?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "krb5",
+      "version": "1.21.3-5+deb13u2",
+      "purl": "pkg:deb/debian/krb5@1.21.3-5%2Bdeb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "lame",
+      "version": "3.100-6",
+      "purl": "pkg:deb/debian/lame@3.100-6?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "lapack",
+      "version": "3.12.1-6",
+      "purl": "pkg:deb/debian/lapack@3.12.1-6?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "lcms2",
+      "version": "2.16-2+deb13u2",
+      "purl": "pkg:deb/debian/lcms2@2.16-2%2Bdeb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "lerc",
+      "version": "4.0.0+ds-5",
+      "purl": "pkg:deb/debian/lerc@4.0.0%2Bds-5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libass",
+      "version": "1:0.17.3-1+deb13u1",
+      "purl": "pkg:deb/debian/libass@1%3A0.17.3-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libassuan",
+      "version": "3.0.2-2",
+      "purl": "pkg:deb/debian/libassuan@3.0.2-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libasyncns",
+      "version": "0.8-6",
+      "purl": "pkg:deb/debian/libasyncns@0.8-6?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libavc1394",
+      "version": "0.5.4-5",
+      "purl": "pkg:deb/debian/libavc1394@0.5.4-5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libbluray",
+      "version": "1:1.3.4-1",
+      "purl": "pkg:deb/debian/libbluray@1%3A1.3.4-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libbs2b",
+      "version": "3.1.0+dfsg-8",
+      "purl": "pkg:deb/debian/libbs2b@3.1.0%2Bdfsg-8?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libbsd",
+      "version": "0.12.2-2",
+      "purl": "pkg:deb/debian/libbsd@0.12.2-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libcaca",
+      "version": "0.99.beta20-5+deb13u1",
+      "purl": "pkg:deb/debian/libcaca@0.99.beta20-5%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libcap-ng",
+      "version": "0.8.5-4",
+      "purl": "pkg:deb/debian/libcap-ng@0.8.5-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libcap2",
+      "version": "1:2.75-10+deb13u1",
+      "purl": "pkg:deb/debian/libcap2@1%3A2.75-10%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libcdio",
+      "version": "2.2.0-4.1~deb13u1",
+      "purl": "pkg:deb/debian/libcdio@2.2.0-4.1~deb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libcdio-paranoia",
+      "version": "10.2+2.0.2-1",
+      "purl": "pkg:deb/debian/libcdio-paranoia@10.2%2B2.0.2-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libdatrie",
+      "version": "0.2.13-3",
+      "purl": "pkg:deb/debian/libdatrie@0.2.13-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libdc1394",
+      "version": "2.2.6-5",
+      "purl": "pkg:deb/debian/libdc1394@2.2.6-5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libdecor-0",
+      "version": "0.2.2-2",
+      "purl": "pkg:deb/debian/libdecor-0@0.2.2-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libdeflate",
+      "version": "1.23-2",
+      "purl": "pkg:deb/debian/libdeflate@1.23-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libdrm",
+      "version": "2.4.124-2",
+      "purl": "pkg:deb/debian/libdrm@2.4.124-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libdvdnav",
+      "version": "6.1.1-3",
+      "purl": "pkg:deb/debian/libdvdnav@6.1.1-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libdvdread",
+      "version": "6.1.3-2",
+      "purl": "pkg:deb/debian/libdvdread@6.1.3-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libedit",
+      "version": "3.1-20250104-1",
+      "purl": "pkg:deb/debian/libedit@3.1-20250104-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libffi",
+      "version": "3.4.8-2",
+      "purl": "pkg:deb/debian/libffi@3.4.8-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libgcrypt20",
+      "version": "1.11.0-7+deb13u1",
+      "purl": "pkg:deb/debian/libgcrypt20@1.11.0-7%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libglvnd",
+      "version": "1.7.0-1",
+      "purl": "pkg:deb/debian/libglvnd@1.7.0-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libgpg-error",
+      "version": "1.51-4",
+      "purl": "pkg:deb/debian/libgpg-error@1.51-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libgsm",
+      "version": "1.0.22-1",
+      "purl": "pkg:deb/debian/libgsm@1.0.22-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libidn2",
+      "version": "2.3.8-2",
+      "purl": "pkg:deb/debian/libidn2@2.3.8-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libiec61883",
+      "version": "1.2.0-7",
+      "purl": "pkg:deb/debian/libiec61883@1.2.0-7?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libjpeg-turbo",
+      "version": "1:2.1.5-4",
+      "purl": "pkg:deb/debian/libjpeg-turbo@1%3A2.1.5-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libksba",
+      "version": "1.6.7-2",
+      "purl": "pkg:deb/debian/libksba@1.6.7-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libmd",
+      "version": "1.1.0-2",
+      "purl": "pkg:deb/debian/libmd@1.1.0-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libmysofa",
+      "version": "1.3.3+dfsg-1",
+      "purl": "pkg:deb/debian/libmysofa@1.3.3%2Bdfsg-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libogg",
+      "version": "1.3.5-3",
+      "purl": "pkg:deb/debian/libogg@1.3.5-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libopenmpt",
+      "version": "0.7.13-1",
+      "purl": "pkg:deb/debian/libopenmpt@0.7.13-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libpciaccess",
+      "version": "0.17-3",
+      "purl": "pkg:deb/debian/libpciaccess@0.17-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libpgm",
+      "version": "5.3.128~dfsg-2.1",
+      "purl": "pkg:deb/debian/libpgm@5.3.128~dfsg-2.1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libplacebo",
+      "version": "7.349.0-3",
+      "purl": "pkg:deb/debian/libplacebo@7.349.0-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libpng1.6",
+      "version": "1.6.48-1+deb13u6",
+      "purl": "pkg:deb/debian/libpng1.6@1.6.48-1%2Bdeb13u6?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libpsl",
+      "version": "0.21.2-1.1",
+      "purl": "pkg:deb/debian/libpsl@0.21.2-1.1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "librabbitmq",
+      "version": "0.15.0-1+deb13u2",
+      "purl": "pkg:deb/debian/librabbitmq@0.15.0-1%2Bdeb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libraw1394",
+      "version": "2.1.2-2",
+      "purl": "pkg:deb/debian/libraw1394@2.1.2-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "librist",
+      "version": "0.2.11+dfsg-1",
+      "purl": "pkg:deb/debian/librist@0.2.11%2Bdfsg-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "librsvg",
+      "version": "2.60.0+dfsg-1+deb13u1",
+      "purl": "pkg:deb/debian/librsvg@2.60.0%2Bdfsg-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libsamplerate",
+      "version": "0.2.2-4",
+      "purl": "pkg:deb/debian/libsamplerate@0.2.2-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libsdl2",
+      "version": "2.32.4+dfsg-1",
+      "purl": "pkg:deb/debian/libsdl2@2.32.4%2Bdfsg-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libseccomp",
+      "version": "2.6.0-2",
+      "purl": "pkg:deb/debian/libseccomp@2.6.0-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libselinux",
+      "version": "3.8.1-1",
+      "purl": "pkg:deb/debian/libselinux@3.8.1-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libsemanage",
+      "version": "3.8.1-1",
+      "purl": "pkg:deb/debian/libsemanage@3.8.1-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libsepol",
+      "version": "3.8.1-1",
+      "purl": "pkg:deb/debian/libsepol@3.8.1-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libsndfile",
+      "version": "1.2.2-2+deb13u1",
+      "purl": "pkg:deb/debian/libsndfile@1.2.2-2%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libsodium",
+      "version": "1.0.18-1+deb13u1",
+      "purl": "pkg:deb/debian/libsodium@1.0.18-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libsoxr",
+      "version": "0.1.3-4",
+      "purl": "pkg:deb/debian/libsoxr@0.1.3-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libssh",
+      "version": "0.11.5-0+deb13u1",
+      "purl": "pkg:deb/debian/libssh@0.11.5-0%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libssh2",
+      "version": "1.11.1-1+deb13u2",
+      "purl": "pkg:deb/debian/libssh2@1.11.1-1%2Bdeb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libtasn1-6",
+      "version": "4.20.0-2+deb13u1",
+      "purl": "pkg:deb/debian/libtasn1-6@4.20.0-2%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libthai",
+      "version": "0.1.29-2",
+      "purl": "pkg:deb/debian/libthai@0.1.29-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libtheora",
+      "version": "1.2.0~alpha1+dfsg-6",
+      "purl": "pkg:deb/debian/libtheora@1.2.0~alpha1%2Bdfsg-6?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libudfread",
+      "version": "1.1.2-1",
+      "purl": "pkg:deb/debian/libudfread@1.1.2-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libunibreak",
+      "version": "6.1-3",
+      "purl": "pkg:deb/debian/libunibreak@6.1-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libunistring",
+      "version": "1.3-2",
+      "purl": "pkg:deb/debian/libunistring@1.3-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libusb-1.0",
+      "version": "2:1.0.28-1",
+      "purl": "pkg:deb/debian/libusb-1.0@2%3A1.0.28-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libva",
+      "version": "2.22.0-3",
+      "purl": "pkg:deb/debian/libva@2.22.0-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libvdpau",
+      "version": "1.5-3",
+      "purl": "pkg:deb/debian/libvdpau@1.5-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libvidstab",
+      "version": "1.1.0-2",
+      "purl": "pkg:deb/debian/libvidstab@1.1.0-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libvorbis",
+      "version": "1.3.7-3",
+      "purl": "pkg:deb/debian/libvorbis@1.3.7-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libvpl",
+      "version": "1:2.14.0-1",
+      "purl": "pkg:deb/debian/libvpl@1%3A2.14.0-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libvpx",
+      "version": "1.15.0-2.1+deb13u1",
+      "purl": "pkg:deb/debian/libvpx@1.15.0-2.1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libwebp",
+      "version": "1.5.0-0.1",
+      "purl": "pkg:deb/debian/libwebp@1.5.0-0.1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libx11",
+      "version": "2:1.8.12-1",
+      "purl": "pkg:deb/debian/libx11@2%3A1.8.12-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxau",
+      "version": "1:1.0.11-1",
+      "purl": "pkg:deb/debian/libxau@1%3A1.0.11-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxcb",
+      "version": "1.17.0-2",
+      "purl": "pkg:deb/debian/libxcb@1.17.0-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxcrypt",
+      "version": "1:4.4.38-1",
+      "purl": "pkg:deb/debian/libxcrypt@1%3A4.4.38-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxcursor",
+      "version": "1:1.2.3-1",
+      "purl": "pkg:deb/debian/libxcursor@1%3A1.2.3-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxdmcp",
+      "version": "1:1.1.5-1",
+      "purl": "pkg:deb/debian/libxdmcp@1%3A1.1.5-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxext",
+      "version": "2:1.3.4-1",
+      "purl": "pkg:deb/debian/libxext@2%3A1.3.4-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxfixes",
+      "version": "1:6.0.0-2",
+      "purl": "pkg:deb/debian/libxfixes@1%3A6.0.0-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxi",
+      "version": "2:1.8.2-1",
+      "purl": "pkg:deb/debian/libxi@2%3A1.8.2-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxkbcommon",
+      "version": "1.7.0-2",
+      "purl": "pkg:deb/debian/libxkbcommon@1.7.0-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxml2",
+      "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "purl": "pkg:deb/debian/libxml2@2.12.7%2Bdfsg%2Breally2.9.14-2.1%2Bdeb13u3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxrandr",
+      "version": "2:1.5.4-1",
+      "purl": "pkg:deb/debian/libxrandr@2%3A1.5.4-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxrender",
+      "version": "1:0.9.12-1",
+      "purl": "pkg:deb/debian/libxrender@1%3A0.9.12-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxshmfence",
+      "version": "1.3.3-1",
+      "purl": "pkg:deb/debian/libxshmfence@1.3.3-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxss",
+      "version": "1:1.2.3-1",
+      "purl": "pkg:deb/debian/libxss@1%3A1.2.3-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxv",
+      "version": "2:1.0.11-1.1",
+      "purl": "pkg:deb/debian/libxv@2%3A1.0.11-1.1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libxxf86vm",
+      "version": "1:1.1.4-1",
+      "purl": "pkg:deb/debian/libxxf86vm@1%3A1.1.4-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "libzstd",
+      "version": "1.5.7+dfsg-1",
+      "purl": "pkg:deb/debian/libzstd@1.5.7%2Bdfsg-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "lilv",
+      "version": "0.24.26-1",
+      "purl": "pkg:deb/debian/lilv@0.24.26-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "llvm-toolchain-19",
+      "version": "1:19.1.7-3",
+      "purl": "pkg:deb/debian/llvm-toolchain-19@1%3A19.1.7-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "lm-sensors",
+      "version": "1:3.6.2-2",
+      "purl": "pkg:deb/debian/lm-sensors@1%3A3.6.2-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "lz4",
+      "version": "1.10.0-4",
+      "purl": "pkg:deb/debian/lz4@1.10.0-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "mawk",
+      "version": "1.3.4.20250131-1",
+      "purl": "pkg:deb/debian/mawk@1.3.4.20250131-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "mbedtls",
+      "version": "3.6.6-0.1~deb13u1",
+      "purl": "pkg:deb/debian/mbedtls@3.6.6-0.1~deb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "mesa",
+      "version": "25.0.7-2+deb13u1",
+      "purl": "pkg:deb/debian/mesa@25.0.7-2%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "mpg123",
+      "version": "1.32.10-1+deb13u1",
+      "purl": "pkg:deb/debian/mpg123@1.32.10-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "ncurses",
+      "version": "6.5+20250216-2",
+      "purl": "pkg:deb/debian/ncurses@6.5%2B20250216-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "netbase",
+      "version": "6.5",
+      "purl": "pkg:deb/debian/netbase@6.5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "nettle",
+      "version": "3.10.1-1",
+      "purl": "pkg:deb/debian/nettle@3.10.1-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "nghttp2",
+      "version": "1.64.0-1.1+deb13u2",
+      "purl": "pkg:deb/debian/nghttp2@1.64.0-1.1%2Bdeb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "nghttp3",
+      "version": "1.8.0-1",
+      "purl": "pkg:deb/debian/nghttp3@1.8.0-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "ngtcp2",
+      "version": "1.11.0-1+deb13u1",
+      "purl": "pkg:deb/debian/ngtcp2@1.11.0-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "norm",
+      "version": "1.5.9+dfsg-3.1",
+      "purl": "pkg:deb/debian/norm@1.5.9%2Bdfsg-3.1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "npth",
+      "version": "1.8-3",
+      "purl": "pkg:deb/debian/npth@1.8-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "nspr",
+      "version": "2:4.36-1",
+      "purl": "pkg:deb/debian/nspr@2%3A4.36-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "nss",
+      "version": "2:3.110-1+deb13u5",
+      "purl": "pkg:deb/debian/nss@2%3A3.110-1%2Bdeb13u5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "numactl",
+      "version": "2.0.19-1",
+      "purl": "pkg:deb/debian/numactl@2.0.19-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "ocl-icd",
+      "version": "2.3.3-1",
+      "purl": "pkg:deb/debian/ocl-icd@2.3.3-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "openal-soft",
+      "version": "1:1.24.2-1",
+      "purl": "pkg:deb/debian/openal-soft@1%3A1.24.2-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "openjpeg2",
+      "version": "2.5.3-2.1~deb13u2",
+      "purl": "pkg:deb/debian/openjpeg2@2.5.3-2.1~deb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "openldap",
+      "version": "2.6.10+dfsg-1",
+      "purl": "pkg:deb/debian/openldap@2.6.10%2Bdfsg-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "openssl",
+      "version": "3.5.9-1~deb13u1",
+      "purl": "pkg:deb/debian/openssl@3.5.9-1~deb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "opus",
+      "version": "1.5.2-2",
+      "purl": "pkg:deb/debian/opus@1.5.2-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "p11-kit",
+      "version": "0.25.5-3",
+      "purl": "pkg:deb/debian/p11-kit@0.25.5-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "pam",
+      "version": "1.7.0-5",
+      "purl": "pkg:deb/debian/pam@1.7.0-5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "pango1.0",
+      "version": "1.56.3-1",
+      "purl": "pkg:deb/debian/pango1.0@1.56.3-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "pcre2",
+      "version": "10.46-1~deb13u3",
+      "purl": "pkg:deb/debian/pcre2@10.46-1~deb13u3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "perl",
+      "version": "5.40.1-6+deb13u1",
+      "purl": "pkg:deb/debian/perl@5.40.1-6%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "pinentry",
+      "version": "1.3.1-2",
+      "purl": "pkg:deb/debian/pinentry@1.3.1-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "pixman",
+      "version": "0.44.0-3",
+      "purl": "pkg:deb/debian/pixman@0.44.0-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "pocketsphinx",
+      "version": "0.8+5prealpha+1-15",
+      "purl": "pkg:deb/debian/pocketsphinx@0.8%2B5prealpha%2B1-15?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "poppler",
+      "version": "25.03.0-5+deb13u4",
+      "purl": "pkg:deb/debian/poppler@25.03.0-5%2Bdeb13u4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "pulseaudio",
+      "version": "17.0+dfsg1-2",
+      "purl": "pkg:deb/debian/pulseaudio@17.0%2Bdfsg1-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "readline",
+      "version": "8.2-6",
+      "purl": "pkg:deb/debian/readline@8.2-6?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "rtmpdump",
+      "version": "2.4+20151223.gitfa8646d.1-2",
+      "purl": "pkg:deb/debian/rtmpdump@2.4%2B20151223.gitfa8646d.1-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "rubberband",
+      "version": "3.3.0+dfsg-2",
+      "purl": "pkg:deb/debian/rubberband@3.3.0%2Bdfsg-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "rust-rav1e",
+      "version": "0.7.1-9",
+      "purl": "pkg:deb/debian/rust-rav1e@0.7.1-9?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "rust-sequoia-sqv",
+      "version": "1.3.0-3",
+      "purl": "pkg:deb/debian/rust-sequoia-sqv@1.3.0-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "sed",
+      "version": "4.9-2+deb13u1",
+      "purl": "pkg:deb/debian/sed@4.9-2%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "serd",
+      "version": "0.32.4-1",
+      "purl": "pkg:deb/debian/serd@0.32.4-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "shadow",
+      "version": "1:4.17.4-2",
+      "purl": "pkg:deb/debian/shadow@1%3A4.17.4-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "shared-mime-info",
+      "version": "2.4-5",
+      "purl": "pkg:deb/debian/shared-mime-info@2.4-5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "shine",
+      "version": "3.1.1-2",
+      "purl": "pkg:deb/debian/shine@3.1.1-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "slang2",
+      "version": "2.3.3-5",
+      "purl": "pkg:deb/debian/slang2@2.3.3-5?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "snappy",
+      "version": "1.2.2-1",
+      "purl": "pkg:deb/debian/snappy@1.2.2-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "sord",
+      "version": "0.16.18-1",
+      "purl": "pkg:deb/debian/sord@0.16.18-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "speex",
+      "version": "1.2.1-3",
+      "purl": "pkg:deb/debian/speex@1.2.1-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "sphinxbase",
+      "version": "0.8+5prealpha+1-21",
+      "purl": "pkg:deb/debian/sphinxbase@0.8%2B5prealpha%2B1-21?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "sqlite3",
+      "version": "3.46.1-7+deb13u2",
+      "purl": "pkg:deb/debian/sqlite3@3.46.1-7%2Bdeb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "sratom",
+      "version": "0.6.18-1",
+      "purl": "pkg:deb/debian/sratom@0.6.18-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "srt",
+      "version": "1.5.4-1+deb13u1",
+      "purl": "pkg:deb/debian/srt@1.5.4-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "svt-av1",
+      "version": "2.3.0+dfsg-1",
+      "purl": "pkg:deb/debian/svt-av1@2.3.0%2Bdfsg-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "systemd",
+      "version": "257.13-1~deb13u1",
+      "purl": "pkg:deb/debian/systemd@257.13-1~deb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "sysvinit",
+      "version": "3.14-4",
+      "purl": "pkg:deb/debian/sysvinit@3.14-4?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "tar",
+      "version": "1.35+dfsg-3.1",
+      "purl": "pkg:deb/debian/tar@1.35%2Bdfsg-3.1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "tiff",
+      "version": "4.7.0-3+deb13u3",
+      "purl": "pkg:deb/debian/tiff@4.7.0-3%2Bdeb13u3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "twolame",
+      "version": "0.4.0-2",
+      "purl": "pkg:deb/debian/twolame@0.4.0-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "tzdata",
+      "version": "2026f-0+deb13u1",
+      "purl": "pkg:deb/debian/tzdata@2026f-0%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "util-linux",
+      "version": "2.41.5-0+deb13u1",
+      "purl": "pkg:deb/debian/util-linux@2.41.5-0%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "vulkan-loader",
+      "version": "1.4.309.0-1",
+      "purl": "pkg:deb/debian/vulkan-loader@1.4.309.0-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "wayland",
+      "version": "1.23.1-3",
+      "purl": "pkg:deb/debian/wayland@1.23.1-3?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "x264",
+      "version": "2:0.164.3108+git31e19f9-2",
+      "purl": "pkg:deb/debian/x264@2%3A0.164.3108%2Bgit31e19f9-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "x265",
+      "version": "4.1-2",
+      "purl": "pkg:deb/debian/x265@4.1-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "xkeyboard-config",
+      "version": "2.42-1",
+      "purl": "pkg:deb/debian/xkeyboard-config@2.42-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "xorg",
+      "version": "1:7.7+24+deb13u1",
+      "purl": "pkg:deb/debian/xorg@1%3A7.7%2B24%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "xvidcore",
+      "version": "2:1.3.7-1",
+      "purl": "pkg:deb/debian/xvidcore@2%3A1.3.7-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "xxhash",
+      "version": "0.8.3-2",
+      "purl": "pkg:deb/debian/xxhash@0.8.3-2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "xz-utils",
+      "version": "5.8.1-1+deb13u2",
+      "purl": "pkg:deb/debian/xz-utils@5.8.1-1%2Bdeb13u2?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "z3",
+      "version": "4.13.3-1",
+      "purl": "pkg:deb/debian/z3@4.13.3-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "zeromq3",
+      "version": "4.3.5-1",
+      "purl": "pkg:deb/debian/zeromq3@4.3.5-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "zimg",
+      "version": "3.0.5+ds1-1",
+      "purl": "pkg:deb/debian/zimg@3.0.5%2Bds1-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "zix",
+      "version": "0.6.2-1",
+      "purl": "pkg:deb/debian/zix@0.6.2-1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "zlib",
+      "version": "1:1.3.dfsg+really1.3.1-1+deb13u1",
+      "purl": "pkg:deb/debian/zlib@1%3A1.3.dfsg%2Breally1.3.1-1%2Bdeb13u1?arch=source&distro=debian-13"
+    },
+    {
+      "type": "library",
+      "name": "zvbi",
+      "version": "0.2.44-1",
+      "purl": "pkg:deb/debian/zvbi@0.2.44-1?arch=source&distro=debian-13"
+    }
+  ]
+}

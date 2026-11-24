@@ -1,0 +1,66 @@
+# Trainer only: Python/native Linux profile; no deployment secrets or production operations.
+name: Security
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Run all checks again even if matching evidence exists
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  security:
+    name: Security gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: bash
+    env:
+      JSC_HOSTED_APPROVED: 'true'
+      JSC_FORCE: ${{ inputs.force || false }}
+    steps:
+      - name: Check out candidate merge without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Calculate scanner input identities
+        id: plan
+        run: python3 tools/security/run.py plan --output "$RUNNER_TEMP/trainer-security-reports"
+      - name: Restore small sanitized receipts within this PR scope
+        if: ${{ env.JSC_HOSTED_APPROVED == 'true' }}
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, MIT, node24
+        with:
+          path: ${{ runner.temp }}/trainer-security-receipts
+          key: trainer-receipts-v1-${{ github.event.pull_request.number || github.ref_name }}-${{ steps.plan.outputs.key }}
+          restore-keys: trainer-receipts-v1-${{ github.event.pull_request.number || github.ref_name }}-
+      - name: Execute changed checks or validate matching receipts
+        id: scan
+        run: |
+          args=()
+          if [[ "$JSC_FORCE" == 'true' ]]; then args+=(--force); fi
+          python3 tools/security/run.py smart --tools-dir "$RUNNER_TEMP/trainer-security-tools" --receipts-dir "$RUNNER_TEMP/trainer-security-receipts" --output "$RUNNER_TEMP/trainer-security-reports" "${args[@]}"
+      - name: Save only sanitized receipts, never source or executables
+        if: ${{ !cancelled() && env.JSC_HOSTED_APPROVED == 'true' && steps.scan.outputs.executed_count != '0' && steps.scan.outputs.executed_count != '' }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/trainer-security-receipts
+          key: trainer-receipts-v1-${{ github.event.pull_request.number || github.ref_name }}-${{ steps.plan.outputs.key }}
+      - name: Enforce explicit security result and publish summary
+        if: ${{ !cancelled() }}
+        run: |
+          if [[ -f "$RUNNER_TEMP/trainer-security-reports/summary.md" ]]; then
+            cat "$RUNNER_TEMP/trainer-security-reports/summary.md" >> "$GITHUB_STEP_SUMMARY"
+            python3 tools/security/summary.py "$RUNNER_TEMP/trainer-security-reports" >> "$GITHUB_STEP_SUMMARY"
+            python3 tools/security/run.py gate --output "$RUNNER_TEMP/trainer-security-reports"
+          else
+            echo 'Security result: BLOCKED; complete report missing.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
