@@ -88,7 +88,7 @@ class PortalSmoke(unittest.TestCase):
         self.assertEqual(set(dictionaries['de']),set(dictionaries['en']));self.assertEqual(set(dictionaries['de']),set(dictionaries['ru']))
         import re
         for source in (root.parent).glob('*.js'):
-            for key in re.findall(r"(?:\.t|data-i18n)=?\(?[\"']([a-z]+\.[a-z_0-9.]+)",source.read_text()):self.assertIn(key,dictionaries['de'])
+            for key in re.findall(r"(?:\.t|data-i18n)=?\(?[\"']([a-z]+\.[a-z_0-9.]+)[\"'](?!\s*\+)",source.read_text()):self.assertIn(key,dictionaries['de'])
 
     def test_independent_pairs_preserve_facts_and_frozen_versions(self):
         c,u=self.employee('pair-fixture')
@@ -138,6 +138,7 @@ class PortalSmoke(unittest.TestCase):
         self.assertFalse(b.get('/api/sessions').json()['sessions'])
         self.assertEqual(self.app.state.auth.owner(sid),ua['id'])
         self.assertEqual(a.post('/api/sessions',json={'scenario_id':'oven_no_fit','mode':'simple_actor','client_profile_id':'decisive_oven','employee_id':ub['id']}).status_code,422)
+        self.assertEqual(a.post('/api/sessions/'+sid+'/submit').status_code,409)
         self.assertEqual(a.post('/api/sessions/'+sid+'/finish').status_code,200)
         data=a.get('/api/sessions/'+sid).json()['session'];self.assertNotIn('facts',data['report']);self.assertNotIn('assessment_outcomes',data['report'])
         export=a.get('/api/sessions/'+sid+'/export.json');self.assertEqual(export.status_code,200)
@@ -145,7 +146,15 @@ class PortalSmoke(unittest.TestCase):
         for forbidden in ['client_profile_snapshot','authorized_facts','disclosure_conditions','scenario_snapshot','password_hash','persona_name','approval','psychological_type']:self.assertNotIn(forbidden,text)
         self.assertNotIn('Прежняя сервисная фирма прекратила',a.get('/api/sessions/'+sid+'/export.txt').text)
         self.assertTrue(a.get('/api/sessions/'+sid+'/export.pdf').content.startswith(b'%PDF'))
-        self.assertEqual(self.m.get('/api/mentor/employees/'+ua['id']+'/sessions').json()['sessions'][0]['id'],sid)
+        history='/api/mentor/employees/'+ua['id']+'/sessions'
+        self.assertEqual(self.m.get(history).json()['sessions'],[], 'finish alone must remain private')
+        for suffix in ['', '/export.pdf','/export.json','/export.txt']:
+            self.assertEqual(self.m.get('/api/sessions/'+sid+suffix).status_code,404)
+        self.assertEqual(a.post('/api/sessions/'+sid+'/submit').status_code,200)
+        self.assertEqual(self.m.get(history).json()['sessions'][0]['id'],sid)
+        self.assertEqual(self.m.get('/api/sessions/'+sid).status_code,200)
+        for suffix in ['', '/export.pdf','/export.json','/export.txt']:
+            self.assertEqual(b.get('/api/sessions/'+sid+suffix).status_code,404)
     def test_csrf_logout_expiry_rate_and_cookie_flags(self):
         c,u=self.employee('security-fixture')
         r=c.get('/api/auth/me');token=c.cookies.get(COOKIE)
@@ -176,6 +185,8 @@ class PortalSmoke(unittest.TestCase):
         self.assertEqual(old,self.app.state.store.get_session(sid)['client_profile_snapshot'])
         self.assertEqual(self.training(c)['client_profile']['version'],old['version']+1)
         c.post('/api/sessions/'+sid+'/finish')
+        self.assertEqual(self.m.get('/api/sessions/'+sid).status_code,404)
+        self.assertEqual(c.post('/api/sessions/'+sid+'/submit').status_code,200)
         path='/api/mentor/reviews/'+sid
         self.assertEqual(self.m.post(path,json={'note':'Проверка','needs_confirmed':False,'capabilities_confirmed':True}).status_code,422)
         r=self.m.post(path,json={'note':'Проверено наставником','needs_confirmed':True,'capabilities_confirmed':True,'outcome':'no_fit'});self.assertEqual(r.status_code,200)
@@ -199,6 +210,8 @@ class PortalSmoke(unittest.TestCase):
         self.assertEqual([x['rating'] for x in pending['stages']],['not_reviewed']*3)
         self.assertIsNone(pending['commercial_outcome'])
         self.assertEqual(pending['summary'],'Беседа завершена. Ожидается оценка наставника')
+        self.assertEqual(self.m.get('/api/sessions/'+sid).status_code,404)
+        self.assertEqual(c.post('/api/sessions/'+sid+'/submit').status_code,200)
         path='/api/mentor/reviews/'+sid
         assessment={'stages':{'needs':'completed','capabilities':'partial','proposal':'not_completed'},'commercial_outcome':'diagnosis_tentative','company_fit':'outside_scope'}
         body={'note':'Ходы 2 и 4: предварительный интерес; обещание вне условий компании требует разбора.','assessment':assessment}

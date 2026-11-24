@@ -1,3 +1,13 @@
+## MISSION 06.1 — test contract checkpoint, 24.11.2026
+
+В ветке `codex/mission-06-cloudflare-readiness` исправлены test-only ожидания finish/submit: finish остаётся приватным; submit открывает доступ наставнику, другой сотрудник по-прежнему получает404. Два соседних mentor-review сценария теперь явно вызывают submit; статическая locale-проверка больше не принимает динамический key prefix за законченный literal. Логика backend/Actor не менялась.
+
+Расширенная изолированная регрессия:12 tests,11 PASS/1 FAIL. Известный privacy FAIL исправлен. Сохраняется отдельный FAIL `test_pending_review_is_neutral_and_outcome_is_independent`: текущий TXT export не содержит ожидаемый тестом коммерческий исход; содержательный контракт не изменён и FAIL не скрыт. Network attempts0, paid calls0; только temporary synthetic SQLite. Исходная установка/ветка, untracked-копии, SQLite и процесс8100 не затронуты.
+
+VPS read-only SSH preflight выполнен; private raw evidence вне Git. Docker/CI/backup/Access preparation продолжается; публикаций, переносов данных и инфраструктурных изменений нет.
+
+---
+
 # PUBLIC Portfolio Release — подтверждённая приёмка 14.11.2026
 
 ## MISSION 06 — Cloudflare readiness / Security CI, 23.11.2026
