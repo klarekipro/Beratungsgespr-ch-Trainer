@@ -1,3 +1,19 @@
+## MISSION 06.1 — actual hosted result and lifecycle closure, 24.11.2026
+
+Draft PR6: https://github.com/klarekipro/Beratungsgespr-ch-Trainer/pull/6. Hosted run45350122011 completed: secrets/SAST/workflows/tests/selftest PASS; dependencies FAIL495 (371 UNKNOWN/120 INFO/4 LOW), overall Gate FAIL. Actual tested temporary PR merge eca581cee49eb742d44d17dd42ce6c68d0ead6fd from source8c876f4/base332a4f4; main was not merged. App offline Linux20 PASS, Node6 PASS, no paid calls/network/live data.
+
+Local synthetic Docker health CLI/SIGTERM cleanup/restart SQLite persistence/integrity PASS. Uvicorn exit143 verified with shutdown-complete log; uncapped storage guard rejects startup. Emulated automatic health timing does not certify native VPS timing. Actual server seven pre-existing containers remain running; cgroup CPU/memory/swap support confirmed read-only. Original Mac branch/HEAD/untracked copies/PID10979 port8100 untouched. Private VPS resource evidence outside Git; no deployment/resources/data/secret transfer/second repo/visibility change.
+
+Activation remains BLOCKED: native advisory triage, capped persistent storage and peak admission, actual Access/JWT no-bypass, encrypted off-host restore, model/budget and separate owner deployment approval. Normal prep is complete; known failures are explicit, not suppressed. See docs/security/TRAINER_061_VALIDATION.md and pilot runbook.
+
+---
+
+## MISSION 06.1 — final local Linux regression, 24.11.2026
+
+Source8c876f4e65175f0d6473bdd2e63880840f5e3161: actual pinned Linux/amd64 test image,20/20 PASS with network disabled,512MiB cap, synthetic temporary SQLite, network attempts0/paid calls0. Frontend Node6 PASS. Draft PR6 opened in original public repo; hosted security run is in progress, not yet accepted. Native dependency gate remains FAIL (371 UNKNOWN/120 INFO/4 LOW). No merge/deployment/data transfer/new repository. Final hosted/lifecycle evidence follows actual results.
+
+---
+
 ## MISSION 06.1 — Linux compatibility and offline CI qualification, 24.11.2026
 
 Linux certificate long-name fixture exposed a container font-path mismatch; corrected Linux font configuration, preserved certificate layout/test limits. Frontend voice mocks now include the already-existing auth/me identity/CSRF preflight, with changed-account denial regression; local Node6 PASS. Actor/voice/finish/submit production logic unchanged. Native dependency gate remains FAIL (371 unknown-severity Debian matches), not hidden. Detailed current acceptance: docs/security/TRAINER_061_VALIDATION.md; final full Linux/hosted evidence follows actual execution.
