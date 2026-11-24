@@ -49,8 +49,17 @@ def report_text(s,language='de'):
                 if evidence['message_id'] in ids:lines += [f"[{ids.index(evidence['message_id'])+1}] "+evidence['quote']]
 
     if r:
-        outcome=(r.get('assessment') or {}).get('commercial_outcome');label=OUTCOMES[language][OUTCOME_KEYS.index(outcome)] if outcome in OUTCOME_KEYS else t[18]
-        lines+=['',t[9],f"{t[10]}: {r['mentor_name']}",f"{t[11]}: {r['published_at']}",f"{t[12]}: {label}",f"{t[26]}: {e[4+GOALS.index(r.get('goal'))] if r.get('goal') in GOALS else t[18]}",f"{t[27]}: {r.get('observations','')}",r['note']]
+        import json
+        from pathlib import Path
+        labels=json.loads((Path(__file__).resolve().parents[3]/'frontend/locales'/f'{language}.json').read_text())
+        assessment=r.get('assessment') or {}
+        outcome=assessment.get('commercial_outcome')
+        outcome_label=labels.get('review.outcome.'+str(outcome),labels['review.unset'])
+        fit_label=labels.get('review.fit.'+assessment.get('company_fit','not_checked'),labels['review.fit.not_checked'])
+        lines+=['',t[9],f"{t[10]}: {r['mentor_name']}",f"{t[11]}: {r['published_at']}",
+                f"{labels['review.commercial']}: {outcome_label}",f"{labels['review.company_fit']}: {fit_label}",
+                f"{t[26]}: {e[4+GOALS.index(r.get('goal'))] if r.get('goal') in GOALS else t[18]}",
+                f"{t[27]}: {r.get('observations','')}",r['note']]
         for index,stage in enumerate(['needs','capabilities','proposal']):
             rating=(r.get('assessment') or {}).get('stages',{}).get(stage,'not_reviewed')
             labels=['not_reviewed','completed','partial','not_completed']

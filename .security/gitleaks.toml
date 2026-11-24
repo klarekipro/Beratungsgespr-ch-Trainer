@@ -1,0 +1,10 @@
+title = "Klare KI: defaults plus database connection strings"
+[extend]
+useDefault = true
+
+[[rules]]
+id = "jsc-postgres-credential"
+description = "PostgreSQL connection string with an embedded password"
+regex = '''postgres(?:ql)?://[A-Za-z0-9_%.-]+:([^\s@'"<>]+)@[A-Za-z0-9.-]+'''
+secretGroup = 1
+keywords = ["postgresql://", "postgres://"]

@@ -1,4 +1,60 @@
+## MISSION 06.1 — actual hosted result and lifecycle closure, 24.11.2026
+
+Draft PR6: https://github.com/klarekipro/Beratungsgespr-ch-Trainer/pull/6. Hosted run45350122011 completed: secrets/SAST/workflows/tests/selftest PASS; dependencies FAIL495 (371 UNKNOWN/120 INFO/4 LOW), overall Gate FAIL. Actual tested temporary PR merge eca581cee49eb742d44d17dd42ce6c68d0ead6fd from source8c876f4/base332a4f4; main was not merged. App offline Linux20 PASS, Node6 PASS, no paid calls/network/live data.
+
+Local synthetic Docker health CLI/SIGTERM cleanup/restart SQLite persistence/integrity PASS. Uvicorn exit143 verified with shutdown-complete log; uncapped storage guard rejects startup. Emulated automatic health timing does not certify native VPS timing. Actual server seven pre-existing containers remain running; cgroup CPU/memory/swap support confirmed read-only. Original Mac branch/HEAD/untracked copies/PID10979 port8100 untouched. Private VPS resource evidence outside Git; no deployment/resources/data/secret transfer/second repo/visibility change.
+
+Activation remains BLOCKED: native advisory triage, capped persistent storage and peak admission, actual Access/JWT no-bypass, encrypted off-host restore, model/budget and separate owner deployment approval. Normal prep is complete; known failures are explicit, not suppressed. See docs/security/TRAINER_061_VALIDATION.md and pilot runbook.
+
+---
+
+## MISSION 06.1 — final local Linux regression, 24.11.2026
+
+Source8c876f4e65175f0d6473bdd2e63880840f5e3161: actual pinned Linux/amd64 test image,20/20 PASS with network disabled,512MiB cap, synthetic temporary SQLite, network attempts0/paid calls0. Frontend Node6 PASS. Draft PR6 opened in original public repo; hosted security run is in progress, not yet accepted. Native dependency gate remains FAIL (371 UNKNOWN/120 INFO/4 LOW). No merge/deployment/data transfer/new repository. Final hosted/lifecycle evidence follows actual results.
+
+---
+
+## MISSION 06.1 — Linux compatibility and offline CI qualification, 24.11.2026
+
+Linux certificate long-name fixture exposed a container font-path mismatch; corrected Linux font configuration, preserved certificate layout/test limits. Frontend voice mocks now include the already-existing auth/me identity/CSRF preflight, with changed-account denial regression; local Node6 PASS. Actor/voice/finish/submit production logic unchanged. Native dependency gate remains FAIL (371 unknown-severity Debian matches), not hidden. Detailed current acceptance: docs/security/TRAINER_061_VALIDATION.md; final full Linux/hosted evidence follows actual execution.
+
+---
+
+## MISSION 06.1 — owner export contract и deployment preparation, 24.11.2026
+
+Владелец подтвердил: коммерческий исход и соответствие услугам компании должны входить в TXT/PDF. В working branch `learning_exports.report_text` теперь использует canonical UI labels и включает company_fit из опубликованной человеческой оценки. Сохранённые беседы/оценки/frozen issued certificates не переписываются; finish/submit/Actor logic не менялись. Targeted regression PASS; bounded Mac suite20 tests PASS, network attempts0, paid calls0, только synthetic SQLite.
+
+Подготовлены Linux amd64 Dockerfile/hash-lock23 wheels, отдельный launch/ASGI/health, isolated Compose без host ports, quota preflight, backup/restore tool и Python Security CI. Dependency image реально собран и проверен: CPython3.14.7/SQLite3.54.1, Liberation Sans/DejaVu/Poppler/ffprobe. Updated native SBOM254 components: PyPI advisory matches0, Debian495 matches (371 not assigned,120 unimportant,4 low); неизвестные остаются blocking, suppressions не добавлены. Семантика этой оценки и границы CI — docs/security/TRAINER_SECURITY_CI.md.
+
+Remote VPS только read-only metadata; private resource report вне Git. Никаких server build/pull/up/restart, CF resources, transfer данных/секретов, original working SQLite или8100 restart. Финальная Linux app suite и hosted PR validation ещё подлежат фиксации. Нормальная activation BLOCKED до native triage, dedicated capped persistent storage, peak admission, actual Access/JWT path, encrypted off-host restore и budget/model acceptance.
+
+---
+
+## MISSION 06.1 — test contract checkpoint, 24.11.2026
+
+В ветке `codex/mission-06-cloudflare-readiness` исправлены test-only ожидания finish/submit: finish остаётся приватным; submit открывает доступ наставнику, другой сотрудник по-прежнему получает404. Два соседних mentor-review сценария теперь явно вызывают submit; статическая locale-проверка больше не принимает динамический key prefix за законченный literal. Логика backend/Actor не менялась.
+
+Расширенная изолированная регрессия:12 tests,11 PASS/1 FAIL. Известный privacy FAIL исправлен. Сохраняется отдельный FAIL `test_pending_review_is_neutral_and_outcome_is_independent`: текущий TXT export не содержит ожидаемый тестом коммерческий исход; содержательный контракт не изменён и FAIL не скрыт. Network attempts0, paid calls0; только temporary synthetic SQLite. Исходная установка/ветка, untracked-копии, SQLite и процесс8100 не затронуты.
+
+VPS read-only SSH preflight выполнен; private raw evidence вне Git. Docker/CI/backup/Access preparation продолжается; публикаций, переносов данных и инфраструктурных изменений нет.
+
+---
+
 # PUBLIC Portfolio Release — подтверждённая приёмка 14.11.2026
+
+## MISSION 06 — Cloudflare readiness / Security CI, 23.11.2026
+
+В отдельном worktree/ветке `codex/mission-06-cloudflare-readiness` от актуального удалённого main `332a4f4d7f919fc570d9e8d44de2d9be326e7677` выполнены read-only аудит и планирование. Исходная локальная ветка `codex/a38-persona-studio-localization` / HEAD `28e2a66887949eb999de67066e92f1a75f1b1e2f`, её untracked-копии и рабочая SQLite не менялись. GET /api/status подтвердил локальную0.15.3-persona-localization; процесс/порт не перезапускались. Привилегированные runtime сведения и рабочие данные не читались.
+
+Созданы пять документов в `docs/security/`: TRAINER_CLOUDFLARE_FEASIBILITY.md, TRAINER_SECURITY_AUDIT.md, KLARE_KI_SECURITY_TEMPLATE.md, SHARED_REPOSITORY_PLAN.md, TRAINER_DEPLOYMENT_PLAN.md; два неактивных YAML-примера и JSON-профиль — в templates/. Рекомендован один native FastAPI backend за Cloudflare Access/Tunnel с прежним same-origin frontend, без миграции SQLite в Workers для первого пилота.
+
+Gitleaks PASS (16 опубликованных branch/tag roots,0 findings); OSV PASS (24 installed packages,0 findings; только snapshot существующей Mac-среды); Semgrep CE PASS (60/60 исходных единиц,6 ограниченных локальных правил). Исходные 3 targeted security tests:2 PASS/1 FAIL на устаревшем mentor history assertion до submit. Отдельные privacy-contract/PDF Unicode tests2 и mocked AI-wire test1 PASS, failed regression не скрыт и не исправлялся в этой планирующей задаче. Все тесты — на synthetic temporary SQLite, network attempts0, paid calls0. Два YAML-примера прошли имеющиеся actionlint/zizmor; runtime адаптер/hosted CI не установлен и NOT VERIFIED. Новых инструментов не устанавливалось.
+
+Доступ к приложению не требует GitHub seats или обязательного нового shared repo: для пилота достаточно одобренного source SHA существующего проекта; совместная разработка — отдельная разрешаемая задача.
+
+Владелец дополнительно подтвердил наличие оплаченного VPS/сервера: основной вариант B использует его без новой аренды; ОС/архитектура/свободная ёмкость/изоляция/backup не проверялись, удалённого входа/изменений нет.
+
+Проверено19 доступных repos; точная организация klareki-lab, active admin, Team plan. Trainer сейчас public; visibility не менялась. Реальный Linux lock, cloud origin/proxy/Access, off-host restore, бюджет/seat increment и live availability Deprecated model snapshot остаются NOT VERIFIED/BLOCKED для активации. Создание shared repo/перенос истории и deployment требуют отдельного подтверждения. Main/merge/push, внешние ресурсы, Cloudflare, Neon, production secrets/БД не менялись. Внутренние raw/API/test evidence хранятся вне worktree/Git; в commit входят только выбранные документы/примеры и этот checkpoint.
 
 Существующий klarekipro/Beratungsgespr-ch-Trainer фактически PUBLIC. PR4 слит normal merge b6c0d1488a71487cd968e8b82525c4d82663b99c; v0.15.3 остаётся a23410a84a7c38572260b0fa48411104003b5b05, все прежние ветки/история сохранены. Немецкий README, четыре UI-кадра, preview, GitHub-native browser video и VIDEO_PRODUCTION опубликованы. Дополнительная документационная квитанция не меняет runtime-code или релизный тег.
 

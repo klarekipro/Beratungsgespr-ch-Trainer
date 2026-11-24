@@ -1,0 +1,80 @@
+name: klareki-trainer-pilot
+services:
+  trainer:
+    image: ${TRAINER_IMAGE:?Use an owner-reviewed immutable image digest}
+    platform: linux/amd64
+    pull_policy: never
+    init: true
+    user: '10001:10001'
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.50
+    mem_limit: 512m
+    mem_reservation: 256m
+    memswap_limit: 512m
+    pids_limit: 128
+    stop_grace_period: 75s
+    restart: unless-stopped
+    environment:
+      TRAINER_IMAGE_REF: ${TRAINER_IMAGE}
+      TRAINER_DATA_DIR: /var/lib/trainer/dashboard
+      TRAINER_AUDIT_DIR: ''
+      TRAINER_REMOTE_HTTPS: '1'
+      TRAINER_ALLOWED_HOSTS: ${PILOT_HOSTNAME:?Approve one exact pilot hostname}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini-2025-04-14}
+      OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
+      TRAINER_MAX_TURNS: '20'
+      TRAINER_MAX_LIVE_ATTEMPTS: '10'
+    volumes:
+      - type: bind
+        source: ${TRAINER_DATA_PATH:?Owner must provision a separate capped persistent filesystem}
+        target: /var/lib/trainer
+        bind:
+          create_host_path: false
+    tmpfs: [/tmp:size=67108864,mode=1777]
+    secrets: [openai_api_key]
+    networks: [pilot_egress]
+    labels:
+      com.centurylinklabs.watchtower.enable: 'false'
+    logging:
+      driver: local
+      options: {max-size: '10m', max-file: '3'}
+  cloudflared:
+    image: cloudflare/cloudflared:2026.11.0@sha256:b94b96edf2c9c4360f8879c8580cfaa99077f19c849ec595ca2f711b27d4f344
+    # Only this companion shares the app's loopback; there are NO host ports.
+    network_mode: service:trainer
+    depends_on:
+      trainer:
+        condition: service_healthy
+        restart: true
+    command: [tunnel, --config, /etc/cloudflared/config.yml, --no-autoupdate, run]
+    user: '10001:10001'
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.10
+    mem_limit: 128m
+    memswap_limit: 128m
+    pids_limit: 64
+    restart: unless-stopped
+    stop_grace_period: 30s
+    volumes:
+      - type: bind
+        source: ${CLOUDFLARED_CONFIG_FILE:?Reviewed per-pilot configuration required}
+        target: /etc/cloudflared/config.yml
+        read_only: true
+        bind: {create_host_path: false}
+    secrets: [tunnel_credentials]
+    labels:
+      com.centurylinklabs.watchtower.enable: 'false'
+    logging:
+      driver: local
+      options: {max-size: '10m', max-file: '3'}
+networks:
+  pilot_egress: {}
+secrets:
+  openai_api_key:
+    file: ${OPENAI_SECRET_FILE:?Owner-provisioned secret file, never .env/Git}
+  tunnel_credentials:
+    file: ${TUNNEL_CREDENTIALS_FILE:?Dedicated Tunnel credentials required}

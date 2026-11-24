@@ -1,0 +1,15 @@
+# Owner fills this locally after creating/approving a dedicated Access application/Tunnel.
+# No resource is created by this template. Credentials are mounted from a protected file.
+tunnel: REPLACE_WITH_PILOT_TUNNEL_UUID
+credentials-file: /run/secrets/tunnel_credentials
+ingress:
+  - hostname: pilot.example.invalid
+    service: http://127.0.0.1:8100
+    originRequest:
+      httpHostHeader: pilot.example.invalid
+      connectTimeout: 10s
+      access:
+        required: true
+        teamName: REPLACE_WITH_ACCESS_TEAM
+        audTag: [REPLACE_WITH_THIS_APPLICATION_AUD]
+  - service: http_status:404

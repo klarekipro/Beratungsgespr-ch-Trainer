@@ -1,0 +1,52 @@
+# INACTIVE REFERENCE: one owner per dependency graph; no full scanners/tests here.
+# Requires the reviewed advisory-only adapter and identified deployed dependency graph.
+name: Klare KI Dependency Advisories
+on:
+  schedule:
+    - cron: '17 9 * * *'
+      timezone: Europe/Berlin
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: kk-advisories-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  advisories:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash
+    env:
+      JSC_HOSTED_APPROVED: ${{ vars.KK_SECURITY_HOSTED_APPROVED }}
+    steps:
+      - name: Check out identified dependency metadata
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check activation and complete graph evidence
+        run: |
+          if [[ "$JSC_HOSTED_APPROVED" != 'true' || ! -f tools/security/run.py || ! -f .security/profile.json || ! -f sbom/runtime.cdx.json ]]; then
+            echo 'Advisories: BLOCKED; activation/adapter/deployed graph missing.' >> "$GITHUB_STEP_SUMMARY"
+            exit 2
+          fi
+      - name: Refresh advisory knowledge only
+        run: python3 tools/security/run.py advisories --profile .security/profile.json --runtime-sbom sbom/runtime.cdx.json --output "$RUNNER_TEMP/kk-advisories"
+      - name: Publish sanitized advisory evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dependency-advisories-${{ github.run_id }}
+          path: ${{ runner.temp }}/kk-advisories
+          if-no-files-found: error
+          retention-days: 7
+      - name: Enforce advisory result without skipped-green fallback
+        if: ${{ !cancelled() }}
+        run: |
+          if [[ ! -f "$RUNNER_TEMP/kk-advisories/summary.md" ]]; then
+            echo 'Advisories: BLOCKED; no complete report.' >> "$GITHUB_STEP_SUMMARY"
+            exit 2
+          fi
+          cat "$RUNNER_TEMP/kk-advisories/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          python3 tools/security/run.py gate --profile .security/profile.json --advisory-only --output "$RUNNER_TEMP/kk-advisories"

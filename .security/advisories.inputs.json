@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "platform": "linux/amd64",
+  "dependency_image_id": "sha256:8986453af3d2a72e9a4f032647a9a85fda80dcfd01723650ee4aea50c7e5c5f8",
+  "input_sha256": {
+    "requirements-dashboard.txt": "882ef072c199f1e1c044a117ba26bd0e82e52b04d754e101d486c5c9471daac0",
+    "deploy/pilot/Dockerfile": "e5c5042cb677daa1b8b90c67a9a29c4fe9d901232cef4acbcc7b54d3a92b32cf",
+    "deploy/pilot/requirements-linux-amd64.txt": "51ddabbaca3c9fedfefa566e36c3fa617a7e0c5f1b82996ea796781e2018bc06",
+    "deploy/pilot/python-lock.json": "03ffc23756978e7dc8d7c9d6f41c21c61e6dd66e6be2dc706c4b470c1d72907a"
+  },
+  "sbom_sha256": "4b57f0614f41316d750bb276fa6b7fe0746464b57eaea5cf0e9d4e50057e1c7d",
+  "components": 254,
+  "python": 24,
+  "sqlite": "3.54.1"
+}
